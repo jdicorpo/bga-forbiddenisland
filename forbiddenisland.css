@@ -1,0 +1,348 @@
+/**
+ *------
+ * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
+ * forbiddenisland implementation : © Jeff DiCorpo <jdicorpo@gmail.com>
+ *
+ * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
+ * See http://en.boardgamearena.com/#!doc/Studio for more information.
+ * -----
+ *
+ * forbiddenisland.css
+ *
+ * forbiddenisland stylesheet
+ *
+ */
+
+/*
+
+    This is the CSS stylesheet of your game User Interface.
+    
+    Styles defined on this file will be applied to the HTML elements you defined in your
+    HTML template (gomoku_gomoku.tpl), and to HTML elements you create dynamically
+    (in gomoku.js).
+    
+    Usually, you are using CSS to:
+    
+    1°) define the overall layout of your game
+        (ex: place the board on the top left, place player's hand beside, place the deck on the right, ...).
+
+    2°) create your CSS-sprites:
+        All images of your games should be gathered into a small number of image files. Then, using
+        background-image and background-position CSS properties, you create HTML blocks that can 
+        display these images correctly (see example below).
+    
+    3°) ... anything else:
+        It is really easy to add and remove CSS classes dynamically from your Javascript with
+        dojo.addClass and dojo.removeClass. This is also easy to check if an element has a class
+        (dojo.hasClass) or to get all elements with a specific class (dojo.query). This is why,
+        very often, using CSS classes for the logic of your user interface allow you to do complex
+        thing easyly.
+        
+        
+     Note: on the production platform, this file will be compressed and comments will be removed.
+           Consequently, don't hesitate to put as many comments as necessary.
+*/
+
+
+@import url(../../../css/csslayer.css);
+
+.anchor {
+	position: relative;
+	width: 100%; 
+	/* overflow-x: auto; */
+	/* overflow-y: hidden; */
+	margin: auto;
+	/* text-align: center; */
+}
+
+#board {
+    /* width: 100%; */
+    width: 954px;
+    /* max-width: 954px; */
+    height: 816px;
+    /* background-image: url('img/tiles.jpg'); */
+    /* background-color: palegoldenrod; */
+    position: relative;
+    margin: auto;
+}
+
+.island_tile {
+    background-image: url(img/tiles.jpg);
+    border-radius: 10px;
+    border-style: none;
+	box-shadow: 1px 1px 1px 0px #222;
+    width: 128px;
+	height: 128px;
+	/* color: blue;
+	font-weight: bold;
+    font-size: small; */
+	background-clip: content-box;
+    position: absolute;
+    opacity: 70%;
+}
+
+.island_tile_sunk {
+    /* background-image: url(img/tiles.jpg); */
+    border-radius: 10px;
+    border-style: dashed;
+    border-width: 2px;
+    border-color: rgb(78, 78, 78);
+	/* box-shadow: 1px 1px 1px 0px #222; */
+    width: 128px;
+	height: 128px;
+	/* color: blue;
+	font-weight: bold;
+    font-size: small; */
+	background-clip: content-box;
+    position: absolute;
+    opacity: 70%;
+}
+
+.island_tile_location {
+    border-radius: 10px;
+    /* border-style: dotted; */
+    /* border-width: 1px; */
+	/* box-shadow: 1px 1px 1px 0px #222; */
+    width: 128px;
+	height: 128px;
+	/* background-clip: content-box; */
+    position: absolute;
+}
+
+.pawn_area {
+    /* background-image: url(img/tiles.jpg); */
+	/* border-radius: 10px; */
+	/* box-shadow: 1px 1px 1px 0px #222; */
+	/* z-index: 20; */
+    /* width: 128px; */
+    width: 95%;
+	/* max-width: 128px; */
+    height: 70px;
+    margin-top: 45px;
+    /* margin-right: 10px; */
+	/* background-size: calc(400px * 4);  */
+	/* background-clip: content-box; */
+    /* background-color: lightblue; */
+    /* opacity: 30%; */
+    /* position: absolute; */
+    /* vertical-align: bottom; */
+    /* display: inline-block; */
+}
+
+.pawn {
+    background-image: url(img/pawns.png);
+    border-radius: 10px;
+    background-size: auto 57px;
+	/* box-shadow: 1px 1px 1px 0px #222; */
+	z-index: 5;
+	width: 31.5px;
+	height: 57px;
+	/* background-size: calc(400px * 4);  */
+    /* margin-left: 10px; */
+    /* margin-right: -10px; */
+    background-clip: content-box;
+    /* position: relative; */
+    /* display: inline-block; */
+    /* vertical-align: bottom; */
+    /* float: right; */
+}
+
+.card {
+	border-radius: 10px;
+    box-shadow: 1px 1px 1px 0px #222;
+    border-color: white;
+    border-width: thin;
+    border-style: solid;
+	/* z-index: 20; */
+	width: 128px;
+	height: 177.75px;
+	background-clip: content-box;
+    position: absolute;
+    display: inline-block;
+}
+
+.player_card {
+    background-image: url(img/player.jpg);
+}
+
+.player_area {
+    display: inline-block;
+	position: relative;
+    vertical-align: top;
+    width: 100%;
+    /* padding: 5px 0px 0px 10px; */
+}
+
+.player_card_area {
+    margin-left: 50px;
+}
+
+.player_card_area > .card {
+    margin-left: 10px;
+    vertical-align: bottom;
+}
+
+.side_title_wrapper {
+    min-height: 200px;
+    max-width: 60px;
+    position: absolute;
+    /* top: 5px; */
+    overflow-wrap: break-word;
+    display: inline-block;
+}
+.side_title {
+    /* color: white; */
+    display: inline-block;
+    font-weight: 900;
+    font-size: 18px;
+    /* text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px gray, 0 0 30px grey, 0 0 40px grey, 0 0 55px black, 0 0 75px black; */
+    text-transform: uppercase;
+    transform: rotate(90deg) translateX(-25px);
+    transform: rotate(90deg);
+    transform-origin: 0.5em center 0;
+    /* float: left; */
+    max-width: 210px; 
+    /* margin-right: -160px; */
+    overflow-wrap: break-word;
+    /* height: 80px; */
+    /* z-index: 100; */
+}
+.side_title_wrapper + div {
+	margin-left: 20px;
+}
+
+/* #game_decks_wrapper {
+    width: 954px;
+} */
+
+.flood_card {
+    background-image: url(img/flood.jpg);
+    display: inline-block;
+}
+
+#flood_card_area {
+    display: inline-block;
+    width: 100%;
+    margin-left: 138px;
+}
+
+.flood_deck_area {
+    display: inline-block;
+    width: 100%;
+    height: 177.75px;
+    position: relative;
+}
+
+.treasure_card {
+    background-image: url(img/treasure.jpg);
+    display: inline-block;
+}
+
+#treasure_card_area {
+    display: inline-block;
+    width: 100%;
+    margin-left: 138px;
+}
+
+.treasure_deck_area {
+    display: inline-block;
+    width: 100%;
+    height: 177.75px;
+    position: realtive;
+}
+
+.treasure_figure {
+    background-image: url(img/treasures.png);
+    background-size: auto 120px;
+	border-radius: 10px;
+    z-index: 20;
+	width: 88.4px;
+    height: 120px;
+    background-clip: content-box;
+    display: inline-block;
+    position: relative;
+}
+
+/* .active_slot:hover {
+	box-shadow: 0px 0px 1px 3px purple !important;
+}
+
+.active_slot {
+	cursor: pointer;
+    box-shadow: 0px 0px 4px 2px white !important;
+} */
+
+/* .possibleMove.island_tile:hover {
+	box-shadow: 0px 0px 2px 3px blue !important;
+} */
+
+.possibleMove {
+	cursor: pointer;
+}
+
+.possibleMove.island_tile {
+    box-shadow: 0px 0px 4px 4px orangered !important;
+    /* background-color:rgba(0, 0, 0, 0.5); */
+    opacity: 100%;
+}
+
+.possibleMove.otherPlayer.island_tile {
+    box-shadow: 0px 0px 4px 4px purple !important;
+}
+
+.possibleCard {
+    cursor: pointer;
+    box-shadow: 0px 0px 4px 4px orangered !important;
+}
+
+.possibleCard:hover {
+	box-shadow: 0px 0px 4px 2px blue !important;
+}
+
+.selected {
+	cursor: pointer;
+	box-shadow: 0px 0px 4px 2px blue !important;
+}
+
+#water_level_meter_save {
+    width: 128px;
+    height: 342px;
+    /* float: right; */
+    /* position: absolute; */
+    background-color: rgb(16, 133, 172);
+    /* background-image: url(img/tiles.jpg); */
+	border-radius: 10px;
+	box-shadow: 1px 1px 1px 0px #222;
+	z-index: 20;
+	/* background-size: calc(400px * 4);  */
+	color: black;
+	font-weight: bolder;
+    /* font-size: x-small; */
+    font-size: x-large;
+    background-clip: content-box;
+    margin-top: 136px;
+    margin-left: auto;
+    margin-right: 0;
+}
+
+#water_level_meter {
+    width: 128px;
+    height: 342px;
+    /* float: right; */
+    /* position: absolute; */
+    /* background-color: rgb(16, 133, 172); */
+    background-image: url(img/flood_meter.jpg.jpg);
+	border-radius: 10px;
+	box-shadow: 1px 1px 1px 0px #222;
+	/* z-index: 20; */
+	/* background-size: calc(400px * 4);  */
+	color: black;
+	font-weight: bolder;
+    /* font-size: x-small; */
+    font-size: x-large;
+    background-clip: content-box;
+    /* margin-top: 136px; */
+    margin-left: auto;
+    /* margin-right: 0; */
+    display: inline-block;
+}

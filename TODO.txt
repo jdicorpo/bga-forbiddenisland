@@ -1,0 +1,23 @@
+* tooltips
+* draw treasure card sequence
+* non-active player to play special cards out of turn
+* water rises logic
+* sunk tile logic
+* shore up action
+* give card action
+* capture action
+* implement water level meter
+
+* pilot special action
+* navigator special action
+* engineer special action
+* diver special action
+* explorer special action
+* messenger special action
+* lose game logic
+* win game logic
+* player board
+* implement stats
+
+* support difficulty
+* support other maps
