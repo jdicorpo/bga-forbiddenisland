@@ -70,6 +70,15 @@ class action_forbiddenisland extends APP_GameAction
         self::ajaxResponse( );
     }
 
+    public function giveTreasure()
+    {
+        self::setAjaxMode();     
+        $id = self::getArg( "id", AT_alphanum, true );
+        $target_player_id = self::getArg( "target_player_id", AT_alphanum, true );
+        $result = $this->game->giveTreasure($id, $target_player_id);
+        self::ajaxResponse( );
+    }
+
 
   /*
   

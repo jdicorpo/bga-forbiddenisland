@@ -90,7 +90,7 @@ var jstpl_tile='<div class="island_tile" id="${id}" style="background-position:-
 var jstpl_sunk_tile='<div class="island_tile_sunk" id="${id}"></div>';
 var jstpl_pawn_area='<div id="pawn_area_${id}" class="pawn_area"></div>';
 var jstpl_pawn='<div class="pawn" id="${id}" style="background-position:-${x}px"></div>';
-var jstpl_actions='<span class="remaining_actions" id="remaining_actions_text"><span id="remaining_actions_value" style="font-weight:bold;color:#ED0023;">${n}</span> actions: <span style="font-weight:bold;color:#4871b6;">Move</span> or </span>';
+// var jstpl_actions='<span class="remaining_actions" id="remaining_actions_text"><span id="remaining_actions_value" style="font-weight:bold;color:#ED0023;">${n}</span> actions: <span style="font-weight:bold;color:#4871b6;">Move</span> or </span>';
 var jstpl_flood='<div class="card flood_card" id="flood_card_${id}" style="background-position:-${x}px -${y}px"></div>';
 var jstpl_treasure='<div class="card treasure_card" id="treasure_card_${id}" style="background-position:-${x}px 0"></div>';
 var jstpl_player='<div class="card player_card" id="player_card_${id}" style="background-position:-${x}px 0"></div>';

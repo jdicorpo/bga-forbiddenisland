@@ -345,6 +345,16 @@ class forbiddenisland extends Table
             return self::getCollectionFromDb( $sql );
         }
 
+        function getColocatedPlayers($player_id) {
+            $tile_id = self::getPlayerLocation($player_id);
+            return self::getPlayersAtLocation($tile_id);
+        }
+
+        function getPlayers() {
+            $sql = "SELECT player_id id, player_score score, adventurer, location FROM player ";
+            return self::getCollectionFromDb( $sql );
+        }
+
         function getTileLocation($tile_id) {
             $sql = "SELECT card_location_arg FROM tiles WHERE  card_type='$tile_id' ";
             // $id = $this->tiles->getCardsOfType($tile_id)[0];
@@ -417,6 +427,12 @@ class forbiddenisland extends Table
             ) );
 
         }
+
+        function treasureDeckReshuffle () {
+            self::notifyAllPlayers( "reshuffleTreasureDeck", clienttranslate( 'Treasure deck reshuffled.' ), array(
+            ) );
+        }
+    
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -569,9 +585,41 @@ class forbiddenisland extends Table
 
     }
 
-    function treasureDeckReshuffle () {
-        self::notifyAllPlayers( "reshuffleTreasureDeck", clienttranslate( 'Treasure deck reshuffled.' ), array(
-        ) );
+    function giveTreasure( $id, $target_player_id )
+    {
+        self::checkAction( 'give_card' );
+
+        $player_id = self::getActivePlayerId();
+        $players = $this->loadPlayersBasicInfos();
+        $target_player_name = $players[$target_player_id]['player_name'];
+
+        if ($this->getGameStateValue("remaining_actions") > 0) {
+            $this->incGameStateValue("remaining_actions", -1);
+
+            $card = $this->treasure_deck->getCard($id);
+            $card_name = $this->treasure_list[$card['type']]['name'];
+            $this->treasure_deck->moveCard($id, 'hand', $target_player_id);
+
+            self::notifyAllPlayers( "giveTreasure", clienttranslate( '${player_name} gave ${card_name} to ${target_player_name}' ), array(
+                'player_id' => $player_id,
+                'target_player_id' => $target_player_id,
+                'player_name' => self::getActivePlayerName(),
+                'target_player_name' => $target_player_name,
+                'card' => $card,
+                'card_name' => $card_name
+            ) );
+
+            // TODO: need to check if target player must discard
+        } else {
+            throw new feException( "No remaining actions" );
+        }
+
+        if ($this->getGameStateValue("remaining_actions") > 0) {
+            $this->gamestate->nextState( 'action' );
+        } else {
+            $this->gamestate->nextState( 'draw_treasure' );
+        }
+
     }
 
     
@@ -589,7 +637,10 @@ class forbiddenisland extends Table
     {
         return array(
             'possibleActions' => self::getPossibleActions( self::getActivePlayerId() ),
-            'remaining_actions' => $this->getGameStateValue("remaining_actions")
+            'remaining_actions' => $this->getGameStateValue("remaining_actions"),
+            'player_treasure_cards' => self::getTreasureCards( self::getActivePlayerId() ),
+            'colocated_players' => self::getColocatedPlayers( self::getActivePlayerId() ),
+            'players' => self::getPlayers()
         );
     }
 
