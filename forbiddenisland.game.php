@@ -36,6 +36,10 @@ class forbiddenisland extends Table
                "remaining_actions" => 10,
                "water_level" => 11,
                "remaining_flood_cards" => 12,
+               "air" => 13,
+               "fire" => 14,
+               "earth" => 15,
+               "ocean" => 16,
             //      ...
             //    "my_first_game_variant" => 100,
             //    "my_second_game_variant" => 101,
@@ -137,6 +141,10 @@ class forbiddenisland extends Table
         self::setGameStateInitialValue( 'remaining_actions', 3 );
         self::setGameStateInitialValue( 'remaining_flood_cards', 6 );
         self::setGameStateInitialValue( 'water_level', 1 );
+        self::setGameStateInitialValue( 'air', 0 );
+        self::setGameStateInitialValue( 'fire', 0 );
+        self::setGameStateInitialValue( 'earth', 0 );
+        self::setGameStateInitialValue( 'ocean', 0 );
         
         // Init game statistics
         // (note: statistics used in this file must be defined in your stats.inc.php file)
@@ -231,6 +239,11 @@ class forbiddenisland extends Table
         $result['remaining_actions'] = $this->getGameStateValue("remaining_actions");
         $result['water_level'] = $this->getGameStateValue("water_level");
         $result['remaining_flood_cards'] = $this->getGameStateValue("remaining_flood_cards");
+
+        $result['air'] = $this->getGameStateValue("air");
+        $result['fire'] = $this->getGameStateValue("fire");
+        $result['earth'] = $this->getGameStateValue("earth");
+        $result['ocean'] = $this->getGameStateValue("ocean");
 
         return $result;
     }
@@ -428,6 +441,45 @@ class forbiddenisland extends Table
 
         }
 
+        function getLocationTreasure($player_tile_id) {
+
+            switch ($player_tile_id) {
+                case 'cave_embers':
+                case 'cave_shadows':
+                    return 'fire';
+                    break;
+                case 'coral_palace':
+                case 'tidal_palace':
+                    return 'ocean';
+                    break;
+                case 'howling_garden':
+                case 'whispering_garden':
+                    return 'air';
+                    break;
+                case 'temple_moon':
+                case 'temple_sun':
+                    return 'earth';
+                    break;
+                default:
+                    return 'none';
+                    break;
+            }
+        }
+
+        function getMatchingCards($player_id, $treasure) {
+            $cards = array();
+            $player_cards = $this->getTreasureCards($player_id);
+            foreach ($player_cards as $id => $value) {
+                $c = $this->treasure_deck->getCard( $id);
+                if ($c['type'] == $treasure) {
+                    $cards[] = $c;
+                }
+            }
+            return $cards;
+        }
+
+
+
         function treasureDeckReshuffle () {
             self::notifyAllPlayers( "reshuffleTreasureDeck", clienttranslate( 'Treasure deck reshuffled.' ), array(
             ) );
@@ -594,12 +646,12 @@ class forbiddenisland extends Table
         $target_player_name = $players[$target_player_id]['player_name'];
 
         if ($this->getGameStateValue("remaining_actions") > 0) {
-            $this->incGameStateValue("remaining_actions", -1);
-
+            
             $card = $this->treasure_deck->getCard($id);
             $card_name = $this->treasure_list[$card['type']]['name'];
             $this->treasure_deck->moveCard($id, 'hand', $target_player_id);
-
+            
+            $this->incGameStateValue("remaining_actions", -1);
             self::notifyAllPlayers( "giveTreasure", clienttranslate( '${player_name} gave ${card_name} to ${target_player_name}' ), array(
                 'player_id' => $player_id,
                 'target_player_id' => $target_player_id,
@@ -610,6 +662,51 @@ class forbiddenisland extends Table
             ) );
 
             // TODO: need to check if target player must discard
+        } else {
+            throw new feException( "No remaining actions" );
+        }
+
+        if ($this->getGameStateValue("remaining_actions") > 0) {
+            $this->gamestate->nextState( 'action' );
+        } else {
+            $this->gamestate->nextState( 'draw_treasure' );
+        }
+
+    }
+
+    function captureTreasure()
+    {
+        self::checkAction( 'capture' );
+
+        $player_id = self::getActivePlayerId();
+        $player_tile_id = $this->getPlayerLocation($player_id);
+
+        if ($this->getGameStateValue("remaining_actions") > 0) {
+
+            // find treasure location & matching cards
+            $treasure = $this->getLocationTreasure($player_tile_id);
+            $cards = $this->getMatchingCards($player_id, $treasure);
+            $tiles = $this->tiles->getCardsOfType($player_tile_id);
+            $tile = array_shift($tiles);
+
+            if (($treasure != 'none') && ($this->getGameStateValue($treasure) == 0) 
+                && (count($cards) >= 4) && ($tile['location'] == 'unflooded')) {
+
+                $cards = array_slice($cards, 0, 4);
+                $this->treasure_deck->moveCards($cards, 'discard');
+                
+                $this->setGameStateValue($treasure, $player_id);
+                $this->incGameStateValue("remaining_actions", -1);
+
+                self::notifyAllPlayers( "captureTreasure", clienttranslate( '${player_name} captured ${treasure}!!' ), array(
+                    'player_id' => $player_id,
+                    'player_name' => self::getActivePlayerName(),
+                    'cards' => $cards,
+                    'treasure' => $treasure
+                    ) );
+            } else {
+                throw new feException( "Invalid action" );
+            }
         } else {
             throw new feException( "No remaining actions" );
         }

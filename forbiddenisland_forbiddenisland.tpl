@@ -53,11 +53,8 @@
             <!-- <div id="hand_{PCOLOR}" class="hand hand_{PCOLOR}"> -->
                 <!-- <div class="card"></div> -->
                 <!-- </div> -->
-            <div id="player_card_area_{PLAYER_ID}" class="player_card_area">
-                <!-- <div class="card adventurer_card"></div> -->
-                <!-- <div class="card treasure_card"></div> -->
-                <!-- <div class="treasure_figure"></div> -->
-            </div>
+            <div id="player_adventurer_{PLAYER_ID}" class="player_adventurer"></div>
+            <div id="player_card_area_{PLAYER_ID}" class="player_card_area"></div>
         </div>
         <!-- END player -->    
     </div>

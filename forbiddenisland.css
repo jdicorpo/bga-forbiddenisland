@@ -173,8 +173,19 @@
     /* padding: 5px 0px 0px 10px; */
 }
 
+.player_adventurer {
+    margin-left: 40px;
+    display: inline;
+    /* width: 128; */
+    /* height: 177.75px; */
+    position: absolute;
+}
+
 .player_card_area {
-    margin-left: 50px;
+    /* margin-left: 50px; */
+    display: inline-block;
+    width: 100%;
+    margin-left: 178px;
 }
 
 .player_card_area > .card {
@@ -184,12 +195,14 @@
 
 .side_title_wrapper {
     min-height: 200px;
+    height: 100%;
     max-width: 60px;
     position: absolute;
     /* top: 5px; */
     overflow-wrap: break-word;
     display: inline-block;
 }
+
 .side_title {
     /* color: white; */
     display: inline-block;

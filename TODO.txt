@@ -1,12 +1,12 @@
 * tooltips
-* draw treasure card sequence
 * non-active player to play special cards out of turn
-* water rises logic
-* sunk tile logic
-* shore up action
-* give card action
 * capture action
 * implement water level meter
+
+* cannot give special cards
+* server side checks for give card
+* reposition cards after move
+* check discard after give
 
 * pilot special action
 * navigator special action
