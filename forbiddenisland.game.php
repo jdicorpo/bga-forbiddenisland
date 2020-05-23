@@ -224,6 +224,7 @@ class forbiddenisland extends Table
         }
             
         $result['flood_card_area'] = $this->flood_deck->getCardsInLocation( 'flood_area' );
+        $result['treasure_discards'] = $this->treasure_deck->getCardsInLocation( 'discard' );
   
         // TODO: Gather all information about current game situation (visible by player $current_player_id).
   
@@ -485,7 +486,20 @@ class forbiddenisland extends Table
             ) );
         }
     
+        function debugSetTile($tile_id, $state) {
 
+            $tiles = $this->tiles->getCardsOfType($tile_id);
+            $tile = array_shift($tiles);
+            $this->tiles->moveCard($tile['id'], $state, $tile['location_arg']);
+
+        }
+
+        function debugMovePawn($player_id, $tile_id) {
+
+            $sql = "UPDATE player SET location='$tile_id' WHERE player_id='$player_id'";
+            self::DbQuery( $sql );
+
+        }
 
 //////////////////////////////////////////////////////////////////////////////
 //////////// Player actions
@@ -693,7 +707,11 @@ class forbiddenisland extends Table
                 && (count($cards) >= 4) && ($tile['location'] == 'unflooded')) {
 
                 $cards = array_slice($cards, 0, 4);
-                $this->treasure_deck->moveCards($cards, 'discard');
+                $func = function($c) {
+                    return $c['id'];
+                };
+                $card_ids = array_map($func, $cards);
+                $this->treasure_deck->moveCards($card_ids, 'discard');
                 
                 $this->setGameStateValue($treasure, $player_id);
                 $this->incGameStateValue("remaining_actions", -1);

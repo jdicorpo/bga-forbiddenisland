@@ -111,6 +111,17 @@ class view_forbiddenisland_forbiddenisland extends game_view
             }        
         }
 
+        $ver_pos = array( 10 => 16, 9 => 50, 8 => 83, 7 => 112, 6 => 144, 5 => 178, 4 => 210, 
+            3 => 244, 2 => 278, 1 => 311 );
+        $this->page->begin_block($template, "water_level" );
+        for( $y=10; $y>=1; $y-- )
+        {
+            $this->page->insert_block( "water_level", array(
+                'LVL' => $y,
+                'TOP' => $ver_pos[$y],
+            ) );
+        }   
+
         $this->page->begin_block($template, "player");
         foreach ( $players as $player_id => $info ) {
             $this->page->insert_block("player", array (

@@ -23,24 +23,25 @@
     See your "view" PHP file to check how to set variables and control blocks
 -->
 <div id="outer_wrapper" class="anchor">
-    <div id="board">
-        <div id="island_tile" style="visibility: hidden;">
-            <div id="pawn_area_0_0" class="pawn_area" style="visibility: hidden;"></div>
-        </div>
-        <!-- BEGIN island_tile -->
-        <div id="island_tile_{X}_{Y}" class="island_tile_location" style="left: {LEFT}px; top: {TOP}px;">
-        </div>
-        <!-- END island_tile -->    
-
-        <!-- <div style="float: right;">
-            <div id="water_level_meter"></div>
-            <div id="treasure_deck_display">
-                <h3>Treasure Deck</h3>
+        <div id="board">
+            <div id="island_tile" style="visibility: hidden;">
+                <div id="pawn_area_0_0" class="pawn_area" style="visibility: hidden;"></div>
             </div>
+            <!-- BEGIN island_tile -->
+            <div id="island_tile_{X}_{Y}" class="island_tile_location" style="left: {LEFT}px; top: {TOP}px;">
+            </div>
+            <!-- END island_tile --> 
+            <div id="water_level_meter" style="left: 818px; top: 142px;">
+            <!-- BEGIN water_level -->
+                <!-- <div id="water_level_{LVL}" class="water_level" style="left: {LEFT}px; top:{TOP}px"></div> -->
+                <div id="water_level_{LVL}" class="water_level" style="top:{TOP}px"></div>
+            <!-- END water_level --> 
+            </div>
+            <div id="starting_area_earth" class="treasure_starting_area" style="left: 0px; top: 0px;"></div>
+            <div id="starting_area_air" class="treasure_starting_area" style="left: 680px; top: 0px;"></div>
+            <div id="starting_area_fire" class="treasure_starting_area" style="left: 0px; top: 680px;"></div>
+            <div id="starting_area_ocean" class="treasure_starting_area" style="left: 680px; top: 680px;"></div>
         </div>
-        <div style="float: clear;"></div> -->
-    </div>
-    <!-- <div style="display: none;"></div> -->
 
     <div id="player_area_wrapper">
         <!-- BEGIN player -->
@@ -55,6 +56,7 @@
                 <!-- </div> -->
             <div id="player_adventurer_{PLAYER_ID}" class="player_adventurer"></div>
             <div id="player_card_area_{PLAYER_ID}" class="player_card_area"></div>
+            <div id="player_figure_area_{PLAYER_ID}" class="player_figure_area"></div>
         </div>
         <!-- END player -->    
     </div>
@@ -70,7 +72,7 @@
                 <div id="treasure_card_area"></div>
             </div>
         <!-- </div> -->
-        <!-- <div id="water_level_meter" style="display: inline;"></div> -->
+        <!-- <div id="water_level_meter"></div> -->
     <!-- </div> -->
 
 </div>
@@ -87,10 +89,11 @@ var jstpl_tile='<div class="island_tile" id="${id}" style="background-position:-
 var jstpl_sunk_tile='<div class="island_tile_sunk" id="${id}"></div>';
 var jstpl_pawn_area='<div id="pawn_area_${id}" class="pawn_area"></div>';
 var jstpl_pawn='<div class="pawn" id="${id}" style="background-position:-${x}px"></div>';
-// var jstpl_actions='<span class="remaining_actions" id="remaining_actions_text"><span id="remaining_actions_value" style="font-weight:bold;color:#ED0023;">${n}</span> actions: <span style="font-weight:bold;color:#4871b6;">Move</span> or </span>';
 var jstpl_flood='<div class="card flood_card" id="flood_card_${id}" style="background-position:-${x}px -${y}px"></div>';
 var jstpl_treasure='<div class="card treasure_card" id="treasure_card_${id}" style="background-position:-${x}px 0"></div>';
 var jstpl_player='<div class="card player_card" id="player_card_${id}" style="background-position:-${x}px 0"></div>';
+var jstpl_slider='<div id="water_slider"></div>';
+var jstpl_figure='<div id="figure_${treasure}" class="treasure_figure" style="background-position:-${x}px 0"></div>';
 
 </script>  
 

@@ -64,11 +64,47 @@
     /* background-color: palegoldenrod; */
     position: relative;
     margin: auto;
+    /* display: inline; */
+}
+
+#water_level_meter {
+    width: 128px;
+    height: 386px;
+    background-image: url(img/flood_meter.jpg);
+	border-radius: 10px;
+	box-shadow: 1px 1px 1px 0px #222;
+    background-clip: content-box;
+    position: absolute;
+}
+
+#water_slider {
+    width: 59px;
+    height: 25px;
+    background-image: url(img/slider.png);
+	border-radius: 5px;
+	box-shadow: 1px 1px 1px 0px #222;
+    background-clip: content-box;
+    position: absolute;
+    z-index: 20;
+    color: white;
+	font-weight: bold;
+    font-size: small;
+    opacity: 80%;
+    /* padding-left: 10px; */
+}
+
+.water_level {
+    /* position: relative; */
+    position: absolute;
+    width: 59px;
+    height: 25px;
+    /* background-color: red; */
+    /* opacity: 50%; */
 }
 
 .island_tile {
     background-image: url(img/tiles.jpg);
-    border-radius: 10px;
+    border-radius:15px;
     border-style: none;
 	box-shadow: 1px 1px 1px 0px #222;
     width: 128px;
@@ -184,14 +220,25 @@
 .player_card_area {
     /* margin-left: 50px; */
     display: inline-block;
-    width: 100%;
+    width: 50%;
     margin-left: 178px;
 }
 
-.player_card_area > .card {
-    margin-left: 10px;
-    vertical-align: bottom;
+.player_figure_area {
+    /* margin-left: 50px; */
+    display: inline-block;
+    width: 30%;
+    /* margin-left: 178px; */
+    /* background-color: red; */
+    /* opacity: 70%; */
+	height: 177.75px;
+
 }
+
+/* .player_card_area > .card { */
+    /* margin-left: 10px; */
+    /* vertical-align: bottom; */
+/* } */
 
 .side_title_wrapper {
     min-height: 200px;
@@ -264,16 +311,25 @@
     position: realtive;
 }
 
+.treasure_starting_area {
+    /* background-color: red; */
+    /* opacity: 70%; */
+    position: absolute;
+    width: 108px;
+	height: 128px;
+    padding-left: 20px;
+}
+
 .treasure_figure {
     background-image: url(img/treasures.png);
-    background-size: auto 120px;
-	border-radius: 10px;
+    /* background-size: auto 120px; */
+	/* border-radius: 10px; */
     z-index: 20;
-	width: 88.4px;
+	width: 88.5px;
     height: 120px;
-    background-clip: content-box;
+    /* background-clip: content-box; */
     display: inline-block;
-    position: relative;
+    /* position: relative; */
 }
 
 /* .active_slot:hover {
@@ -347,24 +403,3 @@
     margin-right: 0;
 }
 
-#water_level_meter {
-    width: 128px;
-    height: 342px;
-    /* float: right; */
-    /* position: absolute; */
-    /* background-color: rgb(16, 133, 172); */
-    background-image: url(img/flood_meter.jpg.jpg);
-	border-radius: 10px;
-	box-shadow: 1px 1px 1px 0px #222;
-	/* z-index: 20; */
-	/* background-size: calc(400px * 4);  */
-	color: black;
-	font-weight: bolder;
-    /* font-size: x-small; */
-    font-size: x-large;
-    background-clip: content-box;
-    /* margin-top: 136px; */
-    margin-left: auto;
-    /* margin-right: 0; */
-    display: inline-block;
-}

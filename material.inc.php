@@ -83,22 +83,26 @@ $this->treasure_list = array(
     'air' => array(
         'name' => clienttranslate("Air"),
         'idx' => 2,
-        'nbr' => 5
+        'nbr' => 5,
+        'fig' => 1
     ),
     'earth' => array(
         'name' => clienttranslate("Earth"),
         'idx' => 3,
-        'nbr' => 5
+        'nbr' => 5,
+        'fig' => 0
     ),
     'fire' => array(
         'name' => clienttranslate("Fire"),
         'idx' => 4,
-        'nbr' => 5
+        'nbr' => 5,
+        'fig' => 2
     ),
     'ocean' => array(
         'name' => clienttranslate("Ocean"),
         'idx' => 5,
-        'nbr' => 5
+        'nbr' => 5,
+        'fig' => 3
     ),
     'heli_lift' => array(
         'name' => clienttranslate("Helicopter Lift"),
