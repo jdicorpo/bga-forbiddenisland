@@ -618,18 +618,22 @@ function (dojo, declare) {
 
             console.log( 'updatePossibleMoves' );
 
-            possibleMoves.forEach(
-                function (tile_id, index) {
-                    dojo.query('#'+tile_id).addClass( 'possibleMove' );
-                    dojo.query('#pawn_area_'+tile_id).addClass( 'possibleMove' );
-                });
+            if (possibleMoves.length > 0) {
 
-            if( this.isCurrentPlayerActive() )
-            { 
-                this.addTooltipToClass( 'possibleMove', '', _('Move to this tile.') );
-            } else {
-                dojo.query('.possibleMove').addClass( 'otherPlayer' );
+                possibleMoves.forEach(
+                    function (tile_id, index) {
+                        dojo.query('#'+tile_id).addClass( 'possibleMove' );
+                        dojo.query('#pawn_area_'+tile_id).addClass( 'possibleMove' );
+                    });
+
+                if( this.isCurrentPlayerActive() )
+                { 
+                    this.addTooltipToClass( 'possibleMove', '', _('Move to this tile.') );
+                } else {
+                    dojo.query('.possibleMove').addClass( 'otherPlayer' );
+                }
             }
+
         },
 
         clearPossibleMoves : function( )

@@ -45,6 +45,7 @@ if (!defined('STATE_END_GAME')) { // ensure this block is only invoked once, sin
     define("STATE_DRAW_FLOOD_CARDS", 6);
     define("STATE_NEXT_PLAYER", 7);
     define("STATE_RESCUE_PAWN", 8);
+    define("STATE_FINAL", 9);
     define("STATE_END_GAME", 99);
  }
 
@@ -71,7 +72,8 @@ $machinestates = array(
         "transitions" => array( 
             "action" => STATE_PLAYER_ACTIONS, 
             "skip" => STATE_PLAYER_ACTIONS, 
-            "draw_treasure" => STATE_DRAW_TREASURE_CARDS 
+            "draw_treasure" => STATE_DRAW_TREASURE_CARDS,
+            "final" => STATE_END_GAME
         )
     ),
 
@@ -85,7 +87,8 @@ $machinestates = array(
         // "possibleactions" => array( "move", "pass" ),
         "transitions" => array( 
             "set_flood" => STATE_SET_FLOOD_CARDS,
-            "discard" => STATE_DISCARD_TREASURE_CARDS
+            "discard" => STATE_DISCARD_TREASURE_CARDS,
+            "final" => STATE_END_GAME
         )
     ),
 
@@ -99,7 +102,8 @@ $machinestates = array(
         "transitions" => array( 
             "action" => STATE_PLAYER_ACTIONS, 
             "discard" => STATE_DISCARD_TREASURE_CARDS, 
-            "set_flood" => STATE_SET_FLOOD_CARDS
+            "set_flood" => STATE_SET_FLOOD_CARDS,
+            "final" => STATE_END_GAME
         )
     ),
 
@@ -113,7 +117,7 @@ $machinestates = array(
         // "possibleactions" => array( "move", "pass" ),
         "transitions" => array( 
             "draw_flood" => STATE_DRAW_FLOOD_CARDS,
-            "endGame" => STATE_END_GAME
+            "final" => STATE_FINAL 
         )
     ),
 
@@ -128,8 +132,8 @@ $machinestates = array(
         "transitions" => array( 
             "draw_flood" => STATE_DRAW_FLOOD_CARDS,
             "rescuePawn" => STATE_RESCUE_PAWN, 
-            "nextPlayer" => STATE_NEXT_PLAYER,
-            "endGame" => STATE_END_GAME 
+            "next_player" => STATE_NEXT_PLAYER,
+            "final" => STATE_FINAL 
         )
     ),
 
@@ -154,12 +158,25 @@ $machinestates = array(
         // "updateGameProgression" => true,
         // "possibleactions" => array( "move", "pass" ),
         "transitions" => array( 
-            "nextTurn" => STATE_PLAYER_ACTIONS,
-            "endGame" => STATE_END_GAME 
+            "next_turn" => STATE_PLAYER_ACTIONS,
+            "final" => STATE_FINAL 
         )
     ),
    
     // Final state.
+
+    STATE_FINAL => array(
+        "name" => "final",
+        "type" => "game",
+        // "args" => "argPlayerActions",
+        "action" => "stFinal",
+        // "updateGameProgression" => true,
+        // "possibleactions" => array( "move", "pass" ),
+        "transitions" => array( 
+            "end" => STATE_END_GAME 
+        )
+    ),
+
     // Please do not modify (and do not overload action/args methods).
     STATE_END_GAME => array(
         "name" => "endGame",

@@ -1,7 +1,6 @@
 * tooltips
 * non-active player to play special cards out of turn
-* capture action
-* implement water level meter
+* enable debug PHP
 
 * cannot give special cards
 * server side checks for give card

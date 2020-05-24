@@ -84,25 +84,41 @@ $this->treasure_list = array(
         'name' => clienttranslate("Air"),
         'idx' => 2,
         'nbr' => 5,
-        'fig' => 1
+        'fig' => 1,
+        'tiles' => array(
+            'howling_garden',
+            'whispering_garden'
+        )
     ),
     'earth' => array(
         'name' => clienttranslate("Earth"),
         'idx' => 3,
         'nbr' => 5,
-        'fig' => 0
+        'fig' => 0,
+        'tiles' => array(
+            'temple_moon',
+            'temple_sun'
+        )
     ),
     'fire' => array(
         'name' => clienttranslate("Fire"),
         'idx' => 4,
         'nbr' => 5,
-        'fig' => 2
+        'fig' => 2,
+        'tiles' => array(
+            'cave_embers',
+            'cave_shadows'
+        )
     ),
     'ocean' => array(
         'name' => clienttranslate("Ocean"),
         'idx' => 5,
         'nbr' => 5,
-        'fig' => 3
+        'fig' => 3,
+        'tiles' => array(
+            'coral_palace',
+            'tidal_palace'
+        )
     ),
     'heli_lift' => array(
         'name' => clienttranslate("Helicopter Lift"),

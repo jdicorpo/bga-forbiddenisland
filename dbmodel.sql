@@ -80,9 +80,9 @@ CREATE TABLE IF NOT EXISTS `player_deck` (
   PRIMARY KEY (`card_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-CREATE TABLE IF NOT EXISTS `tokens` (
-  `token_id` varchar(32) NOT NULL,
-  `location` varchar(32) NOT NULL,
-  -- `token_state` int(10),
-  PRIMARY KEY (`token_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- CREATE TABLE IF NOT EXISTS `tokens` (
+--   `token_id` varchar(32) NOT NULL,
+--   `location` varchar(32) NOT NULL,
+--   -- `token_state` int(10),
+--   PRIMARY KEY (`token_id`)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
