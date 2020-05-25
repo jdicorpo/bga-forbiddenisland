@@ -68,6 +68,8 @@ function (dojo, declare) {
 
             this.colocated_players = [];
             this.players = [];
+
+            this.clientStateArgs = {};
               
         },
         
@@ -200,16 +202,6 @@ function (dojo, declare) {
             switch( stateName )
             {
             
-            /* Example:
-            
-            case 'myGameState':
-            
-                // Show some HTML block at this game state
-                dojo.style( 'my_html_block_id', 'display', 'block' );
-                
-                break;
-           */
-
             case 'playerActions':
                 this.selectedAction = 'move';
                 this.possibleActions = args.args.possibleActions;
@@ -222,10 +214,10 @@ function (dojo, declare) {
                 this.colocated_players = Object.keys(obj).map(function(key) {
                     return obj[key];  // don't need this ??
                 });
-                var obj= args.args.players;
-                this.players = Object.keys(obj).map(function(key) {
-                    return obj[key];
-                });
+                // var obj= args.args.players;
+                // this.players = Object.keys(obj).map(function(key) {
+                    // return obj[key];
+                // });
                 // dojo.query( '.island_tile').connect( 'onclick', this, 'onTile');
                 // dojo.query( '.pawn_area').connect( 'onclick', this, 'onTile');
                 break;
@@ -237,6 +229,24 @@ function (dojo, declare) {
                 });
                 this.updatePossibleCards( this.player_treasure_cards );
                 this.selectedAction = 'discard';
+                break;
+
+            case 'client_selectShoreUp':
+            case 'client_selectGiveCard':
+            case 'client_selectSpecialCard':
+                // this.addActionButton( 'cancel_btn', _('Cancel'), 'onCancel', null, false, 'red' );
+                break;
+
+            case 'sandbags':
+                this.selectedAction = 'sandbags';
+                this.possibleActions = args.args.possibleActions;
+                this.updatePossibleMoves( this.possibleActions.sandbags );
+                break;
+
+            case 'heli_lift':
+                this.selectedAction = 'heli_lift';
+                this.possibleActions = args.args.possibleActions;
+                this.updatePossibleMoves( this.possibleActions.heli_lift );
                 break;
            
             case 'dummmy':
@@ -280,9 +290,6 @@ function (dojo, declare) {
                 switch( stateName )
                 {
                     case 'playerActions':
-                        // dojo.place(this.format_block('jstpl_actions', {
-                            // n : args.remaining_actions,
-                        // }),'pagemaintitletext','last');
                         var main = $('pagemaintitletext');
                         main.innerHTML += '<span id="remaining_actions_value" style="font-weight:bold;color:#ED0023;">' 
                             + args.remaining_actions + '</span>' + _(' actions: ') + '<span style="font-weight:bold;color:#4871b6;">' 
@@ -291,12 +298,21 @@ function (dojo, declare) {
                         this.addActionButton( 'give_treasure_btn', _('Give Card'), 'onGiveCard' ); 
                         this.addActionButton( 'capture_treasure_btn', _('Capture Treasure'), 'onCapture' ); 
                         this.addActionButton( 'skip_btn', _('Skip'), 'onSkip' ); 
+                        this.addActionButton( 'player_special_btn', _('Play Special'), 'onPlaySpecial', null, false, 'red' ); 
                         break;
 
                     case 'discardTreasure':
-                        // this.addActionButton( 'done_btn', _('Done'), 'onDone' ); 
-                        // dojo.query('.possibleCard').connect('click', this, 'onCard');
-                        // this.connectClass('possibleCard', 'onclick', 'onCard');
+                        break;
+
+                    case 'client_selectShoreUp':
+                    case 'client_selectGiveCard':
+                    case 'client_selectSpecialCard':
+                        this.addActionButton( 'cancel_btn', _('Cancel'), 'onCancel', null, false, 'red' );
+                        break;
+
+                    case 'sandbags':
+                    case 'heli_lift':
+                        this.addActionButton( 'cancel_btn', _('Cancel'), 'onCancel', null, false, 'red' );
                         break;
 
                     case 'nextPlayer':
@@ -320,39 +336,47 @@ function (dojo, declare) {
 
         updatePossibleCards: function(cards) {
 
-            // this.clearPossibleMoves();
-            // this.clearPossibleCards();
             this.clearLastAction();
             if (typeof cards !== 'undefined') {
                 cards.forEach(
                     function (c, index) {
                         var node = $('treasure_card_' + c.id);
                         dojo.addClass(node, 'possibleCard');
-                        // dojo.connect(node, 'onclick', this, 'onCard');
-                        // dojo.query('#treasure_card_'+c.id).addClass('possibleMove').connect('onclick', this, 'onCard');
                     });
+                }
+                this.connectClass('possibleCard', 'onclick', 'onCard');
+        },
+
+        updateSpecialCards: function(cards) {
+
+            this.clearLastAction();
+            if (typeof cards !== 'undefined') {
+                cards.forEach(
+                    function (c, index) {
+                        var node = $('treasure_card_' + c.id);
+                        if (c.type == 'sandbags' || c.type == 'heli_lift') {
+                            dojo.addClass(node, 'possibleCard');
+                        }
+                    }, this);
                 }
                 this.connectClass('possibleCard', 'onclick', 'onCard');
         },
 
         updateColocatedPlayers: function(players) {
 
-            // this.clearPossibleMoves();
-            // this.clearPossibleCards();
             this.clearLastAction();
-            // var player_id = this.getActivePlayerId();
+
             if (typeof players !== 'undefined') {
                 players.forEach(
                     function (p, index) {
                         if (p.player_id != this.player_id) {
                             var node = $('player_card_area_' + p.player_id);
                             dojo.addClass(node, 'possiblePlayer');
-                            // dojo.connect(node, 'onclick', this, 'onCard');
-                            // dojo.query('#tresasure_card_'+c.id).addClass('possibleMove').connect('onclick', this, 'onCard');
                         }
                     }, this);
                 }
                 this.connectClass('possiblePlayer', 'onclick', 'onPlayer');
+
         },
 
         placeWaterLevel: function(level) {
@@ -364,11 +388,6 @@ function (dojo, declare) {
         },
 
         moveWaterLevel: function(level) {
-
-            // dojo.place(this.format_block('jstpl_slider', {
-            //     y : y,
-            //     level : level
-            // }), 'water_level_' + level, 'only');
 
             this.slideToObject( 'water_slider', 'water_level_'+level).play();
 
@@ -410,9 +429,6 @@ function (dojo, declare) {
         floodTile : function(tile_id) {
             console.log( 'floodTile' );
 
-            // var board_id = a + '_' + b;
-
-            // var board_id = $(tile_id).parentNode.id;
             var img_id = this.gamedatas.tile_list[tile_id].img_id + 24;
             
             dojo.place(this.format_block('jstpl_tile', {
@@ -421,20 +437,11 @@ function (dojo, declare) {
                 id : tile_id,
             }), tile_id, 'replace');
 
-            // dojo.place(this.format_block('jstpl_pawn_area', {
-            //     id : tile_id,
-            // }), 'island_tile_' + board_id);
-
-            // this.pawn_area[tile_id].create( this, 'pawn_area_' + tile_id, this.pawnwidth, this.pawnheight);
-
         },
 
         unfloodTile : function(tile_id) {
             console.log( 'unfloodTile' );
 
-            // var board_id = a + '_' + b;
-
-            // var board_id = $(tile_id).parentNode.id;
             var img_id = this.gamedatas.tile_list[tile_id].img_id;
             
             dojo.place(this.format_block('jstpl_tile', {
@@ -442,12 +449,6 @@ function (dojo, declare) {
                 y : this.tileheight * Math.trunc((img_id-1) / 8),
                 id : tile_id,
             }), tile_id, 'replace');
-
-            // dojo.place(this.format_block('jstpl_pawn_area', {
-            //     id : tile_id,
-            // }), 'island_tile_' + board_id);
-
-            // this.pawn_area[tile_id].create( this, 'pawn_area_' + tile_id, this.pawnwidth, this.pawnheight);
 
         },
 
@@ -499,8 +500,11 @@ function (dojo, declare) {
         },
 
         removeFlood : function(id) {
+
             console.log( 'removeFlood' );
+
             this.flood_card_area.removeFromZone( 'flood_card_' + id, true, 'flood_deck' );
+
         },
  
         placeTreasure : function(id, type, player_id) {
@@ -522,13 +526,6 @@ function (dojo, declare) {
 
         discardTreasure : function(id, type = null, place = false) {
             console.log( 'discardTreasure' );
-
-            // var idx = this.gamedatas.treasure_list[type].idx;
-            // var location = 'player_card_area_' + player_id;
-            // var zone = this.player_card_area[player_id];
-            // var x = this.cardwidth * (idx-1);
-            
-            // zone.removeFromZone( 'treasure_card_' + id, true, 'treasure_deck' );
 
             if (place) {
                 var idx = this.gamedatas.treasure_list[type].idx;
@@ -575,7 +572,7 @@ function (dojo, declare) {
         moveFigure : function(treasure, player_id) {
 
             console.log( 'moveFigure' );
-            debugger;
+
             this.figure_area[player_id].placeInZone('figure_' + treasure);
 
         },
@@ -593,6 +590,7 @@ function (dojo, declare) {
                 x : x,
             }), pawn_area, 'last');
             this.pawn_area[tile_id].placeInZone(adventurer);
+
         },
 
         movePawn : function(tile_id, player_id) {
@@ -600,14 +598,8 @@ function (dojo, declare) {
             console.log( 'movePawn' );
 
             var player = this.gamedatas.players[player_id];
-            // var idx = gamedatas.player_list[player.adventurer].idx;
-
-            // var start_pid = $(player.location).parentNode.id;
-            // var end_pid = $(tile_id).parentNode.id;
-            // var start_pawn_area = dojo.query('#' + start_pid + ' .pawn_area')[0];
-            // var end_pawn_area = dojo.query('#' + end_pid + ' .pawn_area')[0];
-            
             this.pawn_area[tile_id].placeInZone(player.adventurer);
+
         },
 
 
@@ -619,7 +611,6 @@ function (dojo, declare) {
             console.log( 'updatePossibleMoves' );
 
             if (possibleMoves.length > 0) {
-
                 possibleMoves.forEach(
                     function (tile_id, index) {
                         dojo.query('#'+tile_id).addClass( 'possibleMove' );
@@ -674,25 +665,16 @@ function (dojo, declare) {
 
         updateZone : function ( zone )
         {
-            zone.getAllItems().forEach(
+            var items = zone.getAllItems()
+            items.forEach(
                 function (x, index) {
                     zone.removeFromZone(x, false);
+            }, this);
+            items.forEach(
+                function (x, index) {
                     zone.placeInZone(x);
             }, this);
         },
-
-        // addDiscOnBoard: function( x, y, player )
-        // {
-        //     var color = this.gamedatas.players[ player ].color;
-            
-        //     dojo.place( this.format_block( 'jstpl_disc', {
-        //         xy: x+''+y,
-        //         color: color
-        //     } ) , 'discs' );
-            
-        //     this.placeOnObject( 'disc_'+x+''+y, 'overall_player_board_'+player );
-        //     this.slideToObject( 'disc_'+x+''+y, 'square_'+x+'_'+y ).play();
-        // }, 
 
         ///////////////////////////////////////////////////
         //// Player's action
@@ -721,25 +703,31 @@ function (dojo, declare) {
             }
         },  
 
+        onPlaySpecial: function()
+        {
+            if( this.isCurrentPlayerActive() )
+            {       
+                console.log( 'onPlaySpecial' );
+                
+                this.updateSpecialCards(this.player_treasure_cards);
+                this.selectedAction = 'special_action';
+
+                this.setClientState("client_selectSpecialCard", { descriptionmyturn : "${you} must select a special card"});
+            }
+
+        },
+
         onShoreUp: function()
         {
             if( this.isCurrentPlayerActive() )
             {       
                 console.log( 'onShoreUp' );
                 
-                var main = $('pagemaintitletext');
-                this.previous_pagemaintitletext = main.innerHTML;
-                main.innerHTML = _("Choose a tile to Shore Up");
-                
                 this.updatePossibleMoves(this.possibleActions.shore_up);
-                
                 this.selectedAction = 'shore_up';
                 
-                // dojo.place(this.format_block('jstpl_actions', {
-                    //     n : args.remaining_actions,
-                    // }),'pagemaintitletext','last');
+                this.setClientState("client_selectShoreUp", { descriptionmyturn : "${you} must select a tile to shore up"});
                     
-                this.addActionButton( 'cancel_btn', _('Cancel'), 'onCancel' );
             }
         },  
 
@@ -749,41 +737,25 @@ function (dojo, declare) {
             {       
                 console.log( 'onGiveCard' );
                 
-                var main = $('pagemaintitletext');
-                this.previous_pagemaintitletext = main.innerHTML;
-                main.innerHTML = _("Choose a card to give");
-                
                 this.updatePossibleCards(this.player_treasure_cards);
-                
                 this.selectedAction = 'give_card';
-                
-                // dojo.place(this.format_block('jstpl_actions', {
-                    //     n : args.remaining_actions,
-                    // }),'pagemaintitletext','last');
-                    
-                this.addActionButton( 'cancel_btn', _('Cancel'), 'onCancel' );
+
+                this.setClientState("client_selectGiveCard", { descriptionmyturn : "${you} must select a card to give"});
             }
         },
 
         onCancel: function()
         {
-            if( this.isCurrentPlayerActive() )
-            {       
-                console.log( 'onCancel' );
-                
-                this.updatePossibleMoves(this.possibleActions.move);
-                
-                this.selectedAction = 'move';
-                
-                var main = $('pagemaintitletext');
-                main.innerHTML = this.previous_pagemaintitletext;
+            console.log( 'onCancel' );
 
+            if (this.selectedAction == 'sandbags' || this.selectedAction == 'heli_lift') {
+                if (! this.checkAction('cancel'))
+                return;
+                this.ajaxcall( "/forbiddenisland/forbiddenisland/cancelSpecial.html", {
+                }, this, function( result ) {} );
+            } else {
+                this.restoreServerGameState();
             }
-            // dojo.place(this.format_block('jstpl_actions', {
-            //     n : args.remaining_actions,
-            // }),'pagemaintitletext','last');
-
-            // this.addActionButton( 'cancel_btn', _('Cancel'), 'onCancel' );
         },  
 
         onSkip: function()
@@ -825,6 +797,16 @@ function (dojo, declare) {
                             tile_id:tile_id
                         }, this, function( result ) {} );
                     }
+                } else if (this.selectedAction == 'sandbags') {
+                    if( this.checkAction( 'shore_up' ) && dojo.hasClass(tile_id, 'possibleMove'))
+                    {  
+                        var card_id = this.selectedCard.split('_')[2];
+                        this.ajaxcall( "/forbiddenisland/forbiddenisland/shoreUpAction.html", {
+                            tile_id:tile_id,
+                            sandbags: true,
+                            card_id: card_id
+                        }, this, function( result ) {} );
+                    }
                 }
             }
         },
@@ -859,9 +841,23 @@ function (dojo, declare) {
 
                         this.updateColocatedPlayers(this.colocated_players);
 
+                        // change to use setClientState()
                         var main = $('pagemaintitletext');
                         this.previous_pagemaintitletext = main.innerHTML;
                         main.innerHTML = _("Select a player on your tile");
+
+                    }
+                } else if (this.selectedAction == 'special_action') {
+                    if( this.checkAction( 'special_action' ) && dojo.hasClass(dojo.byId(card_id), 'possibleCard'))
+                    {  
+                        var node = $(card_id);
+                        dojo.addClass(node, 'selected');
+
+                        var id = card_id.split('_')[2];
+                        this.ajaxcall( "/forbiddenisland/forbiddenisland/playSpecial.html", {
+                            id:id,
+                            player_id: this.player_id
+                        }, this, function( result ) {} );
 
                     }
                 }
@@ -961,6 +957,10 @@ function (dojo, declare) {
             this.clearLastAction();
             this.unfloodTile(notif.args.tile_id);
 
+            if (notif.args.sandbags) {
+                this.discardTreasure(notif.args.card_id);
+            }
+
        },
 
        notif_skipAction: function( notif )
@@ -1027,7 +1027,6 @@ function (dojo, declare) {
             console.log( 'notif_discardTreasure' );
             console.log( notif );
 
-            // this.clearPossibleCards();
             this.clearLastAction();
             this.discardTreasure(notif.args.card.id);
             // this.updateZone(this.player_card_area[notif.args.player_id]);
@@ -1042,7 +1041,7 @@ function (dojo, declare) {
             // this.clearPossibleCards();
             this.clearLastAction();
             this.moveTreasure(notif.args.card.id, notif.args.target_player_id);
-            // this.updateZone(this.player_card_area[notif.args.player_id]);
+            // setTimeout(() => { this.updateZone(this.player_card_area[notif.args.player_id]); }, 4000);
 
        },
 

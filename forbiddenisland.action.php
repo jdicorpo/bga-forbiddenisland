@@ -51,7 +51,9 @@ class action_forbiddenisland extends APP_GameAction
     {
         self::setAjaxMode();     
         $tile_id = self::getArg( "tile_id", AT_alphanum, true );
-        $result = $this->game->shoreUpAction( $tile_id );
+        $sandbags = self::getArg( "sandbags", AT_bool, false, false );
+        $card_id = self::getArg( "card_id", AT_alphanum, false, 0 );
+        $result = $this->game->shoreUpAction( $tile_id, $sandbags, $card_id );
         self::ajaxResponse( );
     }
 
@@ -86,27 +88,21 @@ class action_forbiddenisland extends APP_GameAction
         self::ajaxResponse( );
     }
 
+    public function playSpecial()
+    {
+        self::setAjaxMode();     
+        $id = self::getArg( "id", AT_alphanum, true );
+        $player_id = self::getArg( "player_id", AT_alphanum, true );
+        $result = $this->game->playSpecial($id, $player_id);
+        self::ajaxResponse( );
+    }
 
-  /*
-  
-  Example:
-    
-  public function myAction()
-  {
-      self::setAjaxMode();     
-
-      // Retrieve arguments
-      // Note: these arguments correspond to what has been sent through the javascript "ajaxcall" method
-      $arg1 = self::getArg( "myArgument1", AT_posint, true );
-      $arg2 = self::getArg( "myArgument2", AT_posint, true );
-
-      // Then, call the appropriate method in your game logic, like "playCard" or "myAction"
-      $this->game->myAction( $arg1, $arg2 );
-
-      self::ajaxResponse( );
-  }
-  
-  */
+    public function cancelSpecial()
+    {
+        self::setAjaxMode();     
+        $result = $this->game->cancelSpecial();
+        self::ajaxResponse( );
+    }
 
 }
 

@@ -45,7 +45,9 @@ if (!defined('STATE_END_GAME')) { // ensure this block is only invoked once, sin
     define("STATE_DRAW_FLOOD_CARDS", 6);
     define("STATE_NEXT_PLAYER", 7);
     define("STATE_RESCUE_PAWN", 8);
-    define("STATE_FINAL", 9);
+    define("STATE_SPECIAL_SANDBAGS", 9);
+    define("STATE_SPECIAL_HELI_LIFT", 10);
+    define("STATE_FINAL", 11);
     define("STATE_END_GAME", 99);
  }
 
@@ -68,11 +70,13 @@ $machinestates = array(
         "descriptionmyturn" => clienttranslate('${you} take '),
         "type" => "activeplayer",
         "args" => "argPlayerActions",
-        "possibleactions" => array( "move", "shore_up", "skip", "give_card", "capture" ),
+        "possibleactions" => array( "move", "shore_up", "skip", "give_card", "capture", "special_action" ),
         "transitions" => array( 
             "action" => STATE_PLAYER_ACTIONS, 
             "skip" => STATE_PLAYER_ACTIONS, 
             "draw_treasure" => STATE_DRAW_TREASURE_CARDS,
+            "sandbags" => STATE_SPECIAL_SANDBAGS,
+            "heli_lift" => STATE_SPECIAL_HELI_LIFT,
             "final" => STATE_END_GAME
         )
     ),
@@ -147,6 +151,36 @@ $machinestates = array(
         "transitions" => array( 
             "action" => STATE_PLAYER_ACTIONS, 
             "pass" => STATE_PLAYER_ACTIONS 
+        )
+    ),
+
+    STATE_SPECIAL_SANDBAGS => array(
+        "name" => "sandbags",
+        "description" => clienttranslate('${actplayer} is playing special action - Sandbags. Select tile to shore up.'),
+        "descriptionmyturn" => clienttranslate('${you} are playing special action - Sandbags '),
+        "type" => "activeplayer",
+        "args" => "argPlayerActions",
+        "possibleactions" => array( "move", "shore_up", "cancel" ),
+        "transitions" => array( 
+            "action" => STATE_PLAYER_ACTIONS, 
+            "cancel" => STATE_PLAYER_ACTIONS, 
+            "draw_treasure" => STATE_DRAW_TREASURE_CARDS,
+            "final" => STATE_END_GAME
+        )
+    ),
+
+    STATE_SPECIAL_HELI_LIFT => array(
+        "name" => "heli_lift",
+        "description" => clienttranslate('${actplayer} is playing special action - Helicopter Lift. Select starting tile.'),
+        "descriptionmyturn" => clienttranslate('${you} are playing special action - Helicopter Lift '),
+        "type" => "activeplayer",
+        "args" => "argPlayerActions",
+        "possibleactions" => array( "move", "shore_up", "cancel" ),
+        "transitions" => array( 
+            "action" => STATE_PLAYER_ACTIONS, 
+            "cancel" => STATE_PLAYER_ACTIONS, 
+            "draw_treasure" => STATE_DRAW_TREASURE_CARDS,
+            "final" => STATE_END_GAME
         )
     ),
 
