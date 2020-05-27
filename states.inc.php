@@ -171,8 +171,8 @@ $machinestates = array(
 
     STATE_SPECIAL_HELI_LIFT => array(
         "name" => "heli_lift",
-        "description" => clienttranslate('${actplayer} is playing special action - Helicopter Lift. Select starting tile.'),
-        "descriptionmyturn" => clienttranslate('${you} are playing special action - Helicopter Lift '),
+        "description" => clienttranslate('${actplayer} is playing special action - Helicopter Lift.'),
+        "descriptionmyturn" => clienttranslate('${you} are playing special action - Helicopter Lift.  Select starting tile.'),
         "type" => "activeplayer",
         "args" => "argPlayerActions",
         "possibleactions" => array( "move", "shore_up", "cancel" ),

@@ -181,6 +181,7 @@
     /* display: inline-block; */
     /* vertical-align: bottom; */
     /* float: right; */
+    
 }
 
 .card {
@@ -329,6 +330,7 @@
     height: 120px;
     /* background-clip: content-box; */
     display: inline-block;
+    /* filter: drop-shadow(0px 0px 2px 10px #000000); */
     /* position: relative; */
 }
 
@@ -380,6 +382,24 @@
 .selected {
 	cursor: pointer;
 	box-shadow: 0px 0px 4px 2px blue !important;
+}
+
+.possiblePawn {
+    cursor: pointer;
+    filter: drop-shadow(0px 0px 5px 10px lightyellow);
+    opacity: 70%;
+}
+
+.possiblePawn:hover {
+    filter: drop-shadow(0px 0px 5px 10px lightblue);
+    opacity: 100%;
+    
+}
+
+.selectedPawn {
+    cursor: pointer;
+    filter: drop-shadow(0px 0px 5px 10px lightblue);
+    opacity: 100%;
 }
 
 #water_level_meter_save {

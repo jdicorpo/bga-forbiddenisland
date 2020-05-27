@@ -60,14 +60,16 @@ function (dojo, declare) {
             this.board = new ebg.stock();
 
             this.selectedAction = 'move';
-            this.selectedCard = '';
+            this.selectedCard = null;
+            this.selectedPlayers = [];
+            this.startingTile = null;
             this.possibleActions = [];
             this.player_treasure_cards = [];
 
             this.previous_pagemaintitletext = "";
 
             this.colocated_players = [];
-            this.players = [];
+            this.playerLocations = [];
 
             this.clientStateArgs = {};
               
@@ -139,7 +141,7 @@ function (dojo, declare) {
             for( var player_id in gamedatas.players )
             {
                 var player = gamedatas.players[player_id];
-                this.placePawn( player.adventurer, gamedatas.player_list[player.adventurer].pawn_idx, player.location);
+                this.placePawn( player_id, gamedatas.player_list[player.adventurer].pawn_idx, player.location);
                 this.player_adventurer[player_id] = new ebg.zone();
                 this.player_card_area[player_id] = new ebg.zone();
                 this.player_adventurer[player_id].create( this, 'player_adventurer_' + player_id, this.cardwidth, this.cardheight);
@@ -210,16 +212,10 @@ function (dojo, declare) {
                     return obj[key];
                 });
                 this.updatePossibleMoves( this.possibleActions.move );
-                var obj = args.args.colocated_players;  // don't need this ??
+                var obj = args.args.colocated_players;
                 this.colocated_players = Object.keys(obj).map(function(key) {
-                    return obj[key];  // don't need this ??
+                    return obj[key];
                 });
-                // var obj= args.args.players;
-                // this.players = Object.keys(obj).map(function(key) {
-                    // return obj[key];
-                // });
-                // dojo.query( '.island_tile').connect( 'onclick', this, 'onTile');
-                // dojo.query( '.pawn_area').connect( 'onclick', this, 'onTile');
                 break;
 
             case 'discardTreasure':
@@ -234,7 +230,7 @@ function (dojo, declare) {
             case 'client_selectShoreUp':
             case 'client_selectGiveCard':
             case 'client_selectSpecialCard':
-                // this.addActionButton( 'cancel_btn', _('Cancel'), 'onCancel', null, false, 'red' );
+                this.selectedCard = null;
                 break;
 
             case 'sandbags':
@@ -245,10 +241,30 @@ function (dojo, declare) {
 
             case 'heli_lift':
                 this.selectedAction = 'heli_lift';
+                this.startingTile = null;
+                this.playerLocations = args.args.playerLocations;
                 this.possibleActions = args.args.possibleActions;
+                this.updatePossibleMoves( this.playerLocations.map( function(player) {
+                    return player.location;
+                }));
+                break;
+
+            case 'client_selectHeliLiftPlayers':
+                this.clearLastAction();
+                var target_players = this.getPlayersAtLocation(this.startingTile);
+                if (target_players.length > 1) {
+                    // update possible pawns to be selected
+                    this.updatePossiblePawns(target_players);
+                } else {
+                    this.setClientState("client_selectHeliLiftDest", 
+                    { descriptionmyturn : "${you} are playing special action - Helicopter Lift. Select a destination tile."});
+                }
+                break;
+
+            case 'client_selectHeliLiftDest':
                 this.updatePossibleMoves( this.possibleActions.heli_lift );
                 break;
-           
+
             case 'dummmy':
                 break;
             }
@@ -312,6 +328,16 @@ function (dojo, declare) {
 
                     case 'sandbags':
                     case 'heli_lift':
+                        this.addActionButton( 'cancel_btn', _('Cancel'), 'onCancel', null, false, 'red' );
+                        break;
+
+                    case 'client_selectHeliLiftPlayers':
+                        
+                        this.addActionButton( 'done_btn', _('Done'), 'onDone', null, false, 'blue' );
+                        this.addActionButton( 'cancel_btn', _('Cancel'), 'onCancel', null, false, 'red' );
+                        break;
+
+                    case 'client_selectHeliLiftDest':
                         this.addActionButton( 'cancel_btn', _('Cancel'), 'onCancel', null, false, 'red' );
                         break;
 
@@ -577,7 +603,7 @@ function (dojo, declare) {
 
         },
 
-        placePawn : function(adventurer, idx, tile_id) {
+        placePawn : function(player_id, idx, tile_id) {
 
             console.log( 'placePawn' );
 
@@ -586,10 +612,10 @@ function (dojo, declare) {
             var x = 31.5 * (idx-1);
 
             dojo.place(this.format_block('jstpl_pawn', {
-                id : adventurer,
+                id : player_id,
                 x : x,
             }), pawn_area, 'last');
-            this.pawn_area[tile_id].placeInZone(adventurer);
+            this.pawn_area[tile_id].placeInZone(player_id);
 
         },
 
@@ -597,8 +623,7 @@ function (dojo, declare) {
 
             console.log( 'movePawn' );
 
-            var player = this.gamedatas.players[player_id];
-            this.pawn_area[tile_id].placeInZone(player.adventurer);
+            this.pawn_area[tile_id].placeInZone(player_id);
 
         },
 
@@ -613,9 +638,11 @@ function (dojo, declare) {
             if (possibleMoves.length > 0) {
                 possibleMoves.forEach(
                     function (tile_id, index) {
-                        dojo.query('#'+tile_id).addClass( 'possibleMove' );
-                        dojo.query('#pawn_area_'+tile_id).addClass( 'possibleMove' );
-                    });
+                        // if (!(dojo.query('#'+tile_id).hasClass( 'possibleMove' ))) {
+                            dojo.query('#'+tile_id).addClass( 'possibleMove' );
+                            dojo.query('#pawn_area_'+tile_id).addClass( 'possibleMove' );
+                        // }
+                    }, this);
 
                 if( this.isCurrentPlayerActive() )
                 { 
@@ -627,26 +654,66 @@ function (dojo, declare) {
 
         },
 
-        clearPossibleMoves : function( )
+        updatePossiblePawns : function( players )
         {
-            // Remove current possible moves
-            dojo.query( '.possibleMove' ).removeClass( 'possibleMove' );
-            dojo.query( '.otherPlayer' ).removeClass( 'otherPlayer' );
+            // this.clearPossibleMoves();
+            this.clearLastAction();
+
+            console.log( 'updatePossiblePawns' );
+
+            if (players.length > 0) {
+                players.forEach(
+                    function (player_id, index) {
+                            dojo.query('#'+player_id).addClass( 'possiblePawn' );
+                    }, this);
+
+                // if( this.isCurrentPlayerActive() )
+                // { 
+                //     this.addTooltipToClass( 'possibleMove', '', _('Move to this tile.') );
+                // } else {
+                //     dojo.query('.possibleMove').addClass( 'otherPlayer' );
+                // }
+            }
+
+            this.connectClass('possiblePawn', 'onclick', 'onPawn');
+
         },
 
-        clearPossibleCards : function( )
+        getPlayersAtLocation: function (tile_id)
         {
-            // Remove current possible moves
-            dojo.query( '.possibleCard' ).removeClass( 'possibleCard' );
-            dojo.query( '.selected' ).removeClass( 'selected' );
+            var players = [];
+
+            this.playerLocations.forEach(
+                function (player, index) {
+                    if (player.location == tile_id) {
+                        players.push(player.id);
+                    }
+            }, this);
+
+            return players;
+
         },
 
-        clearPossiblePlayers : function( )
-        {
-            // Remove current possible moves
-            dojo.query( '.possiblePlayer' ).removeClass( 'possiblePlayer' );
-            dojo.query( '.selected' ).removeClass( 'selected' );
-        },
+        // clearPossibleMoves : function( )
+        // {
+        //     // Remove current possible moves
+        //     dojo.query( '.possibleMove' ).removeClass( 'possibleMove' );
+        //     dojo.query( '.otherPlayer' ).removeClass( 'otherPlayer' );
+        // },
+
+        // clearPossibleCards : function( )
+        // {
+        //     // Remove current possible moves
+        //     dojo.query( '.possibleCard' ).removeClass( 'possibleCard' );
+        //     dojo.query( '.selected' ).removeClass( 'selected' );
+        // },
+
+        // clearPossiblePlayers : function( )
+        // {
+        //     // Remove current possible moves
+        //     dojo.query( '.possiblePlayer' ).removeClass( 'possiblePlayer' );
+        //     dojo.query( '.selected' ).removeClass( 'selected' );
+        // },
 
         clearLastAction : function( )
         {
@@ -655,7 +722,9 @@ function (dojo, declare) {
             dojo.query( '.otherPlayer' ).removeClass( 'otherPlayer' );
             dojo.query( '.possibleCard' ).removeClass( 'possibleCard' );
             dojo.query( '.possiblePlayer' ).removeClass( 'possiblePlayer' );
+            dojo.query( '.possiblePawn' ).removeClass( 'possiblePawn' );
             dojo.query( '.selected' ).removeClass( 'selected' );
+            dojo.query( '.selectedPawn' ).removeClass( 'selectedPawn' );
         },
 
         getTooptipHtml : function(card)
@@ -744,6 +813,26 @@ function (dojo, declare) {
             }
         },
 
+        onDone: function()
+        {
+            console.log( 'onCancel' );
+
+            if (this.selectedAction == 'heli_lift') {
+                if (! this.checkAction('move'))
+                return;
+                // var card_id = this.selectedCard.split('_')[2];
+
+            var players = [];
+            var nodes = dojo.query('.selectedPawn');
+            for(var x = 0; x < nodes.length; x++) {
+                players.push(nodes[x].id);
+            }
+            this.selectedPlayers = players;
+            this.setClientState("client_selectHeliLiftDest", 
+            { descriptionmyturn : "${you} are playing special action - Helicopter Lift. Select a destination tile."});
+            }
+        }, 
+
         onCancel: function()
         {
             console.log( 'onCancel' );
@@ -796,6 +885,23 @@ function (dojo, declare) {
                         this.ajaxcall( "/forbiddenisland/forbiddenisland/shoreUpAction.html", {
                             tile_id:tile_id
                         }, this, function( result ) {} );
+                    }
+                } else if (this.selectedAction == 'heli_lift') {
+                    if( this.checkAction( 'move' ) && dojo.hasClass(tile_id, 'possibleMove'))
+                    {  
+                        if (this.startingTile == null) {
+                            this.startingTile = tile_id;
+                            this.setClientState("client_selectHeliLiftPlayers", 
+                            { descriptionmyturn : "${you} are playing special action - Helicopter Lift. Select players to move."});
+                        } else {
+                            var card_id = this.selectedCard.split('_')[2];
+                            this.ajaxcall( "/forbiddenisland/forbiddenisland/moveAction.html", {
+                                tile_id:tile_id,
+                                heli_lift: true,
+                                card_id: card_id,
+                                players: this.selectedPlayers.join(';')
+                            }, this, function( result ) {} );
+                        }
                     }
                 } else if (this.selectedAction == 'sandbags') {
                     if( this.checkAction( 'shore_up' ) && dojo.hasClass(tile_id, 'possibleMove'))
@@ -888,6 +994,21 @@ function (dojo, declare) {
             }
         },
 
+        onPawn: function( evt )
+        {
+            var target_pawn = evt.currentTarget.id;
+            dojo.stopEvent( evt );
+
+            if ( this.isCurrentPlayerActive() )
+            {     
+                console.log( 'onPawn' );
+
+                if (this.selectedAction == 'heli_lift') {
+                    dojo.toggleClass(dojo.byId(target_pawn), 'selectedPawn');
+                }
+            }
+        },
+
         
         ///////////////////////////////////////////////////
         //// Reaction to cometD notifications
@@ -944,7 +1065,16 @@ function (dojo, declare) {
             
             // this.clearPossibleMoves();
             this.clearLastAction();
-            this.movePawn( notif.args.tile_id, notif.args.player_id );
+
+
+            if (notif.args.heli_lift) {
+                this.discardTreasure(notif.args.card_id);
+                notif.args.players.split(',').forEach( function(x) {
+                    this.movePawn( notif.args.tile_id, x );
+                }, this)
+            } else {
+                this.movePawn( notif.args.tile_id, notif.args.player_id );
+            }
 
        },
 

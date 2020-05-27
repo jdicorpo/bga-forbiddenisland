@@ -360,7 +360,7 @@ class forbiddenisland extends Table
 
             $players = $this->loadPlayersBasicInfos();
             foreach ( $players as $player_id => $player_info ) {
-                $result[] = $this->getPlayerLocation($player_id);
+                $result[] = array('id' => $player_id, 'location' => $this->getPlayerLocation($player_id));
             }
 
             return $result;
@@ -636,7 +636,7 @@ class forbiddenisland extends Table
         (note: each method below must match an input method in forbiddenisland.action.php)
     */
 
-    function moveAction( $tile_id, $heli_lift = false )
+    function moveAction( $tile_id, $heli_lift = false, $card_id = 0, $players = NULL )
     {
         self::checkAction( 'move' );
 
@@ -645,7 +645,7 @@ class forbiddenisland extends Table
         $player_tile_id = $this->getPlayerLocation($player_id);
         $tile_name = $this->tile_list[$tile_id]['name'];
         
-        if (! $heli_lift ) {
+        if (!$heli_lift ) {
             $possibleMoves = $this->getPossibleMoves($player_id)['move'];
             if (!in_array($tile_id, $possibleMoves)) {
                 return;
@@ -660,32 +660,49 @@ class forbiddenisland extends Table
         if ($this->getGameStateValue("remaining_actions") > 0) {
 
             // if (array_key_exists($tile_id, $possibleMoves)) {
+            if (!$heli_lift ) {
                 $sql = "UPDATE player SET location='$tile_id'
                         WHERE player_id='$player_id'";
                 self::DbQuery( $sql );
+                $message = '${player_name} moved to ${tile_name}';
+            } else {
+                foreach ($players as $x) {
+                    $sql = "UPDATE player SET location='$tile_id'
+                        WHERE player_id='$x'";
+                    self::DbQuery( $sql );
+                }
+                $message = '${player_name} played Helicopter Lift to ${tile_name}';
+            }
 
                 // $this->gamestate->nextState( 'action' );
             // } else {
             // }
 
-            $this->incGameStateValue("remaining_actions", -1);
-
             // Notify
-            self::notifyAllPlayers( "moveAction", clienttranslate( '${player_name} moved to ${tile_name}' ), array(
+            self::notifyAllPlayers( "moveAction", clienttranslate( $message ), array(
                 'player_id' => $player_id,
                 'player_tile_id' => $player_tile_id,
                 'player_name' => self::getActivePlayerName(),
                 'tile_id' => $tile_id,
-                'tile_name' => $tile_name
+                'tile_name' => $tile_name,
+                'heli_lift' => $heli_lift,
+                'card_id' => $card_id,
+                'players' => implode($players, ',')
             ) );
-            // Then, go to the next state
-            // $this->gamestate->nextState( 'action' );
+
+            if (!$heli_lift) {
+                $this->incGameStateValue("remaining_actions", -1);
+            } else {
+                $this->treasure_deck->moveCard($card_id, 'discard');
+            }
+
         } else {
             throw new feException( "No remaining actions" );
         }
 
         if ($this->getGameStateValue("remaining_actions") > 0) {
             $this->gamestate->nextState( 'action' );
+
         } else {
             $this->gamestate->nextState( 'draw_treasure' );
         }
@@ -953,7 +970,7 @@ class forbiddenisland extends Table
             'remaining_actions' => $this->getGameStateValue("remaining_actions"),
             'player_treasure_cards' => self::getTreasureCards( self::getActivePlayerId() ),
             'colocated_players' => self::getColocatedPlayers( self::getActivePlayerId() ),
-            'player_locations' => self::getPlayerLocations()
+            'playerLocations' => self::getPlayerLocations()
         );
     }
 
