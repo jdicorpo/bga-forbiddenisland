@@ -526,6 +526,16 @@ class forbiddenisland extends Table
             ) );
         }
 
+        function isWinCondition() {
+            $nPlayers = count($this->getPlayersAtLocation('fools_landing'));
+            $nTreaures = ($this->getGameStateValue('air') != 0) ? 1 : 0;
+            $nTreaures += ($this->getGameStateValue('earth') != 0) ? 1 : 0 ;
+            $nTreaures += ($this->getGameStateValue('fire') != 0) ? 1 : 0;
+            $nTreaures += ($this->getGameStateValue('ocean') != 0) ? 1 : 0;
+
+            return (($nPlayers == $this->getPlayersNumber()) and ($nTreaures == 4)) ? true : false;
+        }
+
         function isGameLost() {
 
             // check if water level is 10 or greater
@@ -950,6 +960,15 @@ class forbiddenisland extends Table
         $this->gamestate->nextState( 'cancel' );
     }
 
+    function winGame()
+    {
+        // self::checkAction( 'cancel' );
+        if (self::isWinCondition()) {
+            $this->setGameStateValue("players_win", 1);
+            $this->gamestate->nextState( 'final' );
+        }
+    }
+
 
     
 //////////////////////////////////////////////////////////////////////////////
@@ -970,7 +989,8 @@ class forbiddenisland extends Table
             'remaining_actions' => $this->getGameStateValue("remaining_actions"),
             'player_treasure_cards' => self::getTreasureCards( self::getActivePlayerId() ),
             'colocated_players' => self::getColocatedPlayers( self::getActivePlayerId() ),
-            'playerLocations' => self::getPlayerLocations()
+            'playerLocations' => self::getPlayerLocations(),
+            'isWinCondition' => self::isWinCondition()
         );
     }
 

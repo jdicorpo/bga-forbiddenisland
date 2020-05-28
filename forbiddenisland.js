@@ -72,6 +72,8 @@ function (dojo, declare) {
             this.playerLocations = [];
 
             this.clientStateArgs = {};
+
+            this.isWinCondition = false;
               
         },
         
@@ -216,6 +218,7 @@ function (dojo, declare) {
                 this.colocated_players = Object.keys(obj).map(function(key) {
                     return obj[key];
                 });
+                this.isWinCondition = args.args.isWinCondition;
                 break;
 
             case 'discardTreasure':
@@ -263,6 +266,9 @@ function (dojo, declare) {
 
             case 'client_selectHeliLiftDest':
                 this.updatePossibleMoves( this.possibleActions.heli_lift );
+                break;
+
+            case 'client_confirmWinGame':
                 break;
 
             case 'dummmy':
@@ -342,6 +348,11 @@ function (dojo, declare) {
                         break;
 
                     case 'nextPlayer':
+                        break;
+
+                    case 'client_confirmWinGame':
+                        this.addActionButton( 'confirm_btn', _('Confirm'), 'onConfirm', null, true, 'red' );
+                        this.addActionButton( 'cancel_btn', _('Cancel'), 'onCancel', null, false, 'gray' );
                         break;
 
                     default:
@@ -815,7 +826,7 @@ function (dojo, declare) {
 
         onDone: function()
         {
-            console.log( 'onCancel' );
+            console.log( 'onDone' );
 
             if (this.selectedAction == 'heli_lift') {
                 if (! this.checkAction('move'))
@@ -832,6 +843,16 @@ function (dojo, declare) {
             { descriptionmyturn : "${you} are playing special action - Helicopter Lift. Select a destination tile."});
             }
         }, 
+
+        onConfirm: function()
+        {
+            console.log( 'onConfirm' );
+
+            if ((this.selectedAction == 'heli_lift') && this.isWinCondition) {
+                this.ajaxcall( "/forbiddenisland/forbiddenisland/winGame.html", {
+                }, this, function( result ) {} );
+            }  // TODO else??
+        },  
 
         onCancel: function()
         {
@@ -889,7 +910,10 @@ function (dojo, declare) {
                 } else if (this.selectedAction == 'heli_lift') {
                     if( this.checkAction( 'move' ) && dojo.hasClass(tile_id, 'possibleMove'))
                     {  
-                        if (this.startingTile == null) {
+                        if (tile_id == 'fools_landing' && this.isWinCondition ) {
+                            this.setClientState("client_confirmWinGame", 
+                            { descriptionmyturn : "${you} have your team and all four treasures.  Are you ready to lift off the island for the win!?!"});
+                        } else if (this.startingTile == null) {
                             this.startingTile = tile_id;
                             this.setClientState("client_selectHeliLiftPlayers", 
                             { descriptionmyturn : "${you} are playing special action - Helicopter Lift. Select players to move."});
