@@ -322,7 +322,7 @@
 }
 
 .treasure_figure {
-    background-image: url(img/treasures.png);
+    background-image: url(img/figures.png);
     /* background-size: auto 120px; */
 	/* border-radius: 10px; */
     z-index: 20;
@@ -402,24 +402,51 @@
     opacity: 100%;
 }
 
-#water_level_meter_save {
-    width: 128px;
-    height: 342px;
-    /* float: right; */
-    /* position: absolute; */
-    background-color: rgb(16, 133, 172);
-    /* background-image: url(img/tiles.jpg); */
-	border-radius: 10px;
-	box-shadow: 1px 1px 1px 0px #222;
-	z-index: 20;
-	/* background-size: calc(400px * 4);  */
-	color: black;
-	font-weight: bolder;
-    /* font-size: x-small; */
-    font-size: x-large;
-    background-clip: content-box;
-    margin-top: 136px;
-    margin-left: auto;
-    margin-right: 0;
+.p_board_icons {
+    display: inline-block;
+    /* vertical-align: bottom; */
+    /* position: relative; */
 }
+
+.adventurer_name {
+    font-weight: bold ;
+    margin-top: 5px;
+    margin-left: 5px;
+}
+
+.card_icon {
+    background-image: url(img/card_icon.jpg);
+    /* background-size: 20%; */
+    border-radius: 3px;
+	box-shadow: 1px 1px 1px 0px #222;
+    display: inline-block;
+    width: 26px;
+    height: 34px;
+    background-clip: content-box;
+    margin-right: 5px;
+    margin-top: 5px;
+    position: relative;
+}
+
+.cardcount {
+    position: absolute;
+    color: white;
+    bottom: 8px;
+    left: 8px;
+}
+
+
+
+.figure_icon {
+    background-image: url(img/figures_icon.png);
+    /* background-size: 20%; */
+    display: inline-block;
+    width: 25px;
+    height: 34px;
+    background-clip: content-box;
+    margin-right: 5px;
+    margin-top: 5px;
+    position: relative;
+}
+
 

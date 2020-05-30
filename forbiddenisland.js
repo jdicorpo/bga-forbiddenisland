@@ -157,6 +157,20 @@ function (dojo, declare) {
                     this.placeTreasure(card_id, card.type, player_id);
                 }
                 // TODO: Setting up players boards if needed
+                var playerBoardDiv = dojo.byId('player_board_' + player_id);
+                var block = dojo.place(this.format_block('jstpl_player_board', {
+                    id: player_id,
+                    adventurer: gamedatas.player_list[player.adventurer].name,
+                    color: player.color
+                }), playerBoardDiv);
+                for (treasure of ['earth', 'fire', 'air', 'ocean']) {
+                    if (gamedatas[treasure] == player_id) {
+                        x = this.gamedatas.treasure_list[treasure].fig * 25;
+                        dojo.place(this.format_block('jstpl_figureicon', {
+                            x: 0
+                        }), 'p_board_icon_' + player_id, 'last');
+                    }
+                }
             }
 
             // setup the flood deck area

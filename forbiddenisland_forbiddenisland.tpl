@@ -94,6 +94,13 @@ var jstpl_treasure='<div class="card treasure_card" id="treasure_card_${id}" sty
 var jstpl_player='<div class="card player_card" id="player_card_${id}" style="background-position:-${x}px 0"></div>';
 var jstpl_slider='<div id="water_slider"></div>';
 var jstpl_figure='<div id="figure_${treasure}" class="treasure_figure" style="background-position:-${x}px 0"></div>';
+var jstpl_figureicon='<div class="figure_icon" style="background-position:-${x}px 0"></div>';
+var jstpl_player_board = '\<div id="p_board_${id}" class="p_board">\
+    <div class="adventurer_name" style="color:${color};">${adventurer}</div>\
+    <div id="p_board_icon_${id}" class="p_board_icons">\
+    <div id="cards_${id}" class="card_icon"><span id="cardcount_${id}"  class="cardcount">0</span></div>\
+    </div>\
+</div>';
 
 </script>  
 

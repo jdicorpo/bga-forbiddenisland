@@ -637,6 +637,24 @@ class forbiddenisland extends Table
 
         }
 
+        function debugGetAdventurer($adventurer) {
+
+            $player_id = self::getActivePlayerId();
+            // $player_card = $this->player_deck->Get
+            $player_card_raw = $this->player_deck->getCardsInLocation( 'hand', $player_id );
+            $player_card = array_shift($player_card_raw);
+            $this->player_deck->moveCard($player_card['id'], 'deck');
+            $player_card_raw = $this->player_deck->getCardsOfTypeInLocation( $adventurer, null, 'deck');
+            if ($player_card_raw > 0) {
+                $player_card = array_shift($player_card_raw);
+                $this->player_deck->moveCard( $player_card['id'], 'hand', $player_id );
+                $adventurer = $player_card['type'];
+                $color = $this->player_list[$adventurer]['color'];
+                $sql = "UPDATE player SET adventurer='$adventurer', player_color='$color' WHERE player_id='$player_id'";
+                self::DbQuery( $sql );
+            }
+        }
+
 //////////////////////////////////////////////////////////////////////////////
 //////////// Player actions
 //////////// 
