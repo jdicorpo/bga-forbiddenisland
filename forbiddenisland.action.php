@@ -64,8 +64,9 @@ class action_forbiddenisland extends APP_GameAction
         self::setAjaxMode();     
         $tile_id = self::getArg( "tile_id", AT_alphanum, true );
         $sandbags = self::getArg( "sandbags", AT_bool, false, false );
+        $bonus = self::getArg( "bonus", AT_bool, false, false );
         $card_id = self::getArg( "card_id", AT_alphanum, false, 0 );
-        $result = $this->game->shoreUpAction( $tile_id, $sandbags, $card_id );
+        $result = $this->game->shoreUpAction( $tile_id, $bonus, $sandbags, $card_id );
         self::ajaxResponse( );
     }
 

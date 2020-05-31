@@ -235,6 +235,13 @@ function (dojo, declare) {
                 this.isWinCondition = args.args.isWinCondition;
                 break;
 
+            case 'bonusShoreup':
+                this.selectedCard = null;
+                this.selectedAction = 'bonus_shoreup';
+                this.possibleActions = args.args.possibleActions;
+                this.updatePossibleMoves(this.possibleActions.shore_up);
+                break;
+
             case 'discardTreasure':
                 var obj = args.args.player_treasure_cards;
                 this.player_treasure_cards = Object.keys(obj).map(function(key) {
@@ -337,6 +344,10 @@ function (dojo, declare) {
                         this.addActionButton( 'player_special_btn', _('Play Special'), 'onPlaySpecial', null, false, 'red' ); 
                         break;
 
+                    case 'bonusShoreup':
+                        this.addActionButton( 'skip_btn', _('Skip'), 'onSkip' ); 
+                        break;
+                        
                     case 'discardTreasure':
                         break;
 
@@ -949,6 +960,14 @@ function (dojo, declare) {
                             tile_id:tile_id,
                             sandbags: true,
                             card_id: card_id
+                        }, this, function( result ) {} );
+                    }
+                } else if (this.selectedAction == 'bonus_shoreup') {
+                    if( this.checkAction( 'shore_up' ) && dojo.hasClass(tile_id, 'possibleMove'))
+                    {  
+                        this.ajaxcall( "/forbiddenisland/forbiddenisland/shoreUpAction.html", {
+                            tile_id:tile_id,
+                            bonus: true
                         }, this, function( result ) {} );
                     }
                 }

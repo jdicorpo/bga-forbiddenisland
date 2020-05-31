@@ -397,6 +397,12 @@ class forbiddenisland extends Table
             return $this->getUniqueValueFromDB($sql);
         }
 
+        function getAdventurer() {
+            $player_id = self::getActivePlayerId();
+            $sql = "SELECT adventurer FROM player WHERE  player_id='$player_id' ";
+            return $this->getUniqueValueFromDB($sql);
+        }
+
         function getPlayersAtLocation($tile_id) {
             $sql = "SELECT player_id FROM player WHERE location='$tile_id' ";
             return self::getCollectionFromDb( $sql );
@@ -556,9 +562,6 @@ class forbiddenisland extends Table
             foreach($all_treasures as $treasure) {
                 if ( $this->getGameStateValue($treasure) != 0 ) {
                     $tile_id_0 = $this->treasure_list[$treasure]['tiles'][0];
-                    // var_dump($tile_id_0);
-                    // self::dump($tile_id_0)
-                    // die('ok');
                     $tiles = $this->tiles->getCardsOfType($tile_id_0);
                     $tile_0 = array_shift($tiles);
                     $tile_id_1 = $this->treasure_list[$treasure]['tiles'][1];
@@ -737,17 +740,17 @@ class forbiddenisland extends Table
 
     }
 
-    function shoreUpAction( $tile_id, $sandbags = false, $card_id = 0 )
+    function shoreUpAction( $tile_id, $bonus = false, $sandbags = false, $card_id = 0 )
     {
         self::checkAction( 'shore_up' );
 
         $player_id = self::getActivePlayerId();
         $player_tile_id = $this->getPlayerLocation($player_id);
         $tile_name = $this->tile_list[$tile_id]['name'];
+        $possibleShoreUp = $this->getPossibleShoreUp($player_id)['shore_up'];
 
         // check if shore up is possible
         if (! $sandbags ) {
-            $possibleShoreUp = $this->getPossibleShoreUp($player_id)['shore_up'];
             if (!in_array($tile_id, $possibleShoreUp)) {
                 return;
             }
@@ -776,9 +779,11 @@ class forbiddenisland extends Table
                     'card_id' => $card_id
                 ) );
 
-                if (!$sandbags) {
+                if (!$sandbags and !$bonus) {
                     $this->incGameStateValue("remaining_actions", -1);
-                } else {
+                }
+                
+                if ($sandbags) {
                     // $card = $this->treasure_deck->getCard($card_id);
                     $this->treasure_deck->moveCard($card_id, 'discard');
                 }
@@ -789,7 +794,9 @@ class forbiddenisland extends Table
             throw new feException( "No remaining actions" );
         }
 
-        if ($this->getGameStateValue("remaining_actions") > 0) {
+        if (($this->getAdventurer() == 'engineer') and (count($possibleShoreUp) > 1) and (!$bonus)) {
+            $this->gamestate->nextState( 'bonus_shoreup' );
+        } elseif ($this->getGameStateValue("remaining_actions") > 0) {
             $this->gamestate->nextState( 'action' );
         } else {
             $this->gamestate->nextState( 'draw_treasure' );

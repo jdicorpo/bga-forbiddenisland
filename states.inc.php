@@ -45,9 +45,10 @@ if (!defined('STATE_END_GAME')) { // ensure this block is only invoked once, sin
     define("STATE_DRAW_FLOOD_CARDS", 6);
     define("STATE_NEXT_PLAYER", 7);
     define("STATE_RESCUE_PAWN", 8);
-    define("STATE_SPECIAL_SANDBAGS", 9);
-    define("STATE_SPECIAL_HELI_LIFT", 10);
-    define("STATE_FINAL", 11);
+    define("STATE_BONUS_SHOREUP", 9);
+    define("STATE_SPECIAL_SANDBAGS", 10);
+    define("STATE_SPECIAL_HELI_LIFT", 11);
+    define("STATE_FINAL", 12);
     define("STATE_END_GAME", 99);
  }
 
@@ -74,6 +75,7 @@ $machinestates = array(
         "transitions" => array( 
             "action" => STATE_PLAYER_ACTIONS, 
             "skip" => STATE_PLAYER_ACTIONS, 
+            "bonus_shoreup" => STATE_BONUS_SHOREUP, 
             "draw_treasure" => STATE_DRAW_TREASURE_CARDS,
             "sandbags" => STATE_SPECIAL_SANDBAGS,
             "heli_lift" => STATE_SPECIAL_HELI_LIFT,
@@ -148,6 +150,19 @@ $machinestates = array(
         "type" => "activeplayer",
         "args" => "argPlayerActions",
         "possibleactions" => array( "move", "pass" ),
+        "transitions" => array( 
+            "action" => STATE_PLAYER_ACTIONS, 
+            "pass" => STATE_PLAYER_ACTIONS 
+        )
+    ),
+
+    STATE_BONUS_SHOREUP => array(
+        "name" => "bonusShoreup",
+        "description" => clienttranslate('${actplayer} is taking bonus shore up action'),
+        "descriptionmyturn" => clienttranslate('${you} take bonus shore up action'),
+        "type" => "activeplayer",
+        "args" => "argPlayerActions",
+        "possibleactions" => array( "shore_up", "pass" ),
         "transitions" => array( 
             "action" => STATE_PLAYER_ACTIONS, 
             "pass" => STATE_PLAYER_ACTIONS 
