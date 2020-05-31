@@ -41,6 +41,7 @@ class forbiddenisland extends Table
                "earth" => 15,
                "ocean" => 16,
                "players_win" => 17,
+               "pilot_action" => 18,
             //      ...
             //    "my_first_game_variant" => 100,
             //    "my_second_game_variant" => 101,
@@ -147,6 +148,7 @@ class forbiddenisland extends Table
         self::setGameStateInitialValue( 'earth', 0 );
         self::setGameStateInitialValue( 'ocean', 0 );
         self::setGameStateInitialValue( 'players_win', 0 );
+        self::setGameStateInitialValue( 'pilot_action', 1 );
         
         // Init game statistics
         // (note: statistics used in this file must be defined in your stats.inc.php file)
@@ -248,6 +250,8 @@ class forbiddenisland extends Table
         $result['earth'] = $this->getGameStateValue("earth");
         $result['ocean'] = $this->getGameStateValue("ocean");
 
+        $result['pilot_action'] = $this->getGameStateValue("pilot_action");
+
         return $result;
     }
 
@@ -280,10 +284,10 @@ class forbiddenisland extends Table
         function getPossibleActions( $player_id )
         {
             $result = array('move' => array(), 'shore_up' => array());
-            $result = array_merge($result, $this->getPossibleMoves($player_id));
-            $result = array_merge($result, $this->getPossibleShoreUp($player_id));
+            $result = array_merge($result, $this->getPossibleMoves( $player_id ));
+            $result = array_merge($result, $this->getPossibleShoreUp( $player_id ));
             $result = array_merge($result, $this->getPossibleSandbags());
-            $result = array_merge($result, $this->getPossibleHeliLift());
+            $result = array_merge($result, $this->getPossibleHeliLift( $player_id ));
             return $result;
 
         }
@@ -340,15 +344,20 @@ class forbiddenisland extends Table
 
         }
 
-        function getPossibleHeliLift()
+        function getPossibleHeliLift( $player_id )
         {
             $result = array();
+            $player_tile_id = $this->getPlayerLocation($player_id);
 
             foreach ($this->tiles->getCardsInLocation('unflooded') as $id => $tile ) {
-                $result['heli_lift'][] = $tile['type'];
+                if ( $tile['type'] != $player_tile_id ) {
+                    $result['heli_lift'][] = $tile['type'];
+                }
             }
             foreach ($this->tiles->getCardsInLocation('flooded') as $id => $tile ) {
-                $result['heli_lift'][] = $tile['type'];
+                if ( $tile['type'] != $player_tile_id ) {
+                    $result['heli_lift'][] = $tile['type'];
+                }
             }
             return $result;
 
@@ -667,7 +676,7 @@ class forbiddenisland extends Table
         (note: each method below must match an input method in forbiddenisland.action.php)
     */
 
-    function moveAction( $tile_id, $heli_lift = false, $card_id = 0, $players = NULL )
+    function moveAction( $tile_id, $pilot = false, $heli_lift = false, $card_id = 0, $players = NULL )
     {
         self::checkAction( 'move' );
 
@@ -675,14 +684,13 @@ class forbiddenisland extends Table
 
         $player_tile_id = $this->getPlayerLocation($player_id);
         $tile_name = $this->tile_list[$tile_id]['name'];
-        
-        if (!$heli_lift ) {
+        if ( !$heli_lift and !$pilot ) {
             $possibleMoves = $this->getPossibleMoves($player_id)['move'];
             if (!in_array($tile_id, $possibleMoves)) {
                 return;
             }
         } else {
-            $possibleHeliLift = $this->getPossibleHeliLift()['heli_lift'];
+            $possibleHeliLift = $this->getPossibleHeliLift($player_id)['heli_lift'];
             if (!in_array($tile_id, $possibleHeliLift)) {
                 return;
             }
@@ -725,6 +733,10 @@ class forbiddenisland extends Table
                 $this->incGameStateValue("remaining_actions", -1);
             } else {
                 $this->treasure_deck->moveCard($card_id, 'discard');
+            }
+
+            if ($pilot) {
+                $this->setGameStateValue("pilot_action", 0);
             }
 
         } else {
@@ -782,7 +794,7 @@ class forbiddenisland extends Table
                 if (!$sandbags and !$bonus) {
                     $this->incGameStateValue("remaining_actions", -1);
                 }
-                
+
                 if ($sandbags) {
                     // $card = $this->treasure_deck->getCard($card_id);
                     $this->treasure_deck->moveCard($card_id, 'discard');
@@ -1015,7 +1027,9 @@ class forbiddenisland extends Table
             'player_treasure_cards' => self::getTreasureCards( self::getActivePlayerId() ),
             'colocated_players' => self::getColocatedPlayers( self::getActivePlayerId() ),
             'playerLocations' => self::getPlayerLocations(),
-            'isWinCondition' => self::isWinCondition()
+            'isWinCondition' => self::isWinCondition(),
+            'adventurer' => $this->getAdventurer(),
+            'pilot_action' => $this->getGameStateValue("pilot_action")
         );
     }
 
@@ -1189,6 +1203,7 @@ class forbiddenisland extends Table
         $player_id = self::activeNextPlayer();
 
         $this->setGameStateValue("remaining_actions", 3);
+        $this->setGameStateValue("pilot_action", 1);
 
         $this->gamestate->nextState( 'next_turn' );
 

@@ -74,6 +74,7 @@ function (dojo, declare) {
             this.clientStateArgs = {};
 
             this.isWinCondition = false;
+            this.adventurer = '';
               
         },
         
@@ -158,7 +159,7 @@ function (dojo, declare) {
                 }
                 // TODO: Setting up players boards if needed
                 var playerBoardDiv = dojo.byId('player_board_' + player_id);
-                var block = dojo.place(this.format_block('jstpl_player_board', {
+                dojo.place(this.format_block('jstpl_player_board', {
                     id: player_id,
                     adventurer: gamedatas.player_list[player.adventurer].name,
                     color: player.color
@@ -167,7 +168,7 @@ function (dojo, declare) {
                     if (gamedatas[treasure] == player_id) {
                         x = this.gamedatas.treasure_list[treasure].fig * 25;
                         dojo.place(this.format_block('jstpl_figureicon', {
-                            x: 0
+                            x: x
                         }), 'p_board_icon_' + player_id, 'last');
                     }
                 }
@@ -233,12 +234,18 @@ function (dojo, declare) {
                     return obj[key];
                 });
                 this.isWinCondition = args.args.isWinCondition;
+                this.adventurer = args.args.adventurer;
+                this.pilot_action = args.args.pilot_action;
+                if ((this.adventurer == 'pilot') && (this.pilot_action == 1)) {
+                    this.addActionButton( 'pilot_btn', _('Pilot'), 'onPilot' ); 
+                }
                 break;
 
             case 'bonusShoreup':
                 this.selectedCard = null;
                 this.selectedAction = 'bonus_shoreup';
                 this.possibleActions = args.args.possibleActions;
+                this.adventurer = args.args.adventurer;
                 this.updatePossibleMoves(this.possibleActions.shore_up);
                 break;
 
@@ -261,6 +268,7 @@ function (dojo, declare) {
                 this.selectedAction = 'sandbags';
                 this.possibleActions = args.args.possibleActions;
                 this.updatePossibleMoves( this.possibleActions.sandbags );
+                this.adventurer = args.args.adventurer;
                 break;
 
             case 'heli_lift':
@@ -271,6 +279,7 @@ function (dojo, declare) {
                 this.updatePossibleMoves( this.playerLocations.map( function(player) {
                     return player.location;
                 }));
+                this.adventurer = args.args.adventurer;
                 break;
 
             case 'client_selectHeliLiftPlayers':
@@ -286,6 +295,7 @@ function (dojo, declare) {
                 break;
 
             case 'client_selectHeliLiftDest':
+            case 'client_selectPilotDest':
                 this.updatePossibleMoves( this.possibleActions.heli_lift );
                 break;
 
@@ -337,6 +347,9 @@ function (dojo, declare) {
                         main.innerHTML += '<span id="remaining_actions_value" style="font-weight:bold;color:#ED0023;">' 
                             + args.remaining_actions + '</span>' + _(' actions: ') + '<span style="font-weight:bold;color:#4871b6;">' 
                             + _('Move') + '</span>' + _(' or ');
+                        // if ((this.adventurer == 'pilot') && (this.pilot_action == 1)) {
+                        //     this.addActionButton( 'pilot_btn', _('Pilot'), 'onPilot' ); 
+                        // }
                         this.addActionButton( 'shore_up_btn', _('Shore Up'), 'onShoreUp' ); 
                         this.addActionButton( 'give_treasure_btn', _('Give Card'), 'onGiveCard' ); 
                         this.addActionButton( 'capture_treasure_btn', _('Capture Treasure'), 'onCapture' ); 
@@ -849,6 +862,19 @@ function (dojo, declare) {
             }
         },
 
+        onPilot: function()
+        {
+            if( this.isCurrentPlayerActive() )
+            {       
+                console.log( 'onPilot' );
+                
+                this.updatePossibleCards(this.player_treasure_cards);
+                this.selectedAction = 'pilot';
+
+                this.setClientState("client_selectPilotDest", { descriptionmyturn : "Pilot: ${you} must select a destination tile."});
+            }
+        },
+
         onDone: function()
         {
             console.log( 'onDone' );
@@ -917,8 +943,15 @@ function (dojo, declare) {
             if( this.isCurrentPlayerActive() )
             {     
                 console.log( 'onTile' );
-
-                if (this.selectedAction == 'move') {
+                if (this.selectedAction == 'pilot') {
+                    if( this.checkAction( 'move' ) && dojo.hasClass(tile_id, 'possibleMove'))
+                    {  
+                        this.ajaxcall( "/forbiddenisland/forbiddenisland/moveAction.html", {
+                            tile_id:tile_id,
+                            pilot: true
+                        }, this, function( result ) {} );
+                    }
+                } else if (this.selectedAction == 'move') {
                     if( this.checkAction( 'move' ) && dojo.hasClass(tile_id, 'possibleMove'))
                     {  
                         this.ajaxcall( "/forbiddenisland/forbiddenisland/moveAction.html", {
