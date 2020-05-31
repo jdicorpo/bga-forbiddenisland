@@ -292,7 +292,6 @@ class forbiddenisland extends Table
 
         }
 
-        // Get the list of possible moves (x => y => true)
         function getPossibleMoves( $player_id )
         {
             $player_tile_id = $this->getPlayerLocation($player_id);
@@ -309,6 +308,61 @@ class forbiddenisland extends Table
                 if ( $this->isTileAdjacent($tile['type'], $player_tile_id) )
                 {
                     $result['move'][] = $tile['type'];
+                }
+            }
+
+            if ($this->getAdventurer() == 'diver') {
+                $checked = array();
+                foreach ($this->tiles->getCardsInLocation('sunk') as $id => $tile ) {
+                    if ( $this->isTileAdjacent($tile['type'], $player_tile_id) )
+                    {
+                        $checked[] = $tile['type'];
+                        $tiles = $this->getDiverAdjacentTiles($tile['type'], $result, $player_tile_id, $checked);
+                        $result['move'] = array_merge($result['move'], $tiles['move']);
+                        // var_dump($result);
+                        // die('ok');
+                    }
+                }
+            }
+                    
+            return $result;
+        }
+
+        function alreadyIncluded($target_tile_id, $result, $start_tile_id = null) {
+            if (($target_tile_id == $start_tile_id) or (in_array($target_tile_id, $result['move']))) {
+                return true;
+            }
+
+            return false;
+        }
+
+        function getDiverAdjacentTiles( $target_tile_id, $result, $start_tile_id = null, $checked)
+        {
+            // $result = array();
+
+            foreach ($this->tiles->getCardsInLocation('unflooded') as $id => $tile ) {
+                if (( $this->isTileAdjacent($tile['type'], $target_tile_id)) 
+                    and !$this->alreadyIncluded($tile['type'], $result, $start_tile_id) )
+                {
+                    $result['move'][] = $tile['type'];
+                }
+            }
+
+            foreach ($this->tiles->getCardsInLocation('flooded') as $id => $tile ) {
+                if (( $this->isTileAdjacent($tile['type'], $target_tile_id)) 
+                    and !$this->alreadyIncluded($tile['type'], $result, $start_tile_id) )
+                {
+                    $result['move'][] = $tile['type'];
+                }
+            }
+
+            foreach ($this->tiles->getCardsInLocation('sunk') as $id => $tile ) {
+                if (( $this->isTileAdjacent($tile['type'], $target_tile_id)) and ($tile['type'] != $start_tile_id) 
+                    and ! in_array($tile['type'], $checked))
+                {
+                    $checked[] = $tile['type'];
+                    $tiles = $this->getDiverAdjacentTiles($tile['type'], $result, $start_tile_id, $checked);
+                    $result['move'] = array_merge($result['move'], $tiles['move']);
                 }
             }
                     

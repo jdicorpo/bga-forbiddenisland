@@ -236,9 +236,6 @@ function (dojo, declare) {
                 this.isWinCondition = args.args.isWinCondition;
                 this.adventurer = args.args.adventurer;
                 this.pilot_action = args.args.pilot_action;
-                if ((this.adventurer == 'pilot') && (this.pilot_action == 1)) {
-                    this.addActionButton( 'pilot_btn', _('Pilot'), 'onPilot' ); 
-                }
                 break;
 
             case 'bonusShoreup':
@@ -347,9 +344,9 @@ function (dojo, declare) {
                         main.innerHTML += '<span id="remaining_actions_value" style="font-weight:bold;color:#ED0023;">' 
                             + args.remaining_actions + '</span>' + _(' actions: ') + '<span style="font-weight:bold;color:#4871b6;">' 
                             + _('Move') + '</span>' + _(' or ');
-                        // if ((this.adventurer == 'pilot') && (this.pilot_action == 1)) {
-                        //     this.addActionButton( 'pilot_btn', _('Pilot'), 'onPilot' ); 
-                        // }
+                        if ((args.adventurer == 'pilot') && (args.pilot_action == 1)) {
+                            this.addActionButton( 'pilot_btn', _('Pilot'), 'onPilot' ); 
+                        }
                         this.addActionButton( 'shore_up_btn', _('Shore Up'), 'onShoreUp' ); 
                         this.addActionButton( 'give_treasure_btn', _('Give Card'), 'onGiveCard' ); 
                         this.addActionButton( 'capture_treasure_btn', _('Capture Treasure'), 'onCapture' ); 

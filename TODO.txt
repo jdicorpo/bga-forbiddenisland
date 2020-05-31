@@ -1,22 +1,17 @@
-* tooltips
-* non-active player to play special cards out of turn
-* enable debug PHP
+* navigator special action
+* diver special action
 
+* non-active player to play special cards out of turn
 * cannot give special cards
-* server side checks for give card
-* reposition cards after move
+* implement rescue pawn
+* use special when discarding
 * check discard after give
 
-* pilot special action
-* navigator special action
-* engineer special action
-* diver special action
-* explorer special action
-* messenger special action
-* lose game logic
-* win game logic
-* player board
 * implement stats
+
+* tooltips
+* server side checks for give card
+* reposition cards after move
 
 * support difficulty
 * support other maps
