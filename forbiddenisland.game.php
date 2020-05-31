@@ -395,6 +395,10 @@ class forbiddenisland extends Table
             {
                 return TRUE;
             } 
+            elseif (($this->getAdventurer() == 'explorer') and 
+                    (abs($player_x - $tile_x) == 1) and (abs($player_y - $tile_y) == 1)) {
+                return true;
+            } 
             else 
             {
                 return FALSE;

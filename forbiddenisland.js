@@ -367,6 +367,7 @@ function (dojo, declare) {
                     case 'client_selectShoreUp':
                     case 'client_selectGiveCard':
                     case 'client_selectSpecialCard':
+                    case 'client_selectGiveCardPlayers':
                         this.addActionButton( 'cancel_btn', _('Cancel'), 'onCancel', null, false, 'red' );
                         break;
 
@@ -451,7 +452,20 @@ function (dojo, declare) {
                     }, this);
                 }
                 this.connectClass('possiblePlayer', 'onclick', 'onPlayer');
+        },
 
+        updateAllPlayers: function() {
+
+            this.clearLastAction();
+
+            var players = this.gamedatas.players;
+            for (let [player_id, value] of Object.entries(players)) {
+                if (player_id != this.player_id) {
+                    var node = $('player_card_area_' + player_id);
+                    dojo.addClass(node, 'possiblePlayer');
+                }
+            }
+            this.connectClass('possiblePlayer', 'onclick', 'onPlayer');
         },
 
         placeWaterLevel: function(level) {
@@ -970,11 +984,11 @@ function (dojo, declare) {
                     {  
                         if (tile_id == 'fools_landing' && this.isWinCondition ) {
                             this.setClientState("client_confirmWinGame", 
-                            { descriptionmyturn : "${you} have your team and all four treasures.  Are you ready to lift off the island for the win!?!"});
+                                { descriptionmyturn : "${you} have your team and all four treasures.  Are you ready to lift off the island for the win!?!"});
                         } else if (this.startingTile == null) {
                             this.startingTile = tile_id;
                             this.setClientState("client_selectHeliLiftPlayers", 
-                            { descriptionmyturn : "${you} are playing special action - Helicopter Lift. Select players to move."});
+                                { descriptionmyturn : "${you} are playing special action - Helicopter Lift. Select players to move."});
                         } else {
                             var card_id = this.selectedCard.split('_')[2];
                             this.ajaxcall( "/forbiddenisland/forbiddenisland/moveAction.html", {
@@ -1035,12 +1049,14 @@ function (dojo, declare) {
                         var node = $(card_id);
                         dojo.addClass(node, 'selected');
 
-                        this.updateColocatedPlayers(this.colocated_players);
+                        if (this.adventurer == 'messenger') {
+                            this.updateAllPlayers();
+                        } else {
+                            this.updateColocatedPlayers(this.colocated_players);
+                        }
 
-                        // change to use setClientState()
-                        var main = $('pagemaintitletext');
-                        this.previous_pagemaintitletext = main.innerHTML;
-                        main.innerHTML = _("Select a player on your tile");
+                        this.setClientState("client_selectGiveCardPlayers", 
+                            { descriptionmyturn : "${you} select players to give the card to."});
 
                     }
                 } else if (this.selectedAction == 'special_action') {
