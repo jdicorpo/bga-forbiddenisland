@@ -1,6 +1,3 @@
-* navigator special action
-* diver special action
-
 * non-active player to play special cards out of turn
 * cannot give special cards
 * implement rescue pawn

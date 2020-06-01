@@ -698,6 +698,18 @@ class forbiddenisland extends Table
 
             return false;
         }
+
+        function updateCardCount() {
+            $ncards = array();
+            $players = $this->loadPlayersBasicInfos();
+            foreach ( $players as $player_id => $player_info ) {
+                $ncards[$player_id] = count($this->treasure_deck->getCardsInLocation( 'hand', $player_id ));
+            }
+
+            self::notifyAllPlayers( "updateCardCount", '', array(
+                'ncards' => $ncards
+            ) );
+        }
     
         function debugFlood($tile_id) {
 
@@ -860,6 +872,7 @@ class forbiddenisland extends Table
                 $this->incGameStateValue("remaining_actions", -1);
             } else {
                 $this->treasure_deck->moveCard($card_id, 'discard');
+                $this->updateCardCount();
             }
 
             if ($pilot) {
@@ -886,7 +899,7 @@ class forbiddenisland extends Table
         $player_id = self::getActivePlayerId();
         $player_tile_id = $this->getPlayerLocation($player_id);
         $tile_name = $this->tile_list[$tile_id]['name'];
-        $possibleShoreUp = $this->getPossibleShoreUp($player_id)['shore_up'];
+        $possibleShoreUp = $this->getPossibleShoreUp($player_id)['shore_up'];  // TODO: cover case where function returns empty
 
         // check if shore up is possible
         if (! $sandbags ) {
@@ -925,6 +938,7 @@ class forbiddenisland extends Table
                 if ($sandbags) {
                     // $card = $this->treasure_deck->getCard($card_id);
                     $this->treasure_deck->moveCard($card_id, 'discard');
+                    $this->updateCardCount();
                 }
         
             }
@@ -987,6 +1001,8 @@ class forbiddenisland extends Table
             'card' => $card,
             'card_name' => $card_name
         ) );
+        
+        $this->updateCardCount();
 
         $count = $this->treasure_deck->countCardsInLocation('hand', $player_id );
         if ($count > 5) {
@@ -1020,6 +1036,8 @@ class forbiddenisland extends Table
                 'card' => $card,
                 'card_name' => $card_name
             ) );
+
+            $this->updateCardCount();
 
             // TODO: need to check if target player must discard
         } else {
@@ -1068,6 +1086,8 @@ class forbiddenisland extends Table
                     'cards' => $cards,
                     'treasure' => $treasure
                     ) );
+
+                $this->updateCardCount();
             } else {
                 throw new feException( "Invalid action" );
             }
@@ -1328,6 +1348,8 @@ class forbiddenisland extends Table
             }
             $this->treasure_deck->moveCard($card_2['id'], 'discard');
         }
+
+        $this->updateCardCount();
 
         $count = $this->treasure_deck->countCardsInLocation('hand', $player_id );
         if ($count > 5) {

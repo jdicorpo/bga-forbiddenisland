@@ -163,6 +163,7 @@ function (dojo, declare) {
                     adventurer: gamedatas.player_list[player.adventurer].name,
                     color: player.color
                 }), playerBoardDiv);
+                $('cardcount_' + player_id).innerHTML = Object.keys(gamedatas.player_card_area[player_id].treasure_cards).length;
                 for (treasure of ['earth', 'fire', 'air', 'ocean']) {
                     if (gamedatas[treasure] == player_id) {
                         x = this.gamedatas.treasure_list[treasure].fig * 25;
@@ -227,6 +228,7 @@ function (dojo, declare) {
                 this.player_treasure_cards = Object.keys(obj).map(function(key) {
                     return obj[key];
                 });
+                // $('cardcount_' + this.player_id).innerHTML = this.player_treasure_cards.length;
                 this.updatePossibleMoves( this.possibleActions.move );
                 var obj = args.args.colocated_players;
                 this.colocated_players = Object.keys(obj).map(function(key) {
@@ -250,6 +252,7 @@ function (dojo, declare) {
                 this.player_treasure_cards = Object.keys(obj).map(function(key) {
                     return obj[key];
                 });
+                // $('cardcount_' + this.player_id).innerHTML = this.player_treasure_cards.length;
                 this.updatePossibleCards( this.player_treasure_cards );
                 this.selectedAction = 'discard';
                 break;
@@ -1198,6 +1201,8 @@ function (dojo, declare) {
 
             dojo.subscribe( 'reshuffleTreasureDeck', this, "notif_reshuffleTreasureDeck" );
             this.notifqueue.setSynchronous( 'reshuffleTreasureDeck', 1000 );
+
+            dojo.subscribe( 'updateCardCount', this, "notif_updateCardCount" );
             
         },  
         
@@ -1208,7 +1213,6 @@ function (dojo, declare) {
             
             // this.clearPossibleMoves();
             this.clearLastAction();
-
 
             if (notif.args.heli_lift) {
                 this.discardTreasure(notif.args.card_id);
@@ -1325,20 +1329,33 @@ function (dojo, declare) {
             console.log( 'notif_captureTreasure' );
             console.log( notif );
 
+            var treasure = notif.args.treasure;
+            var player_id = notif.args.player_id;
+
             this.clearLastAction();
             notif.args.cards.forEach(
                 function (c, index) {
                     this.discardTreasure(c.id);
             }, this);
 
-            this.moveFigure(notif.args.treasure, notif.args.player_id);
-            // this.updateZone(this.player_card_area[notif.args.player_id]);
+            this.moveFigure(treasure, player_id);
+            x = this.gamedatas.treasure_list[treasure].fig * 25;
+            dojo.place(this.format_block('jstpl_figureicon', {
+                x: x
+            }), 'p_board_icon_' + player_id, 'last');
 
        },
 
        notif_reshuffleTreasureDeck: function( notif )
        {
             this.treasure_card_area.removeAll();
+       },
+
+       notif_updateCardCount: function( notif )
+       {
+            for (const player_id in notif.args.ncards) {
+                $('cardcount_' + player_id).innerHTML = notif.args.ncards[player_id];
+            };
        },
    });             
 });
