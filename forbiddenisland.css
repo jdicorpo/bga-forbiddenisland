@@ -402,6 +402,10 @@
     opacity: 100%;
 }
 
+.fadeTile {
+    opacity: 50%;
+}
+
 .p_board_icons {
     display: inline-block;
     /* vertical-align: bottom; */
@@ -434,8 +438,6 @@
     bottom: 8px;
     left: 8px;
 }
-
-
 
 .figure_icon {
     background-image: url(img/figures_icon.png);

@@ -45,6 +45,7 @@ class action_forbiddenisland extends APP_GameAction
         $tile_id = self::getArg( "tile_id", AT_alphanum, true );
         $heli_lift = self::getArg( "heli_lift", AT_bool, false, false );
         $pilot = self::getArg( "pilot", AT_bool, false, false );
+        $navigator = self::getArg( "navigator", AT_bool, false, false );
         $card_id = self::getArg( "card_id", AT_alphanum, false, 0 );
         $players_raw = self::getArg( "players", AT_numberlist, false, null );
         
@@ -56,7 +57,7 @@ class action_forbiddenisland extends APP_GameAction
         else
             $players = explode( ';', $players_raw );
 
-        $result = $this->game->moveAction( $tile_id, $pilot, $heli_lift, $card_id, $players );
+        $result = $this->game->moveAction( $tile_id, $pilot, $navigator, $heli_lift, $card_id, $players );
         self::ajaxResponse( );
     }
 

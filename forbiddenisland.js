@@ -157,7 +157,6 @@ function (dojo, declare) {
                     var card = gamedatas.player_card_area[player_id].treasure_cards[card_id];
                     this.placeTreasure(card_id, card.type, player_id);
                 }
-                // TODO: Setting up players boards if needed
                 var playerBoardDiv = dojo.byId('player_board_' + player_id);
                 dojo.place(this.format_block('jstpl_player_board', {
                     id: player_id,
@@ -279,6 +278,12 @@ function (dojo, declare) {
                 this.adventurer = args.args.adventurer;
                 break;
 
+            case 'navigator':
+                this.selectedAction = 'navigator';
+                this.possibleActions = args.args.possibleActions;
+                this.updatePossibleMoves( this.possibleActions.move );
+                break;
+
             case 'client_selectHeliLiftPlayers':
                 this.clearLastAction();
                 var target_players = this.getPlayersAtLocation(this.startingTile);
@@ -289,6 +294,29 @@ function (dojo, declare) {
                     this.setClientState("client_selectHeliLiftDest", 
                     { descriptionmyturn : "${you} are playing special action - Helicopter Lift. Select a destination tile."});
                 }
+                break;
+
+            case 'client_selectNavigatorPlayer':
+                this.clearLastAction();
+                var players = Object.keys(this.gamedatas.players);
+                var target_players = [];
+                for (x in players) {
+                    if (players[x] != this.player_id) {
+                        target_players.push(players[x]);
+                    }
+                }
+                // if (target_players.length > 1) {  // TODO: Change back for production
+                if (target_players.length > 0) {
+                    // update possible pawns to be selected
+                    this.updatePossiblePawns(target_players);
+                } else {
+                    this.setClientState("client_selectNavigatorDest", 
+                        { descriptionmyturn : "Navigator: ${you} must select a destination."});
+                }
+                break;
+
+            case 'client_selectNavigatorDest':
+                this.updatePossibleMoves( this.possibleActions.navigator[this.selectedPlayers[0]] );
                 break;
 
             case 'client_selectHeliLiftDest':
@@ -346,6 +374,8 @@ function (dojo, declare) {
                             + _('Move') + '</span>' + _(' or ');
                         if ((args.adventurer == 'pilot') && (args.pilot_action == 1)) {
                             this.addActionButton( 'pilot_btn', _('Pilot'), 'onPilot' ); 
+                        } else if (args.adventurer == 'navigator') {
+                            this.addActionButton( 'navigator_btn', _('Navigator'), 'onNavigator' ); 
                         }
                         this.addActionButton( 'shore_up_btn', _('Shore Up'), 'onShoreUp' ); 
                         this.addActionButton( 'give_treasure_btn', _('Give Card'), 'onGiveCard' ); 
@@ -376,6 +406,12 @@ function (dojo, declare) {
                     case 'client_selectHeliLiftPlayers':
                         
                         this.addActionButton( 'done_btn', _('Done'), 'onDone', null, false, 'blue' );
+                        this.addActionButton( 'cancel_btn', _('Cancel'), 'onCancel', null, false, 'red' );
+                        break;
+
+                    case 'client_selectNavigatorPlayer':
+                    case 'client_selectNavigatorDest':
+                    
                         this.addActionButton( 'cancel_btn', _('Cancel'), 'onCancel', null, false, 'red' );
                         break;
 
@@ -735,6 +771,8 @@ function (dojo, declare) {
                 // }
             }
 
+            dojo.query('.island_tile').addClass( 'fadeTile' );
+
             this.connectClass('possiblePawn', 'onclick', 'onPawn');
 
         },
@@ -754,27 +792,6 @@ function (dojo, declare) {
 
         },
 
-        // clearPossibleMoves : function( )
-        // {
-        //     // Remove current possible moves
-        //     dojo.query( '.possibleMove' ).removeClass( 'possibleMove' );
-        //     dojo.query( '.otherPlayer' ).removeClass( 'otherPlayer' );
-        // },
-
-        // clearPossibleCards : function( )
-        // {
-        //     // Remove current possible moves
-        //     dojo.query( '.possibleCard' ).removeClass( 'possibleCard' );
-        //     dojo.query( '.selected' ).removeClass( 'selected' );
-        // },
-
-        // clearPossiblePlayers : function( )
-        // {
-        //     // Remove current possible moves
-        //     dojo.query( '.possiblePlayer' ).removeClass( 'possiblePlayer' );
-        //     dojo.query( '.selected' ).removeClass( 'selected' );
-        // },
-
         clearLastAction : function( )
         {
             // Remove current possible moves
@@ -785,6 +802,7 @@ function (dojo, declare) {
             dojo.query( '.possiblePawn' ).removeClass( 'possiblePawn' );
             dojo.query( '.selected' ).removeClass( 'selected' );
             dojo.query( '.selectedPawn' ).removeClass( 'selectedPawn' );
+            dojo.query( '.fadeTile' ).removeClass( 'fadeTile' );
         },
 
         getTooptipHtml : function(card)
@@ -879,10 +897,19 @@ function (dojo, declare) {
             {       
                 console.log( 'onPilot' );
                 
-                this.updatePossibleCards(this.player_treasure_cards);
                 this.selectedAction = 'pilot';
-
                 this.setClientState("client_selectPilotDest", { descriptionmyturn : "Pilot: ${you} must select a destination tile."});
+            }
+        },
+
+        onNavigator: function()
+        {
+            if( this.isCurrentPlayerActive() )
+            {       
+                console.log( 'onNavigator' );
+                
+                this.selectedAction = 'navigator';
+                this.setClientState("client_selectNavigatorPlayer", { descriptionmyturn : "Navigator: ${you} must select a player."});
             }
         },
 
@@ -1014,6 +1041,15 @@ function (dojo, declare) {
                             bonus: true
                         }, this, function( result ) {} );
                     }
+                } else if (this.selectedAction == 'navigator') {
+                    if( this.checkAction( 'move' ))
+                    {  
+                        this.ajaxcall( "/forbiddenisland/forbiddenisland/moveAction.html", { 
+                            tile_id:tile_id,
+                            navigator: true,
+                            players: this.selectedPlayers.join(';')
+                        }, this, function( result ) {} );                        
+                    }
                 }
             }
         },
@@ -1106,7 +1142,11 @@ function (dojo, declare) {
             {     
                 console.log( 'onPawn' );
 
-                if (this.selectedAction == 'heli_lift') {
+                if (this.selectedAction == 'navigator') {
+                    this.selectedPlayers[0] = target_pawn;
+                    this.setClientState("client_selectNavigatorDest", 
+                        { descriptionmyturn : "Navigator: ${you} must select a destination."});
+                } else if (this.selectedAction == 'heli_lift') {
                     dojo.toggleClass(dojo.byId(target_pawn), 'selectedPawn');
                 }
             }
@@ -1175,6 +1215,8 @@ function (dojo, declare) {
                 notif.args.players.split(',').forEach( function(x) {
                     this.movePawn( notif.args.tile_id, x );
                 }, this)
+            } else if (notif.args.navigator) {
+                this.movePawn( notif.args.tile_id, notif.args.target_player_id );
             } else {
                 this.movePawn( notif.args.tile_id, notif.args.player_id );
             }

@@ -15,3 +15,7 @@
 
 * support difficulty
 * support other maps
+
+BUGS:
+* impossible action after discard
+* card location in player area
