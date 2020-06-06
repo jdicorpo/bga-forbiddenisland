@@ -447,14 +447,16 @@ function (dojo, declare) {
         
         */
 
-        updatePossibleCards: function(cards) {
+        updatePossibleCards: function(cards, give = false) {
 
             this.clearLastAction();
             if (typeof cards !== 'undefined') {
                 cards.forEach(
                     function (c, index) {
                         var node = $('treasure_card_' + c.id);
-                        dojo.addClass(node, 'possibleCard');
+                        if (!(give && (c.type == 'sandbags' || c.type == 'heli_lift'))) {
+                            dojo.addClass(node, 'possibleCard');
+                        }
                     });
                 }
                 this.connectClass('possibleCard', 'onclick', 'onCard');
@@ -887,8 +889,8 @@ function (dojo, declare) {
             if( this.isCurrentPlayerActive() )
             {       
                 console.log( 'onGiveCard' );
-                
-                this.updatePossibleCards(this.player_treasure_cards);
+            
+                this.updatePossibleCards(this.player_treasure_cards, give=true);
                 this.selectedAction = 'give_card';
 
                 this.setClientState("client_selectGiveCard", { descriptionmyturn : "${you} must select a card to give"});

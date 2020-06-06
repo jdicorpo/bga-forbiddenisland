@@ -1025,19 +1025,23 @@ class forbiddenisland extends Table
             
             $card = $this->treasure_deck->getCard($id);
             $card_name = $this->treasure_list[$card['type']]['name'];
-            $this->treasure_deck->moveCard($id, 'hand', $target_player_id);
-            
-            $this->incGameStateValue("remaining_actions", -1);
-            self::notifyAllPlayers( "giveTreasure", clienttranslate( '${player_name} gave ${card_name} to ${target_player_name}' ), array(
-                'player_id' => $player_id,
-                'target_player_id' => $target_player_id,
-                'player_name' => self::getActivePlayerName(),
-                'target_player_name' => $target_player_name,
-                'card' => $card,
-                'card_name' => $card_name
-            ) );
 
-            $this->updateCardCount();
+            if ($card['type'] != 'sanbags' and $card['type'] != 'heli_lift') {
+
+                $this->treasure_deck->moveCard($id, 'hand', $target_player_id);
+                
+                $this->incGameStateValue("remaining_actions", -1);
+                self::notifyAllPlayers( "giveTreasure", clienttranslate( '${player_name} gave ${card_name} to ${target_player_name}' ), array(
+                    'player_id' => $player_id,
+                    'target_player_id' => $target_player_id,
+                    'player_name' => self::getActivePlayerName(),
+                    'target_player_name' => $target_player_name,
+                    'card' => $card,
+                    'card_name' => $card_name
+                ) );
+
+                $this->updateCardCount();
+            }
 
             // TODO: need to check if target player must discard
         } else {
