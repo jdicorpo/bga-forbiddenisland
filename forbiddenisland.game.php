@@ -36,12 +36,13 @@ class forbiddenisland extends Table
                "remaining_actions" => 10,
                "water_level" => 11,
                "remaining_flood_cards" => 12,
-               "air" => 13,
-               "fire" => 14,
-               "earth" => 15,
-               "ocean" => 16,
-               "players_win" => 17,
-               "pilot_action" => 18,
+               "drawn_treasure_cards" => 13,
+               "air" => 14,
+               "fire" => 15,
+               "earth" => 16,
+               "ocean" => 17,
+               "players_win" => 18,
+               "pilot_action" => 19,
             //      ...
             //    "my_first_game_variant" => 100,
             //    "my_second_game_variant" => 101,
@@ -142,6 +143,7 @@ class forbiddenisland extends Table
         //self::setGameStateInitialValue( 'my_first_global_variable', 0 );
         self::setGameStateInitialValue( 'remaining_actions', 3 );
         self::setGameStateInitialValue( 'remaining_flood_cards', 6 );
+        self::setGameStateInitialValue( 'drawn_treasure_cards', 0 );
         self::setGameStateInitialValue( 'water_level', 1 );
         self::setGameStateInitialValue( 'air', 0 );
         self::setGameStateInitialValue( 'fire', 0 );
@@ -829,7 +831,7 @@ class forbiddenisland extends Table
             }
         }
 
-        if ($this->getGameStateValue("remaining_actions") > 0) {
+        if (($this->getGameStateValue("remaining_actions") > 0) or $heli_lift) {
 
             // if (array_key_exists($tile_id, $possibleMoves)) {
             if (!$heli_lift ) {
@@ -885,7 +887,13 @@ class forbiddenisland extends Table
 
         if ($this->getGameStateValue("remaining_actions") > 0) {
             $this->gamestate->nextState( 'action' );
-
+        } elseif ($heli_lift) {
+            $count = $this->treasure_deck->countCardsInLocation('hand', $player_id );
+            if ($count > 5) {
+                $this->gamestate->nextState( 'discard' );
+            } else {
+                $this->gamestate->nextState( 'set_flood' );
+            }
         } else {
             $this->gamestate->nextState( 'draw_treasure' );
         }
@@ -913,7 +921,7 @@ class forbiddenisland extends Table
             }
         }
 
-        if ($this->getGameStateValue("remaining_actions") > 0) {
+        if (($this->getGameStateValue("remaining_actions") > 0) or $sandbags) {
 
             $tiles = $this->tiles->getCardsOfType($tile_id);
             $tile = array_shift($tiles);
@@ -951,6 +959,13 @@ class forbiddenisland extends Table
             $this->gamestate->nextState( 'bonus_shoreup' );
         } elseif ($this->getGameStateValue("remaining_actions") > 0) {
             $this->gamestate->nextState( 'action' );
+        } elseif ($sandbags) {
+            $count = $this->treasure_deck->countCardsInLocation('hand', $player_id );
+            if ($count > 5) {
+                $this->gamestate->nextState( 'discard' );
+            } else {
+                $this->gamestate->nextState( 'set_flood' );
+            }
         } else {
             $this->gamestate->nextState( 'draw_treasure' );
         }
@@ -1007,8 +1022,10 @@ class forbiddenisland extends Table
         $count = $this->treasure_deck->countCardsInLocation('hand', $player_id );
         if ($count > 5) {
             $this->gamestate->nextState( 'discard' );
-        } else {
+        } elseif ($this->getGameStateValue('drawn_treasure_cards') == 2) {
             $this->gamestate->nextState( 'set_flood' );
+        } else {
+            $this->gamestate->nextState( 'action' );
         }
 
     }
@@ -1328,6 +1345,8 @@ class forbiddenisland extends Table
         $card_name_1 = $this->treasure_list[$card_1['type']]['name'];
         $card_name_2 = $this->treasure_list[$card_2['type']]['name'];
 
+        $this->setGameStateValue("drawn_treasure_cards", 2);
+
         self::notifyAllPlayers( "drawTreasure", clienttranslate( '${player_name} drew ${card_name_1} and ${card_name_2} cards.' ), array(
             'player_id' => $player_id,
             'player_name' => self::getActivePlayerName(),
@@ -1371,8 +1390,8 @@ class forbiddenisland extends Table
         $player_id = self::activeNextPlayer();
 
         $this->setGameStateValue("remaining_actions", 3);
+        $this->setGameStateValue("drawn_treasure_cards", 0);
         $this->setGameStateValue("pilot_action", 1);
-
         $this->gamestate->nextState( 'next_turn' );
 
     }

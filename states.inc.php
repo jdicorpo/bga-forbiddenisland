@@ -104,11 +104,13 @@ $machinestates = array(
         "descriptionmyturn" => clienttranslate('${you} must select cards to discard (down to 5)'),
         "type" => "activeplayer",
         "args" => "argDiscardTreasure",
-        "possibleactions" => array( "discard" ),
+        "possibleactions" => array( "discard", "special_action" ),
         "transitions" => array( 
             "action" => STATE_PLAYER_ACTIONS, 
             "discard" => STATE_DISCARD_TREASURE_CARDS, 
             "set_flood" => STATE_SET_FLOOD_CARDS,
+            "sandbags" => STATE_SPECIAL_SANDBAGS,
+            "heli_lift" => STATE_SPECIAL_HELI_LIFT,
             "final" => STATE_END_GAME
         )
     ),
@@ -180,6 +182,8 @@ $machinestates = array(
             "action" => STATE_PLAYER_ACTIONS, 
             "cancel" => STATE_PLAYER_ACTIONS, 
             "draw_treasure" => STATE_DRAW_TREASURE_CARDS,
+            "discard" => STATE_DISCARD_TREASURE_CARDS,
+            "set_flood" => STATE_SET_FLOOD_CARDS,
             "final" => STATE_END_GAME
         )
     ),
@@ -195,6 +199,8 @@ $machinestates = array(
             "action" => STATE_PLAYER_ACTIONS, 
             "cancel" => STATE_PLAYER_ACTIONS, 
             "draw_treasure" => STATE_DRAW_TREASURE_CARDS,
+            "discard" => STATE_DISCARD_TREASURE_CARDS,
+            "set_flood" => STATE_SET_FLOOD_CARDS,
             "final" => STATE_END_GAME
         )
     ),

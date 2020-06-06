@@ -1,7 +1,5 @@
 * non-active player to play special cards out of turn
-* cannot give special cards
 * implement rescue pawn
-* use special when discarding
 * check discard after give
 
 * implement stats
