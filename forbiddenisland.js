@@ -225,7 +225,7 @@ function (dojo, declare) {
             case 'playerActions':
                 this.selectedAction = 'move';
                 this.possibleActions = args.args.possibleActions;
-                var obj = args.args.player_treasure_cards;
+                var obj = args.args.player_treasure_cards[this.player_id];
                 this.player_treasure_cards = Object.keys(obj).map(function(key) {
                     return obj[key];
                 });
@@ -238,6 +238,7 @@ function (dojo, declare) {
                 this.isWinCondition = args.args.isWinCondition;
                 this.adventurer = args.args.adventurer;
                 this.pilot_action = args.args.pilot_action;
+                this.special_action = false;
                 break;
 
             case 'bonusShoreup':
@@ -249,7 +250,7 @@ function (dojo, declare) {
                 break;
 
             case 'discardTreasure':
-                var obj = args.args.player_treasure_cards;
+                var obj = args.args.player_treasure_cards[this.player_id];
                 this.player_treasure_cards = Object.keys(obj).map(function(key) {
                     return obj[key];
                 });
@@ -295,6 +296,7 @@ function (dojo, declare) {
                     // update possible pawns to be selected
                     this.updatePossiblePawns(target_players);
                 } else {
+                    this.selectedPlayers = target_players;
                     this.setClientState("client_selectHeliLiftDest", 
                     { descriptionmyturn : "${you} are playing special action - Helicopter Lift. Select a destination tile."});
                 }
@@ -368,13 +370,13 @@ function (dojo, declare) {
             console.log( 'onUpdateActionButtons: '+stateName );
 
             if( this.isCurrentPlayerActive() )
-            {            
+            {   
                 switch( stateName )
                 {
                     case 'playerActions':
                         var main = $('pagemaintitletext');
-                        main.innerHTML += '<span id="remaining_actions_value" style="font-weight:bold;color:#ED0023;">' 
-                            + args.remaining_actions + '</span>' + _(' actions: ') + '<span style="font-weight:bold;color:#4871b6;">' 
+                        main.innerHTML += 'take <span id="remaining_actions_value" style="font-weight:bold;color:#ED0023;">' 
+                            + args.remaining_actions + '</span>' + _(' action(s): ') + '<span style="font-weight:bold;color:#4871b6;">' 
                             + _('Move') + '</span>' + _(' or ');
                         if ((args.adventurer == 'pilot') && (args.pilot_action == 1)) {
                             this.addActionButton( 'pilot_btn', _('Pilot'), 'onPilot' ); 
@@ -385,7 +387,6 @@ function (dojo, declare) {
                         this.addActionButton( 'give_treasure_btn', _('Give Card'), 'onGiveCard' ); 
                         this.addActionButton( 'capture_treasure_btn', _('Capture Treasure'), 'onCapture' ); 
                         this.addActionButton( 'skip_btn', _('Skip'), 'onSkip' ); 
-                        this.addActionButton( 'player_special_btn', _('Play Special'), 'onPlaySpecial', null, false, 'red' ); 
                         break;
 
                     case 'bonusShoreup':
@@ -397,7 +398,6 @@ function (dojo, declare) {
 
                     case 'client_selectShoreUp':
                     case 'client_selectGiveCard':
-                    case 'client_selectSpecialCard':
                     case 'client_selectGiveCardPlayers':
                         this.addActionButton( 'cancel_btn', _('Cancel'), 'onCancel', null, false, 'red' );
                         break;
@@ -428,9 +428,6 @@ function (dojo, declare) {
                         this.addActionButton( 'discard_btn', _('Discard'), 'onDiscardSpecial', null, false, 'gray' );
                         break;
 
-                    case 'nextPlayer':
-                        break;
-
                     case 'client_confirmWinGame':
                         this.addActionButton( 'confirm_btn', _('Confirm'), 'onConfirm', null, true, 'red' );
                         this.addActionButton( 'cancel_btn', _('Cancel'), 'onCancel', null, false, 'gray' );
@@ -439,6 +436,25 @@ function (dojo, declare) {
                     default:
                         break;
                 }
+            }
+
+            switch( stateName )
+            {
+                // these states can all occur out of turn
+                case 'playerActions':
+                    if (this.hasSpecialCard(args.player_treasure_cards[this.player_id])) {
+                        this.addActionButton( 'player_special_btn', _('Play Special'), 'onPlaySpecial', null, false, 'red' ); 
+                    }
+                    break;
+
+                case 'client_selectSpecialCard':
+                    var main = $('pagemaintitletext');
+                    main.innerHTML = "You must select a special card";
+                    this.addActionButton( 'cancel_btn', _('Cancel'), 'onCancel', null, false, 'red' );
+                    break;
+
+                default:
+                    break;
             }
         },        
 
@@ -452,6 +468,17 @@ function (dojo, declare) {
         
         */
 
+        hasSpecialCard: function(cards) {
+            if (typeof cards !== 'undefined') {
+                for (let [id, value] of Object.entries(cards)) {
+                    if ((value.type == 'sandbags' || value.type == 'heli_lift')) {
+                        return true;
+                    }
+                };
+            }
+            return false;
+        },
+
         updatePossibleCards: function(cards, give = false) {
 
             this.clearLastAction();
@@ -463,8 +490,8 @@ function (dojo, declare) {
                             dojo.addClass(node, 'possibleCard');
                         }
                     });
-                }
-                this.connectClass('possibleCard', 'onclick', 'onCard');
+            }
+            this.connectClass('possibleCard', 'onclick', 'onCard');
         },
 
         updateSpecialCards: function(cards) {
@@ -751,7 +778,8 @@ function (dojo, declare) {
                         // }
                     }, this);
 
-                if( this.isCurrentPlayerActive() )
+                // if( this.isCurrentPlayerActive() )
+                if (( this.special_action ) || ( !this.special_action && this.isCurrentPlayerActive() ))
                 { 
                     this.addTooltipToClass( 'possibleMove', '', _('Move to this tile.') );
                 } else {
@@ -863,15 +891,16 @@ function (dojo, declare) {
 
         onPlaySpecial: function()
         {
-            if( this.isCurrentPlayerActive() )
-            {       
+            // if( this.isCurrentPlayerActive() )
+            // {       
                 console.log( 'onPlaySpecial' );
                 
                 this.updateSpecialCards(this.player_treasure_cards);
                 this.selectedAction = 'special_action';
+                this.special_action = true;
 
                 this.setClientState("client_selectSpecialCard", { descriptionmyturn : "${you} must select a special card"});
-            }
+            // }
 
         },
 
@@ -958,8 +987,10 @@ function (dojo, declare) {
         {
             console.log( 'onCancel' );
 
+            this.special_action = false;
+
             if (this.selectedAction == 'sandbags' || this.selectedAction == 'heli_lift') {
-                if (! this.checkAction('cancel'))
+                if (! this.checkPossibleActions('cancel'))
                 return;
                 this.ajaxcall( "/forbiddenisland/forbiddenisland/cancelSpecial.html", {
                 }, this, function( result ) {} );
@@ -1145,19 +1176,21 @@ function (dojo, declare) {
                             { descriptionmyturn : "${you} select players to give the card to."});
 
                     }
-                } else if (this.selectedAction == 'special_action') {
-                    if( this.checkAction( 'special_action' ) && dojo.hasClass(dojo.byId(card_id), 'possibleCard'))
-                    {  
-                        var node = $(card_id);
-                        dojo.addClass(node, 'selected');
+                } 
+            }
+            if (this.selectedAction == 'special_action') {
+                // if( this.checkPossibleActions( 'special_action' ) && dojo.hasClass(dojo.byId(card_id), 'possibleCard'))
+                if(dojo.hasClass(dojo.byId(card_id), 'possibleCard'))
+                {  
+                    var node = $(card_id);
+                    dojo.addClass(node, 'selected');
 
-                        var id = card_id.split('_')[2];
-                        this.ajaxcall( "/forbiddenisland/forbiddenisland/playSpecial.html", {
-                            id:id,
-                            player_id: this.player_id
-                        }, this, function( result ) {} );
+                    var id = card_id.split('_')[2];
+                    this.ajaxcall( "/forbiddenisland/forbiddenisland/playSpecial.html", {
+                        id:id,
+                        player_id: this.player_id
+                    }, this, function( result ) {} );
 
-                    }
                 }
             }
         },
@@ -1263,7 +1296,6 @@ function (dojo, declare) {
             
             // this.clearPossibleMoves();
             this.clearLastAction();
-
             if (notif.args.heli_lift) {
                 this.discardTreasure(notif.args.card_id);
                 notif.args.players.split(',').forEach( function(x) {
@@ -1274,6 +1306,7 @@ function (dojo, declare) {
             } else {
                 this.movePawn( notif.args.tile_id, notif.args.player_id );
             }
+            this.special_action = false;
 
        },
 
@@ -1289,6 +1322,7 @@ function (dojo, declare) {
             if (notif.args.sandbags) {
                 this.discardTreasure(notif.args.card_id);
             }
+            this.special_action = false;
 
        },
 

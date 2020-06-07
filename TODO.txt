@@ -1,4 +1,3 @@
-* non-active player to play special cards out of turn
 * implement rescue pawn
 * check discard after give
 
@@ -10,6 +9,9 @@
 
 * support difficulty
 * support other maps
+
+* support high-res graphics
+* support board size scaling
 
 BUGS:
 * impossible action after discard

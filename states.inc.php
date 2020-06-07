@@ -68,7 +68,7 @@ $machinestates = array(
     STATE_PLAYER_ACTIONS => array(
         "name" => "playerActions",
         "description" => clienttranslate('${actplayer} is taking actions'),
-        "descriptionmyturn" => clienttranslate('${you} take '),
+        "descriptionmyturn" => clienttranslate('${you} may '),
         "type" => "activeplayer",
         "args" => "argPlayerActions",
         "possibleactions" => array( "move", "shore_up", "skip", "give_card", "capture", "special_action" ),
@@ -167,15 +167,18 @@ $machinestates = array(
         "possibleactions" => array( "shore_up", "pass" ),
         "transitions" => array( 
             "action" => STATE_PLAYER_ACTIONS, 
+            "draw_treasure" => STATE_DRAW_TREASURE_CARDS,
             "pass" => STATE_PLAYER_ACTIONS 
         )
     ),
 
     STATE_SPECIAL_SANDBAGS => array(
         "name" => "sandbags",
-        "description" => clienttranslate('${actplayer} is playing special action - Sandbags. Select tile to shore up.'),
-        "descriptionmyturn" => clienttranslate('${you} are playing special action - Sandbags '),
-        "type" => "activeplayer",
+        "description" => clienttranslate('${actplayer} is playing special action - Sandbags. '),
+        "descriptionmyturn" => clienttranslate('${you} are playing special action - Sandbags. Select tile to shore up. '),
+        // "type" => "activeplayer",
+        "type" => "multipleactiveplayer",
+        "action" => "stPlayerActions",
         "args" => "argPlayerActions",
         "possibleactions" => array( "move", "shore_up", "cancel" ),
         "transitions" => array( 
@@ -192,7 +195,9 @@ $machinestates = array(
         "name" => "heli_lift",
         "description" => clienttranslate('${actplayer} is playing special action - Helicopter Lift.'),
         "descriptionmyturn" => clienttranslate('${you} are playing special action - Helicopter Lift.  Select starting tile.'),
-        "type" => "activeplayer",
+        // "type" => "activeplayer",
+        "type" => "multipleactiveplayer",
+        "action" => "stPlayerActions",
         "args" => "argPlayerActions",
         "possibleactions" => array( "move", "shore_up", "cancel" ),
         "transitions" => array( 
@@ -217,7 +222,7 @@ $machinestates = array(
             "final" => STATE_FINAL 
         )
     ),
-   
+  
     // Final state.
 
     STATE_FINAL => array(
