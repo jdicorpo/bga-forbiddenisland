@@ -1,5 +1,4 @@
 * implement rescue pawn
-* check discard after give
 
 * implement stats
 

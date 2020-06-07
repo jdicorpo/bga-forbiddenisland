@@ -44,11 +44,8 @@ class forbiddenisland extends Table
                "players_win" => 18,
                "pilot_action" => 19,
                "special_action_player" => 20,
-            //      ...
-            //    "my_first_game_variant" => 100,
-            //    "my_second_game_variant" => 101,
-            //      ...
-            
+               "discard_treasure_player" => 21,
+               "rescue_pawn_player" => 22,
         ) );        
 
         $this->tiles = self::getNew( "module.common.deck");
@@ -1000,9 +997,10 @@ class forbiddenisland extends Table
 
     function discardTreasure( $id )
     {
-        self::checkAction( 'discard' );
+        $this->gamestate->checkPossibleAction( 'discard' );
 
-        $player_id = self::getActivePlayerId();
+        // $player_id = self::getActivePlayerId();
+        $player_id = $this->getGameStateValue("discard_treasure_player");
 
         $card = $this->treasure_deck->getCard($id);
         $card_name = $this->treasure_list[$card['type']]['name'];
@@ -1065,8 +1063,8 @@ class forbiddenisland extends Table
 
         $count = $this->treasure_deck->countCardsInLocation('hand', $target_player_id );
         if ($count > 5) {
-            // change player to discard
-            $this->gamestate->nextState( 'change_player' );
+            $this->setGameStateValue("discard_treasure_player", $target_player_id);
+            $this->gamestate->nextState( 'discard' );
         } elseif ($this->getGameStateValue("remaining_actions") > 0) {
             $this->gamestate->nextState( 'action' );
         } else {
@@ -1382,6 +1380,7 @@ class forbiddenisland extends Table
 
         $count = $this->treasure_deck->countCardsInLocation('hand', $player_id );
         if ($count > 5) {
+            $this->setGameStateValue("discard_treasure_player", $player_id);
             $this->gamestate->nextState( 'discard' );
         } else {
             $this->gamestate->nextState( 'set_flood' );
@@ -1402,11 +1401,27 @@ class forbiddenisland extends Table
 
     }
 
-    function stPlayerActions()
+    function stSpecialAction()
     {
         // Setup multiactive players (active plus players with special action cards)
         // $players = $this->getMultiactivePlayers();
         $players = array($this->getGameStateValue("special_action_player"));
+        $this->gamestate->setPlayersMultiactive( $players, 'draw_treasure', $bExclusive = true );
+    }
+
+    function stRescuePawn()
+    {
+        // Setup multiactive players (active plus players with special action cards)
+        // $players = $this->getMultiactivePlayers();
+        $players = array($this->getGameStateValue("rescue_pawn_player"));
+        $this->gamestate->setPlayersMultiactive( $players, 'draw_treasure', $bExclusive = true );
+    }
+
+    function stDiscardTreasure()
+    {
+        // Setup multiactive players (active plus players with special action cards)
+        // $players = $this->getMultiactivePlayers();
+        $players = array($this->getGameStateValue("discard_treasure_player"));
         $this->gamestate->setPlayersMultiactive( $players, 'draw_treasure', $bExclusive = true );
     }
 

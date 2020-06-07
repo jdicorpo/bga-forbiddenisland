@@ -255,8 +255,10 @@ function (dojo, declare) {
                     return obj[key];
                 });
                 // $('cardcount_' + this.player_id).innerHTML = this.player_treasure_cards.length;
-                this.updatePossibleCards( this.player_treasure_cards );
-                this.selectedAction = 'discard';
+                if ( this.isCurrentPlayerActive() ) {
+                    this.updatePossibleCards( this.player_treasure_cards );
+                    this.selectedAction = 'discard';
+                }
                 break;
 
             case 'client_selectShoreUp':
