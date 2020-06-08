@@ -250,15 +250,7 @@ function (dojo, declare) {
                 break;
 
             case 'discardTreasure':
-                var obj = args.args.player_treasure_cards[this.player_id];
-                this.player_treasure_cards = Object.keys(obj).map(function(key) {
-                    return obj[key];
-                });
-                // $('cardcount_' + this.player_id).innerHTML = this.player_treasure_cards.length;
-                if ( this.isCurrentPlayerActive() ) {
-                    this.updatePossibleCards( this.player_treasure_cards );
-                    this.selectedAction = 'discard';
-                }
+                // for multipleactiveplayer states, onUpdateActionButtons id called before onEnteringState
                 break;
 
             case 'client_selectShoreUp':
@@ -335,6 +327,10 @@ function (dojo, declare) {
             case 'client_confirmWinGame':
                 break;
 
+            case 'rescuePawn':
+                this.clearLastAction();
+                break;
+
             case 'dummmy':
                 break;
             }
@@ -396,6 +392,36 @@ function (dojo, declare) {
                         break;
                         
                     case 'discardTreasure':
+                        // for multipleactiveplayer state, onUpdateActionButtons id called before onEnteringState
+                        var obj = args.player_treasure_cards[this.player_id];
+                        this.player_treasure_cards = Object.keys(obj).map(function(key) {
+                            return obj[key];
+                        });
+                        this.updatePossibleCards( this.player_treasure_cards );
+                        this.selectedAction = 'discard';
+                        break;
+
+                    case 'rescuePawn':
+                        this.selectedAction = 'rescue';
+                        this.possibleActions = args.possibleActions[this.player_id];
+                        var obj = args.player_treasure_cards[this.player_id];
+                        this.player_treasure_cards = Object.keys(obj).map(function(key) {
+                            return obj[key];
+                        });
+                        this.adventurer = args.adventurer[this.player_id];
+                        // $('cardcount_' + this.player_id).innerHTML = this.player_treasure_cards.length;
+                        if (this.adventurer == 'pilot') {
+                            this.updatePossibleMoves( this.possibleActions.heli_lift );
+                        } else {
+                            this.updatePossibleMoves( this.possibleActions.move );
+                        }
+                        // var obj = args.colocated_players;
+                        // this.colocated_players = Object.keys(obj).map(function(key) {
+                        //     return obj[key];
+                        // });
+                        this.isWinCondition = args.isWinCondition;
+                        this.pilot_action = args.pilot_action;
+                        this.special_action = false;
                         break;
 
                     case 'client_selectShoreUp':
@@ -1053,78 +1079,95 @@ function (dojo, declare) {
                 tile_id = tile_id.slice(10);
             }
 
-            if( this.isCurrentPlayerActive() )
-            {     
+            if( this.isCurrentPlayerActive() ) {     
                 console.log( 'onTile' );
-                if (this.selectedAction == 'pilot') {
-                    if( this.checkAction( 'move' ) && dojo.hasClass(tile_id, 'possibleMove'))
-                    {  
-                        this.ajaxcall( "/forbiddenisland/forbiddenisland/moveAction.html", {
-                            tile_id:tile_id,
-                            pilot: true
-                        }, this, function( result ) {} );
-                    }
-                } else if (this.selectedAction == 'move') {
-                    if( this.checkAction( 'move' ) && dojo.hasClass(tile_id, 'possibleMove'))
-                    {  
-                        this.ajaxcall( "/forbiddenisland/forbiddenisland/moveAction.html", {
-                            tile_id:tile_id
-                        }, this, function( result ) {} );
-                    }
-                } else if (this.selectedAction == 'shore_up') {
-                    if( this.checkAction( 'shore_up' ) && dojo.hasClass(tile_id, 'possibleMove'))
-                    {  
-                        this.ajaxcall( "/forbiddenisland/forbiddenisland/shoreUpAction.html", {
-                            tile_id:tile_id
-                        }, this, function( result ) {} );
-                    }
-                } else if (this.selectedAction == 'heli_lift') {
-                    if( this.checkAction( 'move' ) && dojo.hasClass(tile_id, 'possibleMove'))
-                    {  
-                        if (tile_id == 'fools_landing' && this.isWinCondition ) {
-                            this.setClientState("client_confirmWinGame", 
-                                { descriptionmyturn : "${you} have your team and all four treasures.  Are you ready to lift off the island for the win!?!"});
-                        } else if (this.startingTile == null) {
-                            this.startingTile = tile_id;
-                            this.setClientState("client_selectHeliLiftPlayers", 
-                                { descriptionmyturn : "${you} are playing special action - Helicopter Lift. Select players to move."});
-                        } else {
-                            var card_id = this.selectedCard.split('_')[2];
+                switch (this.selectedAction) {
+                    case 'pilot':
+                        if ( this.checkAction( 'move' ) && dojo.hasClass(tile_id, 'possibleMove')) {  
                             this.ajaxcall( "/forbiddenisland/forbiddenisland/moveAction.html", {
                                 tile_id:tile_id,
-                                heli_lift: true,
-                                card_id: card_id,
-                                players: this.selectedPlayers.join(';')
+                                pilot: true
                             }, this, function( result ) {} );
                         }
-                    }
-                } else if (this.selectedAction == 'sandbags') {
-                    if( this.checkAction( 'shore_up' ) && dojo.hasClass(tile_id, 'possibleMove'))
-                    {  
-                        var card_id = this.selectedCard.split('_')[2];
-                        this.ajaxcall( "/forbiddenisland/forbiddenisland/shoreUpAction.html", {
-                            tile_id:tile_id,
-                            sandbags: true,
-                            card_id: card_id
-                        }, this, function( result ) {} );
-                    }
-                } else if (this.selectedAction == 'bonus_shoreup') {
-                    if( this.checkAction( 'shore_up' ) && dojo.hasClass(tile_id, 'possibleMove'))
-                    {  
-                        this.ajaxcall( "/forbiddenisland/forbiddenisland/shoreUpAction.html", {
-                            tile_id:tile_id,
-                            bonus: true
-                        }, this, function( result ) {} );
-                    }
-                } else if (this.selectedAction == 'navigator') {
-                    if( this.checkAction( 'move' ))
-                    {  
-                        this.ajaxcall( "/forbiddenisland/forbiddenisland/moveAction.html", { 
-                            tile_id:tile_id,
-                            navigator: true,
-                            players: this.selectedPlayers.join(';')
-                        }, this, function( result ) {} );                        
-                    }
+                        break;
+
+                    case 'move':
+                        if ( this.checkAction( 'move' ) && dojo.hasClass(tile_id, 'possibleMove')) {  
+                            this.ajaxcall( "/forbiddenisland/forbiddenisland/moveAction.html", {
+                                tile_id:tile_id
+                            }, this, function( result ) {} );
+                        }
+                        break;
+
+                    case 'shore_up':
+                        if ( this.checkAction( 'shore_up' ) && dojo.hasClass(tile_id, 'possibleMove')) {  
+                            this.ajaxcall( "/forbiddenisland/forbiddenisland/shoreUpAction.html", {
+                                tile_id:tile_id
+                            }, this, function( result ) {} );
+                        }
+                        break;
+
+                    case 'heli_lift':
+                        if ( this.checkAction( 'move' ) && dojo.hasClass(tile_id, 'possibleMove')) {  
+                            if (tile_id == 'fools_landing' && this.isWinCondition ) {
+                                this.setClientState("client_confirmWinGame", 
+                                    { descriptionmyturn : "${you} have your team and all four treasures.  Are you ready to lift off the island for the win!?!"});
+                            } else if (this.startingTile == null) {
+                                this.startingTile = tile_id;
+                                this.setClientState("client_selectHeliLiftPlayers", 
+                                    { descriptionmyturn : "${you} are playing special action - Helicopter Lift. Select players to move."});
+                            } else {
+                                var card_id = this.selectedCard.split('_')[2];
+                                this.ajaxcall( "/forbiddenisland/forbiddenisland/moveAction.html", {
+                                    tile_id:tile_id,
+                                    heli_lift: true,
+                                    card_id: card_id,
+                                    players: this.selectedPlayers.join(';')
+                                }, this, function( result ) {} );
+                            }
+                        }
+                        break;
+
+                    case 'sandbags':
+                        if( this.checkAction( 'shore_up' ) && dojo.hasClass(tile_id, 'possibleMove')) {  
+                            var card_id = this.selectedCard.split('_')[2];
+                            this.ajaxcall( "/forbiddenisland/forbiddenisland/shoreUpAction.html", {
+                                tile_id:tile_id,
+                                sandbags: true,
+                                card_id: card_id
+                            }, this, function( result ) {} );
+                        }
+                        break;
+
+                    case 'bonus_shoreup':
+                        if ( this.checkAction( 'shore_up' ) && dojo.hasClass(tile_id, 'possibleMove')) {  
+                            this.ajaxcall( "/forbiddenisland/forbiddenisland/shoreUpAction.html", {
+                                tile_id:tile_id,
+                                bonus: true
+                            }, this, function( result ) {} );
+                        }
+                        break;
+
+                    case 'navigator':
+                        if ( this.checkAction( 'move' )) {  
+                            this.ajaxcall( "/forbiddenisland/forbiddenisland/moveAction.html", { 
+                                tile_id:tile_id,
+                                navigator: true,
+                                players: this.selectedPlayers.join(';')
+                            }, this, function( result ) {} );                        
+                        }
+                        break;
+
+                    case 'rescue':
+                        if ( this.checkAction( 'move' )) {  
+                            this.ajaxcall( "/forbiddenisland/forbiddenisland/moveAction.html", { 
+                                tile_id:tile_id,
+                                rescue: true,
+                                players: [ this.player_id ].join(';')
+                            }, this, function( result ) {} );                        
+                        }
+                        break;
+                    
                 }
             }
         },
@@ -1302,7 +1345,7 @@ function (dojo, declare) {
                 this.discardTreasure(notif.args.card_id);
                 notif.args.players.split(',').forEach( function(x) {
                     this.movePawn( notif.args.tile_id, x );
-                }, this)
+                }, this);
             } else if (notif.args.navigator) {
                 this.movePawn( notif.args.tile_id, notif.args.target_player_id );
             } else {

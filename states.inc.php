@@ -142,7 +142,7 @@ $machinestates = array(
         // "possibleactions" => array( "move", "pass" ),
         "transitions" => array( 
             "draw_flood" => STATE_DRAW_FLOOD_CARDS,
-            "rescuePawn" => STATE_RESCUE_PAWN, 
+            "rescue_pawn" => STATE_RESCUE_PAWN, 
             "next_player" => STATE_NEXT_PLAYER,
             "final" => STATE_FINAL 
         )
@@ -150,16 +150,16 @@ $machinestates = array(
 
     STATE_RESCUE_PAWN => array(
         "name" => "rescuePawn",
-        "description" => clienttranslate('${actplayer} is taking actions'),
-        "descriptionmyturn" => clienttranslate('${you} take up to actions'),
+        "description" => clienttranslate('Other players are rescuing their pawns'),
+        "descriptionmyturn" => clienttranslate('${you} rescue your pawn.  Select a tile to move to.'),
         // "type" => "activeplayer",
         "type" => "multipleactiveplayer",
         "action" => "stRescuePawn",
-        "args" => "argPlayerActions",
-        "possibleactions" => array( "move", "pass" ),
+        "args" => "argMultiPlayerActions",
+        "possibleactions" => array( "move" ),
         "transitions" => array( 
-            "action" => STATE_PLAYER_ACTIONS, 
-            "pass" => STATE_PLAYER_ACTIONS 
+            "draw_flood" => STATE_DRAW_FLOOD_CARDS,
+            "rescue_pawn" => STATE_RESCUE_PAWN
         )
     ),
 

@@ -1,6 +1,5 @@
-* implement rescue pawn
-
 * implement stats
+* implement updateGameProgression
 
 * tooltips
 * server side checks for give card
@@ -15,3 +14,5 @@
 BUGS:
 * impossible action after discard
 * card location in player area
+* heli_lift destination excludes wrong starting tile
+* cards not highlighted for discard?
