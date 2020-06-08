@@ -1183,46 +1183,51 @@ function (dojo, declare) {
             {     
                 console.log( 'onCard' );
 
-                if (this.selectedAction == 'discard') {
-                    if( this.checkAction( 'discard' ) && dojo.hasClass(dojo.byId(card_id), 'possibleCard'))
-                    {  
-                        var node = $(card_id);
-                        dojo.addClass(node, 'selected');
-                        this.selectedCard = card_id;
-                        var id = card_id.split('_')[2];
-                        for (var i = 0; i < this.player_treasure_cards.length; i++) {
-                            if (this.player_treasure_cards[i].id == id) {
-                                var card_type = this.player_treasure_cards[i].type;
-                                break;
+                switch (this.selectedAction) {
+                    case 'discard':
+                        if ( this.checkAction( 'discard' ) && dojo.hasClass(dojo.byId(card_id), 'possibleCard')) {  
+                            var node = $(card_id);
+                            dojo.addClass(node, 'selected');
+                            this.selectedCard = card_id;
+                            var id = card_id.split('_')[2];
+                            for (var i = 0; i < this.player_treasure_cards.length; i++) {
+                                if (this.player_treasure_cards[i].id == id) {
+                                    var card_type = this.player_treasure_cards[i].type;
+                                    break;
+                                }
+                            }
+                            if (card_type == 'heli_lift' || card_type == 'sandbags') {
+                                this.setClientState("client_selectChooseDiscardSpecial", 
+                                { descriptionmyturn : "Would ${you} like to play the special action card?"});
+                            } else {
+                                this.ajaxcall( "/forbiddenisland/forbiddenisland/discardTreasure.html", {
+                                    id:id
+                                }, this, function( result ) {} );
                             }
                         }
-                        if (card_type == 'heli_lift' || card_type == 'sandbags') {
-                            this.setClientState("client_selectChooseDiscardSpecial", 
-                            { descriptionmyturn : "Would ${you} like to play the special action card?"});
-                        } else {
-                            this.ajaxcall( "/forbiddenisland/forbiddenisland/discardTreasure.html", {
-                                id:id
-                            }, this, function( result ) {} );
+                        break;
+                    case 'give_card':
+                        if ( this.checkAction( 'give_card' ) && dojo.hasClass(dojo.byId(card_id), 'possibleCard')) {  
+                            var node = $(card_id);
+                            dojo.addClass(node, 'selected');
+    
+                            if (this.adventurer == 'messenger') {
+                                this.updateAllPlayers();
+                            } else {
+                                this.updateColocatedPlayers(this.colocated_players);
+                            }
+    
+                            this.setClientState("client_selectGiveCardPlayers", 
+                                { descriptionmyturn : "${you} select players to give the card to."});
+    
                         }
-                    }
-                } else if (this.selectedAction == 'give_card') {
-                    if( this.checkAction( 'give_card' ) && dojo.hasClass(dojo.byId(card_id), 'possibleCard'))
-                    {  
-                        var node = $(card_id);
-                        dojo.addClass(node, 'selected');
+                        break;
 
-                        if (this.adventurer == 'messenger') {
-                            this.updateAllPlayers();
-                        } else {
-                            this.updateColocatedPlayers(this.colocated_players);
-                        }
-
-                        this.setClientState("client_selectGiveCardPlayers", 
-                            { descriptionmyturn : "${you} select players to give the card to."});
-
-                    }
-                } 
+                    default:
+                        break;
+                }
             }
+
             if (this.selectedAction == 'special_action') {
                 // if( this.checkPossibleActions( 'special_action' ) && dojo.hasClass(dojo.byId(card_id), 'possibleCard'))
                 if(dojo.hasClass(dojo.byId(card_id), 'possibleCard'))
