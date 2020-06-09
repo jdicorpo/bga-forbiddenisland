@@ -26,31 +26,22 @@
 $game_options = array(
     100 => array(
         'name' => totranslate('Difficulty'),
-        'value' => array(
-            1 => array( 'name' => totranslate('Novice'), 
-                    'nobeginner' => false  ),
-            2 => array( 'name' => totranslate('Normal'),
-                    'nobeginner' => true  ),
-            3 => array( 'name' => totranslate('Elite'),
-                    'nobeginner' => true  ),
-            4 => array( 'name' => totranslate('Legendary'),
-                    'nobeginner' => true  )
-        )
+        'values' => array(
+            1 => array( 'name' => totranslate('Novice'), 'nobeginner' => false ),
+            2 => array( 'name' => totranslate('Normal'), 'nobeginner' =>  false ),
+            3 => array( 'name' => totranslate('Elite'), 'nobeginner' => false ),
+            4 => array( 'name' => totranslate('Legendary'), 'nobeginner' => false ),
+        ),
     ),
     101 => array(
-        'name' => totranslate('Map'),
-        'value' => array(
-            1 => array( 'name' => totranslate('Forbidden Island'), 
-                    'nobeginner' => false  ),
-            2 => array( 'name' => totranslate('Treasure Island'),
-                    'nobeginner' => true  ),
-            3 => array( 'name' => totranslate('Island of Shadows'),
-                    'nobeginner' => true  ),
-            4 => array( 'name' => totranslate('Volcano Island'),
-                    'nobeginner' => true  )
-        )
+        'name' => totranslate('Island Map'),
+        'values' => array(
+            1 => array( 'name' => totranslate('Forbidden Island'), 'nobeginner' => false ),
+        //     2 => array( 'name' => totranslate('Treasure Island'), 'nobeginner' => false ),
+        //     3 => array( 'name' => totranslate('Island of Shadows'), 'nobeginner' => false ),
+        //     4 => array( 'name' => totranslate('Volcano Island'), 'nobeginner' => false ),
+        ),
     ),
-
 );
 
 

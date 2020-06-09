@@ -797,7 +797,7 @@ function (dojo, declare) {
 
             console.log( 'updatePossibleMoves' );
 
-            if (possibleMoves.length > 0) {
+            if ((typeof possibleMoves !== 'undefined') && (possibleMoves.length > 0)) {
                 possibleMoves.forEach(
                     function (tile_id, index) {
                         // if (!(dojo.query('#'+tile_id).hasClass( 'possibleMove' ))) {

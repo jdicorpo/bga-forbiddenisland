@@ -1,11 +1,9 @@
-* implement stats
 * implement updateGameProgression
 
 * tooltips
 * server side checks for give card
 * reposition cards after move
 
-* support difficulty
 * support other maps
 
 * support high-res graphics

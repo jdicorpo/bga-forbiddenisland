@@ -47,6 +47,8 @@ class forbiddenisland extends Table
                "discard_treasure_player" => 21,
                "rescue_pawn_player" => 22,
                "rescue_pawn_tile" => 23,
+               "difficulty" => 100,
+               "island_map" => 101,
         ) );        
 
         $this->tiles = self::getNew( "module.common.deck");
@@ -112,11 +114,14 @@ class forbiddenisland extends Table
         // Note: if you added some extra field on "player" table in the database (dbmodel.sql), you can initialize it there.
         $sql = "INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar, adventurer, location) VALUES ";
         $values = array();
+        $new_players = 0;
         foreach( $players as $player_id => $player )
         {
+            if ($player['beginner'] == 1)  $new_players++;
             $player_card = $this->player_deck->pickCardForLocation( 'deck', 'hand', $player_id );
             $adventurer = $player_card['type'];
             $location = $this->player_list[$adventurer]['location'];
+            self::setStat($this->player_list[$adventurer]['pawn_idx']);
             // $color = array_shift( $default_colors );
             $color = $this->player_list[$adventurer]['color'];
             $values[] = "('" . $player_id . "','$color','" . $player['player_canal'] . "','" . addslashes( $player['player_name'] ) . "','".addslashes( $player['player_avatar'] ) . "','$adventurer','$location')";
@@ -139,11 +144,10 @@ class forbiddenisland extends Table
         /************ Start the game initialization *****/
 
         // Init global values with their initial values
-        //self::setGameStateInitialValue( 'my_first_global_variable', 0 );
         self::setGameStateInitialValue( 'remaining_actions', 3 );
         self::setGameStateInitialValue( 'remaining_flood_cards', 6 );
         self::setGameStateInitialValue( 'drawn_treasure_cards', 0 );
-        self::setGameStateInitialValue( 'water_level', 1 );
+        self::setGameStateInitialValue( 'water_level', self::getGameStateValue("difficulty") );
         self::setGameStateInitialValue( 'air', 0 );
         self::setGameStateInitialValue( 'fire', 0 );
         self::setGameStateInitialValue( 'earth', 0 );
@@ -152,15 +156,33 @@ class forbiddenisland extends Table
         self::setGameStateInitialValue( 'pilot_action', 1 );
         
         // Init game statistics
-        // (note: statistics used in this file must be defined in your stats.inc.php file)
-        //self::initStat( 'table', 'table_teststat1', 0 );    // Init a table statistics
-        //self::initStat( 'player', 'player_teststat1', 0 );  // Init a player statistics (for all players)
+        self::initStat( 'table', 'turns_number', 0 );
+        self::initStat( 'table', 'players_number', count( $players ) );
+        self::initStat( 'table', 'beginners_number', $new_players );
+        self::initStat( 'table', 'difficulty', self::getGameStateValue("difficulty") );
+        self::initStat( 'table', 'island_map', self::getGameStateValue("island_map") );
+        self::initStat( 'table', 'tiles_flooded', 0 );
+        self::initStat( 'table', 'tiles_sunk', 0 );
+        self::initStat( 'table', 'tiles_shored_up', 0 );
+        self::initStat( 'table', 'treasures_captured', 0 );
+        self::initStat( 'table', 'water_level', self::getGameStateValue("water_level") );
+        self::initStat( 'table', 'players_won', false );
 
-        // TODO: setup the initial game situation here
+        self::initStat( 'player', 'turns_number', 0 ); 
+        self::initStat( 'player', 'move', 0 );  
+        self::initStat( 'player', 'shore_up', 0 );  
+        self::initStat( 'player', 'give_card', 0 );  
+        self::initStat( 'player', 'capture', 0 );  
+        self::initStat( 'player', 'skip', 0 );  
+        self::initStat( 'player', 'sandbags', 0 );  
+        self::initStat( 'player', 'heli_lift', 0 );  
+        self::initStat( 'player', 'pilot', 0 );  
+        self::initStat( 'player', 'navigator', 0 );  
+        self::initStat( 'player', 'bonus_shoreup', 0 );  
+
        
         $card_deck = array();
         foreach ($this->tile_list as $x => $x_value) {
-            // $card_deck[] = array( 'type' => $x, 'type_arg' =>  $x_value['img_id'], 'nbr' => 1);
             $card_deck[] = array( 'type' => $x, 'type_arg' =>  1, 'nbr' => 1);
         }
 
@@ -180,6 +202,8 @@ class forbiddenisland extends Table
         }
 
         $player_id = $this->activeNextPlayer();
+        self::incStat(1, "turns_number", $player_id);
+
 
         /************ End of the game initialization *****/
     }
@@ -311,8 +335,6 @@ class forbiddenisland extends Table
                         $checked[] = $tile['type'];
                         $tiles = $this->getDiverAdjacentTiles($tile['type'], $result, $player_id, $player_tile_id, $checked);
                         $result['move'] = array_merge($result['move'], $tiles['move']);
-                        // var_dump($result);
-                        // die('ok');
                     }
                 }
             }
@@ -339,26 +361,28 @@ class forbiddenisland extends Table
                 }
             }
 
-            foreach ($result['navigator'][$player_id] as $tile_id) {
+            if (array_key_exists('navigator', $result)) {
+                foreach ($result['navigator'][$player_id] as $tile_id) {
 
-                foreach ($this->tiles->getCardsInLocation('unflooded') as $id => $tile ) {
-                    if (! in_array($tile['type'], $result['navigator'][$player_id] ) and ($tile['type'] != $player_tile_id)) {
-                        if ( $this->isTileAdjacent($tile['type'], $tile_id, $player_id) )
-                        {
-                            $result['navigator'][$player_id][] = $tile['type'];
+                    foreach ($this->tiles->getCardsInLocation('unflooded') as $id => $tile ) {
+                        if (! in_array($tile['type'], $result['navigator'][$player_id] ) and ($tile['type'] != $player_tile_id)) {
+                            if ( $this->isTileAdjacent($tile['type'], $tile_id, $player_id) )
+                            {
+                                $result['navigator'][$player_id][] = $tile['type'];
+                            }
                         }
                     }
-                }
 
-                foreach ($this->tiles->getCardsInLocation('flooded') as $id => $tile ) {
-                    if (! in_array($tile['type'], $result['navigator'][$player_id] ) and ($tile['type'] != $player_tile_id)) {
-                        if ( $this->isTileAdjacent($tile['type'], $tile_id, $player_id) )
-                        {
-                            $result['navigator'][$player_id][] = $tile['type'];
+                    foreach ($this->tiles->getCardsInLocation('flooded') as $id => $tile ) {
+                        if (! in_array($tile['type'], $result['navigator'][$player_id] ) and ($tile['type'] != $player_tile_id)) {
+                            if ( $this->isTileAdjacent($tile['type'], $tile_id, $player_id) )
+                            {
+                                $result['navigator'][$player_id][] = $tile['type'];
+                            }
                         }
                     }
-                }
 
+                }
             }
 
             return $result;
@@ -584,6 +608,7 @@ class forbiddenisland extends Table
         function waters_rise($card, $skip_reshuffle = false) {
             $player_id = self::getActivePlayerId();
             $water_level = $this->incGameStateValue("water_level", 1);
+            self::setStat($water_level, "water_level");
 
             $new_flood_draw = $this->getNumberFloodCards($water_level);
 
@@ -663,7 +688,7 @@ class forbiddenisland extends Table
             return (($nPlayers == $this->getPlayersNumber()) and ($nTreaures == 4)) ? true : false;
         }
 
-        function isGameLost() {
+        function isGameLost( $current_tile = NULL ) {
 
             // check if water level is 10 or greater
             $water_level = $this->getGameStateValue("water_level");
@@ -688,7 +713,16 @@ class forbiddenisland extends Table
                     $tile_id_1 = $this->treasure_list[$treasure]['tiles'][1];
                     $tiles = $this->tiles->getCardsOfType($tile_id_1);
                     $tile_1 = array_shift($tiles);
+                    // if (($current_tile == 'temple_moon') and ($treasure == 'earth') ) { 
+                    //     var_dump($treasure); var_dump($tile_id_0); var_dump($tile_0); var_dump($tile_1); die('ok'); 
+                    // }
                     if (($tile_0['location'] == 'sunk') and ($tile_1['location'] == 'sunk'))  {
+                        return true;
+                    }
+                    if (($tile_0['type'] == $current_tile) and ($tile_1['location'] == 'sunk'))  {
+                        return true;
+                    }
+                    if (($tile_0['location'] == 'sunk') and ($tile_1['type'] == $current_tile))  {
                         return true;
                     }
                 }
@@ -881,14 +915,21 @@ class forbiddenisland extends Table
             if (!$heli_lift) {
                 if (!$rescue) {
                     $this->incGameStateValue("remaining_actions", -1);
+                    self::incStat(1, "move", $player_id);
                 }
             } else {
                 $this->treasure_deck->moveCard($card_id, 'discard');
                 $this->updateCardCount();
+                self::incStat(1, "heli_lift", $player_id);
             }
 
             if ($pilot) {
                 $this->setGameStateValue("pilot_action", 0);
+                self::incStat(1, "pilot", $player_id);
+            }
+
+            if ($navigator) {
+                self::incStat(1, "navigator", $player_id);
             }
 
         } else {
@@ -967,13 +1008,21 @@ class forbiddenisland extends Table
         
         // check if shore up is possible
         if (! $sandbags ) {
-            $possibleShoreUp = $this->getPossibleShoreUp($player_id)['shore_up'];  // TODO: cover case where function returns empty
-            if (!in_array($tile_id, $possibleShoreUp)) {
+            if (array_key_exists('shore_up', $this->getPossibleShoreUp($player_id))) {
+                $possibleShoreUp = $this->getPossibleShoreUp($player_id)['shore_up'];  // TODO: cover case where function returns empty
+                if (!in_array($tile_id, $possibleShoreUp)) {
+                    return;
+                }
+            } else {
                 return;
             }
         } else {
-            $possibleSandbags = $this->getPossibleSandbags()['sandbags'];
-            if (!in_array($tile_id, $possibleSandbags)) {
+            if (array_key_exists('sandbags', $this->getPossibleShoreUp($player_id))) {
+                $possibleSandbags = $this->getPossibleSandbags()['sandbags'];
+                if (!in_array($tile_id, $possibleSandbags)) {
+                    return;
+                }
+            } else {
                 return;
             }
         }
@@ -985,6 +1034,7 @@ class forbiddenisland extends Table
             if ($tile['location'] == 'flooded') {
 
                 $this->tiles->moveCard($tile['id'], 'unflooded', $tile['location_arg']);
+                self::incStat(1, "tiles_shored_up");
     
                 self::notifyAllPlayers( "shoreUpAction", clienttranslate( '${player_name} shored up ${tile_name}' ), array(
                     'player_id' => $player_id,
@@ -998,12 +1048,18 @@ class forbiddenisland extends Table
 
                 if (!$sandbags and !$bonus) {
                     $this->incGameStateValue("remaining_actions", -1);
+                    self::incStat(1, "shore_up", $player_id);
                 }
 
                 if ($sandbags) {
                     // $card = $this->treasure_deck->getCard($card_id);
                     $this->treasure_deck->moveCard($card_id, 'discard');
                     $this->updateCardCount();
+                    self::incStat(1, "sandbags", $player_id);
+                }
+
+                if ($bonus) {
+                    self::incStat(1, "bonus_shoreup", $player_id);
                 }
         
             }
@@ -1012,20 +1068,52 @@ class forbiddenisland extends Table
             throw new feException( "No remaining actions" );
         }
 
-        if (($this->getAdventurer( $player_id ) == 'engineer') and (count($possibleShoreUp) > 1) and (!$bonus)) {
-            $this->gamestate->nextState( 'bonus_shoreup' );
-        } elseif ($this->getGameStateValue("remaining_actions") > 0) {
-            $this->gamestate->nextState( 'action' );
-        } elseif ($sandbags) {
-            $count = $this->treasure_deck->countCardsInLocation('hand', $player_id );
-            if ($count > 5) {
-                $this->gamestate->nextState( 'discard' );
-            } else {
-                $this->gamestate->nextState( 'set_flood' );
-            }
-        } else {
-            $this->gamestate->nextState( 'draw_treasure' );
+        // determine next state
+        $state = $this->gamestate->state();
+        self::dump('state = ', $state['name']);
+        switch ($state['name']) {
+            case 'playerActions':
+                if (($this->getAdventurer( $player_id ) == 'engineer') and (count($possibleShoreUp) > 1) and (!$bonus)) {
+                    $this->gamestate->nextState( 'bonus_shoreup' );
+                } elseif ($this->getGameStateValue("remaining_actions") > 0) {
+                    $this->gamestate->nextState( 'action' );
+                } else {
+                    $this->gamestate->nextState( 'draw_treasure' );
+                }
+                break;
+
+            case 'discardTreasure':
+            case 'sandbags':
+                $count = $this->treasure_deck->countCardsInLocation('hand', $player_id );
+                if ($count > 5) {
+                    $this->gamestate->nextState( 'discard' );
+                } elseif ($this->getGameStateValue("remaining_actions") > 0) {
+                    $this->gamestate->nextState( 'action' );
+                } elseif ($this->getGameStateValue("drawn_treasure_cards") < 2) {
+                    $this->gamestate->nextState( 'draw_treasure' );
+                } else {
+                    $this->gamestate->nextState( 'set_flood' );
+                }
+                break;
+
+            default:
+                break;
         }
+
+        // if (($this->getAdventurer( $player_id ) == 'engineer') and (count($possibleShoreUp) > 1) and (!$bonus)) {
+        //     $this->gamestate->nextState( 'bonus_shoreup' );
+        // } elseif ($this->getGameStateValue("remaining_actions") > 0) {
+        //     $this->gamestate->nextState( 'action' );
+        // } elseif ($sandbags) {
+        //     $count = $this->treasure_deck->countCardsInLocation('hand', $player_id );
+        //     if ($count > 5) {
+        //         $this->gamestate->nextState( 'discard' );
+        //     } else {
+        //         $this->gamestate->nextState( 'set_flood' );
+        //     }
+        // } else {
+        //     $this->gamestate->nextState( 'draw_treasure' );
+        // }
 
     }
 
@@ -1040,6 +1128,8 @@ class forbiddenisland extends Table
 
         if ($this->getGameStateValue("remaining_actions") > 0) {
             $this->incGameStateValue("remaining_actions", -1);
+            self::incStat(1, "skip", $player_id);
+
             // Notify
             self::notifyAllPlayers( "skipAction", clienttranslate( '${player_name} skipped an action' ), array(
                 'player_id' => $player_id,
@@ -1106,6 +1196,8 @@ class forbiddenisland extends Table
                 $this->treasure_deck->moveCard($id, 'hand', $target_player_id);
                 
                 $this->incGameStateValue("remaining_actions", -1);
+                self::incStat(1, "give_card", $player_id);
+
                 self::notifyAllPlayers( "giveTreasure", clienttranslate( '${player_name} gave ${card_name} to ${target_player_name}' ), array(
                     'player_id' => $player_id,
                     'target_player_id' => $target_player_id,
@@ -1162,6 +1254,8 @@ class forbiddenisland extends Table
                 
                 $this->setGameStateValue($treasure, $player_id);
                 $this->incGameStateValue("remaining_actions", -1);
+                self::incStat(1, "treasures_captured");
+                self::incStat(1, "capture", $player_id);
 
                 self::notifyAllPlayers( "captureTreasure", clienttranslate( '${player_name} captured ${treasure}!!' ), array(
                     'player_id' => $player_id,
@@ -1354,6 +1448,7 @@ class forbiddenisland extends Table
         if ($tile['location'] == 'unflooded') {
 
             $this->tiles->moveCard($tile['id'], 'flooded', $tile['location_arg']);
+            self::incStat(1, "tiles_flooded");
 
             self::notifyAllPlayers( "floodTile", clienttranslate( "${tile_name} has flooded!!" ), array(
                 'tile_id' => $tile['type'],
@@ -1361,9 +1456,7 @@ class forbiddenisland extends Table
                 'tile_name' => $tile_name
             ) );
 
-            if ($this->isGameLost()) {
-                $this->gamestate->nextState( 'final' );
-            } elseif ($remain_flood_cards > 0) {
+            if ($remain_flood_cards > 0) {
                 $this->gamestate->nextState( 'draw_flood' );
             } else {
                 $this->gamestate->nextState( 'next_player' );
@@ -1373,6 +1466,7 @@ class forbiddenisland extends Table
 
             $this->tiles->moveCard($tile['id'], 'sunk', $tile['location_arg']);
             $this->flood_deck->moveCard($flood_card['id'], 'sunk');
+            self::incStat(1, "tiles_sunk");
 
             self::notifyAllPlayers( "sinkTile", clienttranslate( "${tile_name} has sunk!!!" ), array(
                 'tile_id' => $tile['type'],
@@ -1383,16 +1477,12 @@ class forbiddenisland extends Table
             // check for pawns to rescue
 
             $rescue_pawns = $this->getPlayersAtLocation($tile['type']);
-            if ( count($rescue_pawns) > 0 ) {
-                
-                // $pid = array_shift($rescue_pawns);
-                // $this->setGameStateValue("rescue_pawn_player", $pid['player_id']);
-                $this->setGameStateValue("rescue_pawn_tile", $tile['id']);
-
-                $this->gamestate->nextState( 'rescue_pawn' );                
-
-            } else if ($this->isGameLost()) {
+            // if ($tile['type'] == 'temple_moon') { var_dump($this->isGameLost($tile['type'])); die('ok');}
+            if ($this->isGameLost($tile['type'])) {
                 $this->gamestate->nextState( 'final' );
+            } elseif ( count($rescue_pawns) > 0 ) {
+                $this->setGameStateValue("rescue_pawn_tile", $tile['id']);
+                $this->gamestate->nextState( 'rescue_pawn' );                
             } elseif ($remain_flood_cards > 0) {
                 $this->gamestate->nextState( 'draw_flood' );
             } else {
@@ -1421,8 +1511,6 @@ class forbiddenisland extends Table
             //         $this->gamestate->nextState( 'final' );
             //     }
             // }
-
-
 
         } else {
             throw new feException( "Error: Flood card drawn for sunk tile." );
@@ -1481,8 +1569,6 @@ class forbiddenisland extends Table
         } else {
             $this->gamestate->nextState( 'set_flood' );
         }
-        
-
     }
 
     function stNextPlayer()
@@ -1493,6 +1579,10 @@ class forbiddenisland extends Table
         $this->setGameStateValue("remaining_actions", 3);
         $this->setGameStateValue("drawn_treasure_cards", 0);
         $this->setGameStateValue("pilot_action", 1);
+
+        self::incStat(1, "turns_number");
+        self::incStat(1, "turns_number", $player_id);
+
         $this->gamestate->nextState( 'next_turn' );
 
     }
@@ -1507,18 +1597,22 @@ class forbiddenisland extends Table
 
     function stRescuePawn()
     {
-        // Setup multiactive players (players with pawns on sunk tile)
-        $tile = $this->tiles->getCard($this->getGameStateValue("rescue_pawn_tile"));
-        $rescue_pawns = $this->getPlayersAtLocation($tile['type']);
+        if ($this->isGameLost()) {
+            $this->gamestate->nextState( 'final' );
+        } else {
+            // Setup multiactive players (players with pawns on sunk tile)
+            $tile = $this->tiles->getCard($this->getGameStateValue("rescue_pawn_tile"));
+            $rescue_pawns = $this->getPlayersAtLocation($tile['type']);
 
-        $players = array_map( function($p){ return $p['player_id']; }, $rescue_pawns );
-        // if ( count($rescue_pawns) > 0 ) {
-        //     $pid = array_shift($rescue_pawns);
-        //     $this->setGameStateValue("rescue_pawn_player", $pid['player_id']);
-        // }
+            $players = array_map( function($p){ return $p['player_id']; }, $rescue_pawns );
+            // if ( count($rescue_pawns) > 0 ) {
+            //     $pid = array_shift($rescue_pawns);
+            //     $this->setGameStateValue("rescue_pawn_player", $pid['player_id']);
+            // }
 
-        // $players = array($this->getGameStateValue("rescue_pawn_player"));
-        $this->gamestate->setPlayersMultiactive( $players, 'draw_flood', $bExclusive = true );
+            // $players = array($this->getGameStateValue("rescue_pawn_player"));
+            $this->gamestate->setPlayersMultiactive( $players, 'draw_flood', $bExclusive = true );
+        }
     }
 
     function stDiscardTreasure()
@@ -1536,6 +1630,8 @@ class forbiddenisland extends Table
             foreach ( $players as $player_id => $player_info ) {
                 self::DbQuery( "UPDATE player SET player_score=1 WHERE player_id=$player_id" );
             }
+            self::setStat(true, "players_won");
+
             // self::DbQuery( "UPDATE player SET player_score=player_score+2 WHERE player_id='".self::getActivePlayerId()."'" );
         } else {
             foreach ( $players as $player_id => $player_info ) {
