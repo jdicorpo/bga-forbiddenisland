@@ -1,5 +1,3 @@
-* implement updateGameProgression
-
 * tooltips
 * server side checks for give card
 * reposition cards after move
@@ -14,3 +12,5 @@ BUGS:
 * card location in player area
 * heli_lift destination excludes wrong starting tile
 * cards not highlighted for discard?
+* end game condition when treasure tiles are sunk??
+* sandbags when discarding

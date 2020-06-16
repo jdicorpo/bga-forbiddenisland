@@ -114,6 +114,7 @@ $machinestates = array(
             "set_flood" => STATE_SET_FLOOD_CARDS,
             "sandbags" => STATE_SPECIAL_SANDBAGS,
             "heli_lift" => STATE_SPECIAL_HELI_LIFT,
+            "draw_treasure" => STATE_DRAW_TREASURE_CARDS,
             "final" => STATE_END_GAME
         )
     ),
@@ -218,10 +219,8 @@ $machinestates = array(
     STATE_NEXT_PLAYER => array(
         "name" => "nextPlayer",
         "type" => "game",
-        // "args" => "argPlayerActions",
         "action" => "stNextPlayer",
-        // "updateGameProgression" => true,
-        // "possibleactions" => array( "move", "pass" ),
+        "updateGameProgression" => true,
         "transitions" => array( 
             "next_turn" => STATE_PLAYER_ACTIONS,
             "final" => STATE_FINAL 

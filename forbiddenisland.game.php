@@ -121,7 +121,7 @@ class forbiddenisland extends Table
             $player_card = $this->player_deck->pickCardForLocation( 'deck', 'hand', $player_id );
             $adventurer = $player_card['type'];
             $location = $this->player_list[$adventurer]['location'];
-            self::setStat($this->player_list[$adventurer]['pawn_idx']);
+            self::initStat("player", "adventurer", $this->player_list[$adventurer]['pawn_idx'], $player_id);
             // $color = array_shift( $default_colors );
             $color = $this->player_list[$adventurer]['color'];
             $values[] = "('" . $player_id . "','$color','" . $player['player_canal'] . "','" . addslashes( $player['player_name'] ) . "','".addslashes( $player['player_avatar'] ) . "','$adventurer','$location')";
@@ -278,8 +278,13 @@ class forbiddenisland extends Table
     function getGameProgression()
     {
         // TODO: compute and return the game progression
+        $progress = 0;
+        $all_treasures = array('earth', 'air', 'fire', 'ocean');
+        foreach($all_treasures as $treasure) {
+            $progress += ($this->getGameStateValue($treasure) != 0) ? 25 : 0;
+        }
 
-        return 0;
+        return $progress;
     }
 
 
@@ -1157,6 +1162,7 @@ class forbiddenisland extends Table
         $card = $this->treasure_deck->getCard($id);
         $card_name = $this->treasure_list[$card['type']]['name'];
         $this->treasure_deck->moveCard($id, 'discard');
+        self::incStat(1, "discard", $player_id);
 
         self::notifyAllPlayers( "discardTreasure", clienttranslate( '${player_name} discarded ${card_name}' ), array(
             'player_id' => $player_id,
@@ -1172,6 +1178,8 @@ class forbiddenisland extends Table
             $this->gamestate->nextState( 'discard' );
         } elseif ($this->getGameStateValue('drawn_treasure_cards') == 2) {
             $this->gamestate->nextState( 'set_flood' );
+        } elseif ($this->getGameStateValue('remaining_actions') == 0) {
+            $this->gamestate->nextState( 'draw_treasure' );
         } else {
             $this->gamestate->nextState( 'action' );
         }
