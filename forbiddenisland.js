@@ -75,7 +75,9 @@ function (dojo, declare) {
 
             this.isWinCondition = false;
             this.adventurer = '';
-              
+
+            this.handles = [];
+
         },
         
         /*
@@ -347,11 +349,9 @@ function (dojo, declare) {
             {
             
             case 'playerActions':
-                // this.disconnectAll();
                 break;
 
             case 'discardTreasure':
-                // this.disconnectAll();
                 break;
           
            
@@ -516,10 +516,11 @@ function (dojo, declare) {
                         var node = $('treasure_card_' + c.id);
                         if (!(give && (c.type == 'sandbags' || c.type == 'heli_lift'))) {
                             dojo.addClass(node, 'possibleCard');
+                            this.handles.push(dojo.connect(node,'onclick', this, 'onCard'));
                         }
-                    });
+                    }, this);
             }
-            this.connectClass('possibleCard', 'onclick', 'onCard');
+            // this.connectClass('possibleCard', 'onclick', 'onCard');
         },
 
         updateSpecialCards: function(cards) {
@@ -531,10 +532,11 @@ function (dojo, declare) {
                         var node = $('treasure_card_' + c.id);
                         if (c.type == 'sandbags' || c.type == 'heli_lift') {
                             dojo.addClass(node, 'possibleCard');
+                            this.handles.push(dojo.connect(node,'onclick', this, 'onCard'));
                         }
                     }, this);
                 }
-                this.connectClass('possibleCard', 'onclick', 'onCard');
+                // this.connectClass('possibleCard', 'onclick', 'onCard');
         },
 
         updateColocatedPlayers: function(players) {
@@ -547,10 +549,12 @@ function (dojo, declare) {
                         if (p.player_id != this.player_id) {
                             var node = $('player_card_area_' + p.player_id);
                             dojo.addClass(node, 'possiblePlayer');
+                            this.handles.push(dojo.connect(node,'onclick', this, 'onPlayer'));
+
                         }
                     }, this);
                 }
-                this.connectClass('possiblePlayer', 'onclick', 'onPlayer');
+                // this.connectClass('possiblePlayer', 'onclick', 'onPlayer');
         },
 
         updateAllPlayers: function() {
@@ -562,9 +566,10 @@ function (dojo, declare) {
                 if (player_id != this.player_id) {
                     var node = $('player_card_area_' + player_id);
                     dojo.addClass(node, 'possiblePlayer');
+                    this.handles.push(dojo.connect(node,'onclick', this, 'onPlayer'));
                 }
             }
-            this.connectClass('possiblePlayer', 'onclick', 'onPlayer');
+            // this.connectClass('possiblePlayer', 'onclick', 'onPlayer');
         },
 
         placeWaterLevel: function(level) {
@@ -827,7 +832,9 @@ function (dojo, declare) {
             if (players.length > 0) {
                 players.forEach(
                     function (player_id, index) {
-                            dojo.query('#'+player_id).addClass( 'possiblePawn' );
+                            var node = $(player_id);
+                            dojo.addClass(node, 'possiblePawn' );
+                            this.handles.push(dojo.connect(node,'onclick', this, 'onPawn'));
                     }, this);
 
                 // if( this.isCurrentPlayerActive() )
@@ -840,7 +847,7 @@ function (dojo, declare) {
 
             dojo.query('.island_tile').addClass( 'fadeTile' );
 
-            this.connectClass('possiblePawn', 'onclick', 'onPawn');
+            // this.connectClass('possiblePawn', 'onclick', 'onPawn');
 
         },
 
@@ -870,6 +877,9 @@ function (dojo, declare) {
             dojo.query( '.selected' ).removeClass( 'selected' );
             dojo.query( '.selectedPawn' ).removeClass( 'selectedPawn' );
             dojo.query( '.fadeTile' ).removeClass( 'fadeTile' );
+
+            dojo.forEach(this.handles, dojo.disconnect);
+
         },
 
         getTooptipHtml : function(card)
@@ -1078,7 +1088,6 @@ function (dojo, declare) {
             if(dojo.hasClass(tile_id, 'pawn_area')) {
                 tile_id = tile_id.slice(10);
             }
-
             if( this.isCurrentPlayerActive() ) {     
                 console.log( 'onTile' );
                 switch (this.selectedAction) {
@@ -1176,12 +1185,12 @@ function (dojo, declare) {
         {
             var card_id = evt.currentTarget.id;
             dojo.stopEvent( evt );
+            console.log( 'onCard ' + card_id );
 
             this.selectedCard = card_id;
 
             if ( this.isCurrentPlayerActive() )
             {     
-                console.log( 'onCard' );
 
                 switch (this.selectedAction) {
                     case 'discard':

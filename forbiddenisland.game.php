@@ -1179,7 +1179,7 @@ class forbiddenisland extends Table
         } elseif ($this->getGameStateValue('drawn_treasure_cards') == 2) {
             $this->gamestate->nextState( 'set_flood' );
         } elseif ($this->getGameStateValue('remaining_actions') == 0) {
-            $this->gamestate->nextState( 'draw_treasure' );
+            $this->gamestate->nextState( 'draw_treasure' );x
         } else {
             $this->gamestate->nextState( 'action' );
         }
