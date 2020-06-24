@@ -65,6 +65,7 @@ function (dojo, declare) {
             this.startingTile = null;
             this.possibleActions = [];
             this.player_treasure_cards = [];
+            this.all_player_treasure_cards = [];
 
             this.previous_pagemaintitletext = "";
 
@@ -154,11 +155,7 @@ function (dojo, declare) {
                 this.placePlayer(player_id, gamedatas.player_list[player.adventurer].idx);
                 this.figure_area[player_id] = new ebg.zone();
                 this.figure_area[player_id].create( this, 'player_figure_area_' + player_id, this.figurewidth, this.figureheight);
-                for( var card_id in gamedatas.player_card_area[player_id].treasure_cards )
-                {
-                    var card = gamedatas.player_card_area[player_id].treasure_cards[card_id];
-                    this.placeTreasure(card_id, card.type, player_id);
-                }
+                this.placeAllTreasureCards(player_id, gamedatas.player_card_area[player_id].treasure_cards);
                 var playerBoardDiv = dojo.byId('player_board_' + player_id);
                 dojo.place(this.format_block('jstpl_player_board', {
                     id: player_id,
@@ -182,7 +179,7 @@ function (dojo, declare) {
             for( var card_id in gamedatas.flood_card_area )
             {
                 var card = gamedatas.flood_card_area[card_id]
-                this.placeFlood(card.type);
+                this.placeFloodCard(card.type);
             }
 
             // setup the flood deck area
@@ -197,8 +194,8 @@ function (dojo, declare) {
                 this.figure_area[treasure].create( this, 'starting_area_' + treasure, this.figurewidth, this.figureheight );
                 this.placeFigure(treasure, this.gamedatas[treasure]);
             }
-            
-             this.placeWaterLevel(this.gamedatas.water_level);
+
+            this.placeWaterLevel(this.gamedatas.water_level);
 
             dojo.query( '.island_tile').connect( 'onclick', this, 'onTile');
             dojo.query( '.pawn_area').connect( 'onclick', this, 'onTile');
@@ -227,6 +224,7 @@ function (dojo, declare) {
             case 'playerActions':
                 this.selectedAction = 'move';
                 this.possibleActions = args.args.possibleActions;
+                this.all_player_treasure_cards = args.args.player_treasure_cards;
                 var obj = args.args.player_treasure_cards[this.player_id];
                 this.player_treasure_cards = Object.keys(obj).map(function(key) {
                     return obj[key];
@@ -241,6 +239,7 @@ function (dojo, declare) {
                 this.adventurer = args.args.adventurer;
                 this.pilot_action = args.args.pilot_action;
                 this.special_action = false;
+                this.selectedCard = 'treasure_card_' + args.args.special_card_id;
                 break;
 
             case 'bonusShoreup':
@@ -252,6 +251,7 @@ function (dojo, declare) {
                 break;
 
             case 'discardTreasure':
+                this.all_player_treasure_cards = args.args.player_treasure_cards;
                 // for multipleactiveplayer states, onUpdateActionButtons id called before onEnteringState
                 break;
 
@@ -266,6 +266,7 @@ function (dojo, declare) {
                 this.possibleActions = args.args.possibleActions;
                 this.updatePossibleMoves( this.possibleActions.sandbags );
                 this.adventurer = args.args.adventurer;
+                this.selectedCard = 'treasure_card_' + args.args.special_card_id;
                 break;
 
             case 'heli_lift':
@@ -277,6 +278,7 @@ function (dojo, declare) {
                     return player.location;
                 }));
                 this.adventurer = args.args.adventurer;
+                this.selectedCard = 'treasure_card_' + args.args.special_card_id;
                 break;
 
             case 'navigator':
@@ -671,8 +673,8 @@ function (dojo, declare) {
 
         },
 
-        placeFlood : function(id) {
-            console.log( 'placeFlood' );
+        placeFloodCard : function(id) {
+            console.log( 'placeFloodCard' );
 
             var idx = this.gamedatas.flood_list[id].img_id
             var tooltip = this.gamedatas.flood_list[id].name;
@@ -700,8 +702,8 @@ function (dojo, declare) {
 
         },
  
-        placeTreasure : function(id, type, player_id) {
-            console.log( 'placeTreasure' );
+        placeTreasureCard : function(id, type, player_id) {
+            console.log( 'placeTreasureCard' );
 
             var idx = this.gamedatas.treasure_list[type].idx;
             var location = 'player_card_area_' + player_id;
@@ -714,6 +716,38 @@ function (dojo, declare) {
             }), location);
 
             zone.placeInZone('treasure_card_' + id);
+
+        },
+
+        placeAllTreasureCards : function(player_id, cards) {
+            
+            for( var card_id in cards )
+            {
+                var card = this.gamedatas.player_card_area[player_id].treasure_cards[card_id];
+                this.placeTreasureCard(card_id, card.type, player_id);
+            }
+        
+        },
+
+        updateAllTreasureCards : function ( player_id, cards )
+        {
+            // var weight = 1;
+            // var items = zone.getAllItems()
+            var zone = this.player_card_area[player_id];
+
+            zone.removeAll();
+
+            // items.forEach(
+            //     function (x, index) {
+            //         zone.removeFromZone(x, false);
+            // }, this);
+
+            // items.forEach(
+            //     function (x, index) {
+            //         zone.placeInZone(x, weight++);
+            // }, this);
+
+            this.placeAllTreasureCards( player_id, cards )
 
         },
 
@@ -885,19 +919,6 @@ function (dojo, declare) {
         getTooptipHtml : function(card)
         {
 
-        },
-
-        updateZone : function ( zone )
-        {
-            var items = zone.getAllItems()
-            items.forEach(
-                function (x, index) {
-                    zone.removeFromZone(x, false);
-            }, this);
-            items.forEach(
-                function (x, index) {
-                    zone.placeInZone(x);
-            }, this);
         },
 
         ///////////////////////////////////////////////////
@@ -1243,7 +1264,7 @@ function (dojo, declare) {
                 {  
                     var node = $(card_id);
                     dojo.addClass(node, 'selected');
-
+                    this.selectedCard = card_id;
                     var id = card_id.split('_')[2];
                     this.ajaxcall( "/forbiddenisland/forbiddenisland/playSpecial.html", {
                         id:id,
@@ -1404,7 +1425,7 @@ function (dojo, declare) {
             var flood_card = notif.args.flood_card_type;
 
             this.floodTile(tile_id);
-            this.placeFlood(flood_card);
+            this.placeFloodCard(flood_card);
             
        },
 
@@ -1439,8 +1460,8 @@ function (dojo, declare) {
             console.log( 'notif_drawTreasure' );
             console.log( notif );
 
-            this.placeTreasure(notif.args.card_1.id, notif.args.card_1.type, notif.args.player_id);
-            this.placeTreasure(notif.args.card_2.id, notif.args.card_2.type, notif.args.player_id);
+            this.placeTreasureCard(notif.args.card_1.id, notif.args.card_1.type, notif.args.player_id);
+            this.placeTreasureCard(notif.args.card_2.id, notif.args.card_2.type, notif.args.player_id);
 
        },
 
@@ -1452,6 +1473,7 @@ function (dojo, declare) {
             this.clearLastAction();
             this.discardTreasure(notif.args.card.id);
             // this.updateZone(this.player_card_area[notif.args.player_id]);
+            this.updateAllTreasureCards(notif.args.player_id, this.all_player_treasure_cards[notif.args.player_id]);
 
        },
 

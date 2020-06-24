@@ -79,8 +79,7 @@ $machinestates = array(
             "draw_treasure" => STATE_DRAW_TREASURE_CARDS,
             "sandbags" => STATE_SPECIAL_SANDBAGS,
             "heli_lift" => STATE_SPECIAL_HELI_LIFT,
-            "discard" => STATE_DISCARD_TREASURE_CARDS,
-            "final" => STATE_END_GAME
+            "discard" => STATE_DISCARD_TREASURE_CARDS
         )
     ),
 
@@ -94,8 +93,7 @@ $machinestates = array(
         // "possibleactions" => array( "move", "pass" ),
         "transitions" => array( 
             "set_flood" => STATE_SET_FLOOD_CARDS,
-            "discard" => STATE_DISCARD_TREASURE_CARDS,
-            "final" => STATE_END_GAME
+            "discard" => STATE_DISCARD_TREASURE_CARDS
         )
     ),
 
@@ -107,15 +105,14 @@ $machinestates = array(
         "type" => "multipleactiveplayer",
         "action" => "stDiscardTreasure",
         "args" => "argDiscardTreasure",
-        "possibleactions" => array( "discard", "special_action", "shore_up"),
+        "possibleactions" => array( "discard", "special_action"),
         "transitions" => array( 
             "action" => STATE_PLAYER_ACTIONS, 
             "discard" => STATE_DISCARD_TREASURE_CARDS, 
             "set_flood" => STATE_SET_FLOOD_CARDS,
             "sandbags" => STATE_SPECIAL_SANDBAGS,
             "heli_lift" => STATE_SPECIAL_HELI_LIFT,
-            "draw_treasure" => STATE_DRAW_TREASURE_CARDS,
-            "final" => STATE_END_GAME
+            "draw_treasure" => STATE_DRAW_TREASURE_CARDS
         )
     ),
 
@@ -128,8 +125,7 @@ $machinestates = array(
         // "args" => "argDrawFloodCards",
         // "possibleactions" => array( "move", "pass" ),
         "transitions" => array( 
-            "draw_flood" => STATE_DRAW_FLOOD_CARDS,
-            "final" => STATE_FINAL 
+            "draw_flood" => STATE_DRAW_FLOOD_CARDS
         )
     ),
 
@@ -160,7 +156,8 @@ $machinestates = array(
         "possibleactions" => array( "move" ),
         "transitions" => array( 
             "draw_flood" => STATE_DRAW_FLOOD_CARDS,
-            "rescue_pawn" => STATE_RESCUE_PAWN
+            "rescue_pawn" => STATE_RESCUE_PAWN,
+            "final" => STATE_FINAL
         )
     ),
 
@@ -170,11 +167,10 @@ $machinestates = array(
         "descriptionmyturn" => clienttranslate('${you} take bonus shore up action'),
         "type" => "activeplayer",
         "args" => "argPlayerActions",
-        "possibleactions" => array( "shore_up", "pass" ),
+        "possibleactions" => array( "shore_up", "skip" ),
         "transitions" => array( 
             "action" => STATE_PLAYER_ACTIONS, 
-            "draw_treasure" => STATE_DRAW_TREASURE_CARDS,
-            "pass" => STATE_PLAYER_ACTIONS 
+            "draw_treasure" => STATE_DRAW_TREASURE_CARDS
         )
     ),
 
@@ -186,14 +182,13 @@ $machinestates = array(
         "type" => "multipleactiveplayer",
         "action" => "stSpecialAction",
         "args" => "argPlayerActions",
-        "possibleactions" => array( "move", "shore_up", "cancel" ),
+        "possibleactions" => array( "shore_up", "cancel" ),
         "transitions" => array( 
             "action" => STATE_PLAYER_ACTIONS, 
             "cancel" => STATE_PLAYER_ACTIONS, 
             "draw_treasure" => STATE_DRAW_TREASURE_CARDS,
             "discard" => STATE_DISCARD_TREASURE_CARDS,
-            "set_flood" => STATE_SET_FLOOD_CARDS,
-            "final" => STATE_END_GAME
+            "set_flood" => STATE_SET_FLOOD_CARDS
         )
     ),
 
@@ -205,7 +200,7 @@ $machinestates = array(
         "type" => "multipleactiveplayer",
         "action" => "stSpecialAction",
         "args" => "argPlayerActions",
-        "possibleactions" => array( "move", "shore_up", "cancel" ),
+        "possibleactions" => array( "move", "cancel" ),
         "transitions" => array( 
             "action" => STATE_PLAYER_ACTIONS, 
             "cancel" => STATE_PLAYER_ACTIONS, 
