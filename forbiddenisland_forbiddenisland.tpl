@@ -75,6 +75,8 @@
         <!-- <div id="water_level_meter"></div> -->
     <!-- </div> -->
 
+    <div id="null_area"></div>
+
 </div>
     
 
