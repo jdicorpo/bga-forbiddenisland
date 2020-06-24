@@ -12,8 +12,5 @@
 
 BUGS:
 * card location in player area
-* heli_lift destination excludes wrong starting tile
-* cards not highlighted for discard?
 * end game condition when treasure tiles are sunk??
-* sandbags when discarding
 * cancel after a special discard

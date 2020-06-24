@@ -300,6 +300,14 @@ function (dojo, declare) {
                 }
                 break;
 
+            case 'client_selectHeliLiftDest':
+            case 'client_selectPilotDest':
+                // this.updatePossibleMoves( this.possibleActions.heli_lift );
+                this.updatePossibleMoves( this.possibleActions.heli_lift.map( function(tile) {
+                    if (tile != this.startingTile) return tile;
+                }, this));
+                break;
+        
             case 'client_selectNavigatorPlayer':
                 this.clearLastAction();
                 var players = Object.keys(this.gamedatas.players);
@@ -321,11 +329,6 @@ function (dojo, declare) {
 
             case 'client_selectNavigatorDest':
                 this.updatePossibleMoves( this.possibleActions.navigator[this.selectedPlayers[0]] );
-                break;
-
-            case 'client_selectHeliLiftDest':
-            case 'client_selectPilotDest':
-                this.updatePossibleMoves( this.possibleActions.heli_lift );
                 break;
 
             case 'client_confirmWinGame':
@@ -399,8 +402,10 @@ function (dojo, declare) {
                         this.player_treasure_cards = Object.keys(obj).map(function(key) {
                             return obj[key];
                         });
-                        this.updatePossibleCards( this.player_treasure_cards );
-                        this.selectedAction = 'discard';
+                        if (args.discard_treasure_player == this.player_id) {
+                            this.updatePossibleCards( this.player_treasure_cards );
+                            this.selectedAction = 'discard';
+                        }
                         break;
 
                     case 'rescuePawn':

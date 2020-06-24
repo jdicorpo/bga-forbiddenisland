@@ -472,14 +472,14 @@ class forbiddenisland extends Table
             $player_tile_id = $this->getPlayerLocation($player_id);
 
             foreach ($this->tiles->getCardsInLocation('unflooded') as $id => $tile ) {
-                if ( $tile['type'] != $player_tile_id ) {
+                // if ( $tile['type'] != $player_tile_id ) {
                     $result['heli_lift'][] = $tile['type'];
-                }
+                // }
             }
             foreach ($this->tiles->getCardsInLocation('flooded') as $id => $tile ) {
-                if ( $tile['type'] != $player_tile_id ) {
+                // if ( $tile['type'] != $player_tile_id ) {
                     $result['heli_lift'][] = $tile['type'];
-                }
+                // }
             }
             return $result;
 
@@ -758,18 +758,19 @@ class forbiddenisland extends Table
             switch ($state['name']) {
                 case 'playerActions':
                 case 'bonusShoreup':
-                    if ($this->getGameStateValue("remaining_actions") > 0) {
-                        $this->gamestate->nextState( 'action' );
-                    } else {
-                        $this->gamestate->nextState( 'draw_treasure' );
-                    }
-                    break;
+                    // if ($this->getGameStateValue("remaining_actions") > 0) {
+                    //     $this->gamestate->nextState( 'action' );
+                    // } else {
+                    //     $this->gamestate->nextState( 'draw_treasure' );
+                    // }
+                    // break;
 
                 case 'discardTreasure':
                 case 'sandbags':
                 case 'heli_lift':
                     $count = $this->treasure_deck->countCardsInLocation('hand', $player_id );
                     if ($count > 5) {
+                        $this->setGameStateValue("discard_treasure_player", $player_id);
                         $this->gamestate->nextState( 'discard' );
                     } elseif ($this->getGameStateValue("remaining_actions") > 0) {
                         $this->gamestate->nextState( 'action' );
@@ -1191,7 +1192,12 @@ class forbiddenisland extends Table
             throw new feException( "No remaining actions" );
         }
 
-        $this->setNextState( 'give_card', $player_id ); 
+        // $count = $this->treasure_deck->countCardsInLocation('hand', $target_player_id );
+        // if ($count > 5) {
+        //     $this->setGameStateValue("discard_treasure_player", $target_player_id);
+        //     $this->gamestate->nextState( 'discard' );
+
+        $this->setNextState( 'give_card', $target_player_id ); 
 
     }
 
@@ -1378,7 +1384,8 @@ class forbiddenisland extends Table
             $player_treasure_cards[$player_id] = $this->getTreasureCards( $player_id );
         }
         return array(
-            'player_treasure_cards' => $player_treasure_cards
+            'player_treasure_cards' => $player_treasure_cards,
+            'discard_treasure_player' => $this->getGameStateValue("discard_treasure_player")
         );
     }
 
