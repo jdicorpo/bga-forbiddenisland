@@ -176,9 +176,10 @@
 	/* background-size: calc(400px * 4);  */
     /* margin-left: 10px; */
     /* margin-right: -10px; */
+    margin-bottom: -15px;
     background-clip: content-box;
     /* position: relative; */
-    /* display: inline-block; */
+    display: inline-block;
     /* vertical-align: bottom; */
     /* float: right; */
     
@@ -387,11 +388,14 @@
 .possiblePawn {
     cursor: pointer;
     filter: drop-shadow(0px 0px 5px 10px lightyellow);
-    opacity: 70%;
+    /* box-shadow: 0px 0px 4px 4px orangered !important; */
+
+    opacity: 30%;
 }
 
 .possiblePawn:hover {
     filter: drop-shadow(0px 0px 5px 10px lightblue);
+	/* box-shadow: 0px 0px 4px 2px blue !important; */
     opacity: 100%;
     
 }
@@ -399,6 +403,7 @@
 .selectedPawn {
     cursor: pointer;
     filter: drop-shadow(0px 0px 5px 10px lightblue);
+	/* box-shadow: 0px 0px 4px 2px blue !important; */
     opacity: 100%;
 }
 

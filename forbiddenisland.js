@@ -296,7 +296,7 @@ function (dojo, declare) {
                 } else {
                     this.selectedPlayers = target_players;
                     this.setClientState("client_selectHeliLiftDest", 
-                    { descriptionmyturn : "${you} are playing special action - Helicopter Lift. Select a destination tile."});
+                    { descriptionmyturn : "${you} are playing Helicopter Lift. Select a destination tile."});
                 }
                 break;
 
@@ -825,6 +825,25 @@ function (dojo, declare) {
 
         },
 
+        placePawnSelect : function(player_id) {
+
+            console.log( 'placePawn' );
+
+            var main = $('pagemaintitletext');
+            var player = this.gamedatas.players[player_id];
+            var idx = this.gamedatas.player_list[player.adventurer].pawn_idx;
+            // var parent_id = $(tile_id).parentNode.id;
+            // var pawn_area = dojo.query('#' + parent_id + ' .pawn_area')[0];
+            var x = 31.5 * (idx-1);
+
+            dojo.place(this.format_block('jstpl_pawn', {
+                id : 'pselect_' + player_id,
+                x : x,
+            }), main, 'last');
+            // this.pawn_area[tile_id].placeInZone(player_id);
+
+        },
+
         movePawn : function(tile_id, player_id) {
 
             console.log( 'movePawn' );
@@ -871,10 +890,13 @@ function (dojo, declare) {
             if (players.length > 0) {
                 players.forEach(
                     function (pid, index) {
-                        var node = $( pid.toString() );
+                        this.placePawnSelect(pid);
+                        var node = $( 'pselect_' + pid.toString() );
+                        // var node = $( pid.toString() );
                         dojo.addClass(node, 'possiblePawn' );
                         this.handles.push(dojo.connect(node,'onclick', this, 'onPawn'));
                     }, this);
+
 
                 // if( this.isCurrentPlayerActive() )
                 // { 
@@ -1029,11 +1051,13 @@ function (dojo, declare) {
             var players = [];
             var nodes = dojo.query('.selectedPawn');
             for(var x = 0; x < nodes.length; x++) {
-                players.push(nodes[x].id);
+                players.push(nodes[x].id.split('_')[1]);
             }
             this.selectedPlayers = players;
-            this.setClientState("client_selectHeliLiftDest", 
-            { descriptionmyturn : "${you} are playing special action - Helicopter Lift. Select a destination tile."});
+            if (players.length > 0) {
+                this.setClientState("client_selectHeliLiftDest", 
+                { descriptionmyturn : "${you} are playing Helicopter Lift. Select a destination tile."});
+                }
             }
         }, 
 
@@ -1150,7 +1174,7 @@ function (dojo, declare) {
                             } else if (this.startingTile == null) {
                                 this.startingTile = tile_id;
                                 this.setClientState("client_selectHeliLiftPlayers", 
-                                    { descriptionmyturn : "${you} are playing special action - Helicopter Lift. Select players to move."});
+                                    { descriptionmyturn : "${you} are playing Helicopter Lift. Select players to move >> "});
                             } else {
                                 var card_id = this.selectedCard.split('_')[2];
                                 this.ajaxcall( "/forbiddenisland/forbiddenisland/moveAction.html", {
@@ -1314,7 +1338,7 @@ function (dojo, declare) {
                 console.log( 'onPawn' );
 
                 if (this.selectedAction == 'navigator') {
-                    this.selectedPlayers[0] = target_pawn;
+                    this.selectedPlayers[0] = target_pawn.split('_')[1];
                     this.setClientState("client_selectNavigatorDest", 
                         { descriptionmyturn : "Navigator: ${you} must select a destination."});
                 } else if (this.selectedAction == 'heli_lift') {

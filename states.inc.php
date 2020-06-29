@@ -176,8 +176,8 @@ $machinestates = array(
 
     STATE_SPECIAL_SANDBAGS => array(
         "name" => "sandbags",
-        "description" => clienttranslate('${actplayer} is playing special action - Sandbags. '),
-        "descriptionmyturn" => clienttranslate('${you} are playing special action - Sandbags. Select tile to shore up. '),
+        "description" => clienttranslate('${actplayer} is playing Sandbags. '),
+        "descriptionmyturn" => clienttranslate('${you} are playing Sandbags. Select tile to shore up. '),
         // "type" => "activeplayer",
         "type" => "multipleactiveplayer",
         "action" => "stSpecialAction",
@@ -194,8 +194,8 @@ $machinestates = array(
 
     STATE_SPECIAL_HELI_LIFT => array(
         "name" => "heli_lift",
-        "description" => clienttranslate('${actplayer} is playing special action - Helicopter Lift.'),
-        "descriptionmyturn" => clienttranslate('${you} are playing special action - Helicopter Lift.  Select starting tile.'),
+        "description" => clienttranslate('${actplayer} is playing Helicopter Lift.'),
+        "descriptionmyturn" => clienttranslate('${you} are playing Helicopter Lift.  Select starting tile.'),
         // "type" => "activeplayer",
         "type" => "multipleactiveplayer",
         "action" => "stSpecialAction",
