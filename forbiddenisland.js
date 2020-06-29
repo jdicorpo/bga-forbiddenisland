@@ -870,10 +870,10 @@ function (dojo, declare) {
 
             if (players.length > 0) {
                 players.forEach(
-                    function (player_id, index) {
-                            var node = $(player_id);
-                            dojo.addClass(node, 'possiblePawn' );
-                            this.handles.push(dojo.connect(node,'onclick', this, 'onPawn'));
+                    function (pid, index) {
+                        var node = $( pid.toString() );
+                        dojo.addClass(node, 'possiblePawn' );
+                        this.handles.push(dojo.connect(node,'onclick', this, 'onPawn'));
                     }, this);
 
                 // if( this.isCurrentPlayerActive() )

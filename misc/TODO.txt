@@ -13,4 +13,3 @@
 BUGS:
 * card location in player area
 * end game condition when treasure tiles are sunk??
-* cancel after a special discard

@@ -768,7 +768,9 @@ class forbiddenisland extends Table
                 case 'discardTreasure':
                 case 'sandbags':
                 case 'heli_lift':
-                    $count = $this->treasure_deck->countCardsInLocation('hand', $player_id );
+                    if ($player_id != null) {
+                        $count = $this->treasure_deck->countCardsInLocation('hand', $player_id );
+                    } else $count = 0;
                     if ($count > 5) {
                         $this->setGameStateValue("discard_treasure_player", $player_id);
                         $this->gamestate->nextState( 'discard' );
@@ -782,6 +784,7 @@ class forbiddenisland extends Table
                     break;
 
                 case 'setFlood':
+                    $this->setGameStateValue("discard_treasure_player", 0);
                     $this->gamestate->nextState( 'draw_flood' );
                     break;
 
@@ -813,6 +816,7 @@ class forbiddenisland extends Table
                     break;
 
                 case 'nextPlayer':
+                    $this->setGameStateValue("discard_treasure_player", 0);
                     $this->gamestate->nextState( 'next_turn' );
                     break;
 
@@ -1278,9 +1282,12 @@ class forbiddenisland extends Table
     {
         $this->gamestate->checkPossibleAction( 'cancel' );
 
-        $this->setNextState( 'cancel' ); 
-
-        // $this->gamestate->nextState( 'cancel' );
+        $player_id = $this->getGameStateValue("discard_treasure_player");
+        if (($player_id != 0) and ($this->treasure_deck->countCardsInLocation('hand', $player_id ) > 5)) {
+            $this->setNextState( 'cancel', $player_id ); 
+        } else {
+            $this->setNextState( 'cancel' ); 
+        }
     }
 
     function winGame()
