@@ -197,6 +197,7 @@ function (dojo, declare) {
 
             for (treasure of ['earth', 'fire', 'air', 'ocean']) {
                 this.figure_area[treasure].create( this, 'starting_area_' + treasure, this.figurewidth, this.figureheight );
+                this.figure_area[treasure].setFluidWidth();
                 this.placeFigure(treasure, this.gamedatas[treasure]);
             }
 
