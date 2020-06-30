@@ -423,6 +423,12 @@
     margin-left: 5px;
 }
 
+.location {
+    /* font-weight: bold ; */
+    margin-top: 5px;
+    margin-left: 5px;
+}
+
 .card_icon {
     background-image: url(img/card_icon.jpg);
     /* background-size: 20%; */
@@ -432,8 +438,9 @@
     width: 26px;
     height: 34px;
     background-clip: content-box;
-    margin-right: 5px;
-    margin-top: 5px;
+    margin: 5px;
+    /* margin-left: 5px; */
+    /* margin-top: 5px; */
     position: relative;
 }
 

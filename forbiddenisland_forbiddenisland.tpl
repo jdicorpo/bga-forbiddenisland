@@ -97,6 +97,7 @@ var jstpl_figure='<div id="figure_${treasure}" class="treasure_figure" style="ba
 var jstpl_figureicon='<div id="figureicon_${treasure}" class="figure_icon" style="background-position:-${x}px 0"></div>';
 var jstpl_player_board = '\<div id="p_board_${id}" class="p_board">\
     <div class="adventurer_name" style="color:${color};">${adventurer}</div>\
+    <div id="location_${id}" class="location">${location}</div>\
     <div id="p_board_icon_${id}" class="p_board_icons">\
     <div id="cards_${id}" class="card_icon"><span id="cardcount_${id}"  class="cardcount">0</span></div>\
     </div>\

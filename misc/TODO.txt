@@ -1,15 +1,10 @@
 * tooltips
 * server side checks for give card
-* reposition cards after move
-* improve pawn selection
 
 * support other maps
 
 * support high-res graphics
 * support board size scaling (thething)
 
-* add player location to player board
-
 BUGS:
-* card location in player area
-* end game condition when treasure tiles are sunk??
+* no known bugs

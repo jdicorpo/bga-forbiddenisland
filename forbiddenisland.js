@@ -152,6 +152,8 @@ function (dojo, declare) {
                 this.player_card_area[player_id] = new ebg.zone();
                 this.player_adventurer[player_id].create( this, 'player_adventurer_' + player_id, this.cardwidth, this.cardheight);
                 this.player_card_area[player_id].create( this, 'player_card_area_' + player_id, this.cardwidth - 70, this.cardheight);
+                // this.player_card_area[player_id].setPattern('horizontalfit');
+                this.player_card_area[player_id].setFluidWidth();
                 this.placePlayer(player_id, gamedatas.player_list[player.adventurer].idx);
                 this.figure_area[player_id] = new ebg.zone();
                 this.figure_area[player_id].create( this, 'player_figure_area_' + player_id, this.figurewidth, this.figureheight);
@@ -160,6 +162,7 @@ function (dojo, declare) {
                 dojo.place(this.format_block('jstpl_player_board', {
                     id: player_id,
                     adventurer: gamedatas.player_list[player.adventurer].name,
+                    location: gamedatas.tile_list[player.location].name,
                     color: player.color
                 }), playerBoardDiv);
                 $('cardcount_' + player_id).innerHTML = Object.keys(gamedatas.player_card_area[player_id].treasure_cards).length;
@@ -176,6 +179,7 @@ function (dojo, declare) {
 
             // setup the flood deck area
             this.flood_card_area.create( this, 'flood_card_area', this.cardwidth - 90, this.cardheight);
+            this.flood_card_area.setFluidWidth();
             for( var card_id in gamedatas.flood_card_area )
             {
                 var card = gamedatas.flood_card_area[card_id]
@@ -184,10 +188,11 @@ function (dojo, declare) {
 
             // setup the flood deck area
             this.treasure_card_area.create( this, 'treasure_card_area', this.cardwidth - 90, this.cardheight);
+            this.treasure_card_area.setFluidWidth();
             for( var card_id in gamedatas.treasure_discards )
             {
                 var card = gamedatas.treasure_discards[card_id]
-                this.discardTreasure(card_id, card.type, place = true);
+                this.discardTreasure(card_id, 0, card.type, place = true);
             }
 
             for (treasure of ['earth', 'fire', 'air', 'ocean']) {
@@ -728,35 +733,13 @@ function (dojo, declare) {
             
             for( var card_id in cards )
             {
-                var card = this.gamedatas.player_card_area[player_id].treasure_cards[card_id];
-                this.placeTreasureCard(card_id, card.type, player_id);
+                // var card = this.gamedatas.player_card_area[player_id].treasure_cards[card_id];
+                this.placeTreasureCard(card_id, cards[card_id].type, player_id);
             }
         
         },
 
-        updateAllTreasureCards : function ( player_id, cards )
-        {
-            // var weight = 1;
-            // var items = zone.getAllItems()
-            var zone = this.player_card_area[player_id];
-
-            zone.removeAll();
-
-            // items.forEach(
-            //     function (x, index) {
-            //         zone.removeFromZone(x, false);
-            // }, this);
-
-            // items.forEach(
-            //     function (x, index) {
-            //         zone.placeInZone(x, weight++);
-            // }, this);
-
-            this.placeAllTreasureCards( player_id, cards )
-
-        },
-
-        discardTreasure : function(id, type = null, place = false) {
+        discardTreasure : function(id, player_id, type = null, place = false) {
             console.log( 'discardTreasure' );
 
             if (place) {
@@ -767,16 +750,20 @@ function (dojo, declare) {
                     id : id,
                     x : x,
                 }), 'treasure_card_area');
+            } else {
+                this.player_card_area[player_id].removeFromZone('treasure_card_' + id, false);
             }
 
             this.treasure_card_area.placeInZone('treasure_card_' + id);
 
         },
 
-        moveTreasure : function(id, player_id) {
+        moveTreasure : function(id, player_id, target_player_id) {
             console.log( 'moveTreasure' );
 
-            var zone = this.player_card_area[player_id];
+            this.player_card_area[player_id].removeFromZone('treasure_card_' + id, false);
+
+            var zone = this.player_card_area[target_player_id];
             zone.placeInZone('treasure_card_' + id);
 
         },
@@ -848,14 +835,18 @@ function (dojo, declare) {
 
             console.log( 'movePawn' );
 
+            var from_tile_id = $(player_id).parentNode.id.slice(10);
+            this.pawn_area[from_tile_id].removeFromZone(player_id, false);
+
             this.pawn_area[tile_id].placeInZone(player_id);
 
+            setTimeout(() => { $('location_' + player_id).innerHTML = this.gamedatas.tile_list[tile_id].name; }, 1000);
+                        
         },
 
 
         updatePossibleMoves : function( possibleMoves )
         {
-            // this.clearPossibleMoves();
             this.clearLastAction();
 
             console.log( 'updatePossibleMoves' );
@@ -882,7 +873,6 @@ function (dojo, declare) {
 
         updatePossiblePawns : function( players )
         {
-            // this.clearPossibleMoves();
             this.clearLastAction();
 
             console.log( 'updatePossiblePawns' );
@@ -897,18 +887,9 @@ function (dojo, declare) {
                         this.handles.push(dojo.connect(node,'onclick', this, 'onPawn'));
                     }, this);
 
-
-                // if( this.isCurrentPlayerActive() )
-                // { 
-                //     this.addTooltipToClass( 'possibleMove', '', _('Move to this tile.') );
-                // } else {
-                //     dojo.query('.possibleMove').addClass( 'otherPlayer' );
-                // }
             }
 
             dojo.query('.island_tile').addClass( 'fadeTile' );
-
-            // this.connectClass('possiblePawn', 'onclick', 'onPawn');
 
         },
 
@@ -1403,10 +1384,9 @@ function (dojo, declare) {
             console.log( 'notif_moveAction' );
             console.log( notif );
             
-            // this.clearPossibleMoves();
             this.clearLastAction();
             if (notif.args.heli_lift) {
-                this.discardTreasure(notif.args.card_id);
+                this.discardTreasure(notif.args.card_id, notif.args.player_id);
                 notif.args.players.split(',').forEach( function(x) {
                     this.movePawn( notif.args.tile_id, x );
                 }, this);
@@ -1424,12 +1404,11 @@ function (dojo, declare) {
             console.log( 'notif_shoreUpAction' );
             console.log( notif );
             
-            // this.clearPossibleMoves();
             this.clearLastAction();
             this.unfloodTile(notif.args.tile_id);
 
             if (notif.args.sandbags) {
-                this.discardTreasure(notif.args.card_id);
+                this.discardTreasure(notif.args.card_id, notif.args.player_id);
             }
             this.special_action = false;
 
@@ -1440,7 +1419,6 @@ function (dojo, declare) {
             console.log( 'notif_skipAction' );
             console.log( notif );
             
-            // this.clearPossibleMoves();
             this.clearLastAction();
 
        },
@@ -1476,7 +1454,7 @@ function (dojo, declare) {
             console.log( 'notif_watersRise' );
             console.log( notif );
 
-            this.discardTreasure(notif.args.card.id);
+            this.discardTreasure(notif.args.card.id, notif.args.player_id);
 
             this.flood_card_area.removeAll();
 
@@ -1499,10 +1477,19 @@ function (dojo, declare) {
             console.log( 'notif_discardTreasure' );
             console.log( notif );
 
+            var player_id = notif.args.player_id;
+            var card_id = notif.args.card.id;
             this.clearLastAction();
-            this.discardTreasure(notif.args.card.id);
-            // this.updateZone(this.player_card_area[notif.args.player_id]);
-            this.updateAllTreasureCards(notif.args.player_id, this.all_player_treasure_cards[notif.args.player_id]);
+            this.discardTreasure(card_id, notif.args.player_id);
+
+            var cards = {};
+            for( var c in this.all_player_treasure_cards[player_id]) {
+                if (c != card_id) {
+                    cards[c] = this.all_player_treasure_cards[player_id][c];
+                }
+            }
+
+            this.all_player_treasure_cards[player_id] = cards;
 
        },
 
@@ -1511,10 +1498,8 @@ function (dojo, declare) {
             console.log( 'notif_giveTreasure' );
             console.log( notif );
 
-            // this.clearPossibleCards();
             this.clearLastAction();
-            this.moveTreasure(notif.args.card.id, notif.args.target_player_id);
-            // setTimeout(() => { this.updateZone(this.player_card_area[notif.args.player_id]); }, 4000);
+            this.moveTreasure(notif.args.card.id, notif.args.player_id, notif.args.target_player_id);
 
        },
 
@@ -1529,7 +1514,7 @@ function (dojo, declare) {
             this.clearLastAction();
             notif.args.cards.forEach(
                 function (c, index) {
-                    this.discardTreasure(c.id);
+                    this.discardTreasure(c.id, player_id);
             }, this);
 
             this.moveFigure(treasure, player_id);

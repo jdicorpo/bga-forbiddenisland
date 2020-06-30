@@ -713,7 +713,7 @@ class forbiddenisland extends Table
             // check if tiles are sunk for unclaimed treasure
             $all_treasures = array('earth', 'air', 'fire', 'ocean');
             foreach($all_treasures as $treasure) {
-                if ( $this->getGameStateValue($treasure) != 0 ) {
+                if ( $this->getGameStateValue($treasure) == 0 ) {
                     $tile_id_0 = $this->treasure_list[$treasure]['tiles'][0];
                     $tiles = $this->tiles->getCardsOfType($tile_id_0);
                     $tile_0 = array_shift($tiles);
