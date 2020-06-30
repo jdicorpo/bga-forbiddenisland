@@ -40,42 +40,53 @@ $this->player_list = array(
         'location' => 'bronze_gate',
         'color' => 'ED0023',
         'pawn_idx' => 1,
-        'idx' => 2
+        'idx' => 2,
+        'tooltip' => clienttranslate("<b>Engineer</b> <p>Shore up 2 tiles for 1 action.</p>")
     ),
     'pilot' => array(
         'name' => clienttranslate("Pilot"),
         'location' => 'fools_landing',
         'color' => '006EB2',
         'pawn_idx' => 2,
-        'idx' => 6
+        'idx' => 6,
+        'tooltip' => clienttranslate("<b>Pilot</b> <p>Once per turn, fly to any tile on the island for 1 action.</p>")
+
     ),
     'navigator' => array(
         'name' => clienttranslate("Navigator"),
         'location' => 'gold_gate',
         'color' => 'FFEC35',
         'pawn_idx' => 3,
-        'idx' => 5
+        'idx' => 5,
+        'tooltip' => clienttranslate("<b>Navigator</b> <p>Move another player up to 2 adjacent tiles for 1 action.</p>")
+
     ),
     'explorer' => array(
         'name' => clienttranslate("Explorer"),
         'location' => 'copper_gate',
         'color' => '109D4C',
         'pawn_idx' => 4,
-        'idx' => 3
+        'idx' => 3,
+        'tooltip' => clienttranslate("<b>Explorer</b> <p>Move and / or shore up diagonally.</p>")
+
     ),
     'diver' => array(
         'name' => clienttranslate("Diver"),
         'location' => 'iron_gate',
         'color' => '1F1D1D',
         'pawn_idx' => 5,
-        'idx' => 1
+        'idx' => 1,
+        'tooltip' => clienttranslate("<b>Diver</b> <p>Move through 1 or more adjacent flooded and/or missing tiles for 1 action. (Must end your turn on a tile.)</p>")
+
     ),
     'messenger' => array(
         'name' => clienttranslate("Messenger"),
         'location' => 'silver_gate',
         'color' => 'BEC1C4',
         'pawn_idx' => 6,
-        'idx' => 4
+        'idx' => 4,
+        'tooltip' => clienttranslate("<b>Messenger</b> <p>Give Treasure cards to a player anywhere on the island for 1 action per card.</p>")
+
     )
 );
 
@@ -88,7 +99,8 @@ $this->treasure_list = array(
         'tiles' => array(
             'howling_garden',
             'whispering_garden'
-        )
+        ),
+        'tooltip' => clienttranslate("Air")
     ),
     'earth' => array(
         'name' => clienttranslate("Earth"),
@@ -98,7 +110,8 @@ $this->treasure_list = array(
         'tiles' => array(
             'temple_moon',
             'temple_sun'
-        )
+        ),
+        'tooltip' => clienttranslate("Earth")
     ),
     'fire' => array(
         'name' => clienttranslate("Fire"),
@@ -108,7 +121,8 @@ $this->treasure_list = array(
         'tiles' => array(
             'cave_embers',
             'cave_shadows'
-        )
+        ),
+        'tooltip' => clienttranslate("Fire")
     ),
     'ocean' => array(
         'name' => clienttranslate("Ocean"),
@@ -118,22 +132,26 @@ $this->treasure_list = array(
         'tiles' => array(
             'coral_palace',
             'tidal_palace'
-        )
+        ),
+        'tooltip' => clienttranslate("Ocean")
     ),
     'heli_lift' => array(
         'name' => clienttranslate("Helicopter Lift"),
         'idx' => 6,
-        'nbr' => 3
+        'nbr' => 3,
+        'tooltip' => clienttranslate("<b>Helicopter Lift</b> <p>Move one or more pawns on the same tile to any other tile.</p> <p> ---- or ---- </p> <p>Lift your team off Fools' Landing for the win!</p> <i><ul><li>- Play at any time.</li><li>- Does not count as an action.</li><li>- Discard to Treasure discard pile after use.</li></ul></i>")
     ),
     'sandbags' => array(
         'name' => clienttranslate("Sandbags"),
         'idx' => 7,
-        'nbr' => 2
+        'nbr' => 2,
+        'tooltip' => clienttranslate("<b>Sandbags</b> <p>Shore up any one tile on the island.</p> <i><ul><li>- Play at any time.</li><li>- Does not count as an action.</li><li>- Discard to Treasure discard pile after use.</li></ul></i>")
     ),
     'waters_rise' => array(
         'name' => clienttranslate("Waters Rise!"),
         'idx' => 8,
-        'nbr' => 3
+        'nbr' => 3,
+        'tooltip' => clienttranslate("<b>Waters Rise!</b> <ol><li>Move the water level up one tick mark.</li> <li>Shuffle the Flood discard pile and place it on top of the Flood draw deck.</li> <li>Discard this card to the Treasure discard pile.</li></ol>")
     )
 );
 

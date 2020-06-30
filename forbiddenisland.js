@@ -674,6 +674,8 @@ function (dojo, declare) {
         placePlayer : function(player_id, idx) {
             console.log( 'placePlayer' );
             var x = this.cardwidth * (idx-1);
+            var player = this.gamedatas.players[player_id];
+            var tooltip = this.gamedatas.player_list[player.adventurer].tooltip;
             
             dojo.place(this.format_block('jstpl_player', {
                 id : player_id,
@@ -681,6 +683,9 @@ function (dojo, declare) {
             }), 'player_adventurer_' + player_id, 'only');
 
             this.player_adventurer[player_id].placeInZone('player_card_' + player_id);
+
+            this.addTooltip( 'player_card_' + player_id, tooltip, '' );
+
 
         },
 
@@ -720,13 +725,19 @@ function (dojo, declare) {
             var location = 'player_card_area_' + player_id;
             var zone = this.player_card_area[player_id];
             var x = this.cardwidth * (idx-1);
-            
+
             dojo.place(this.format_block('jstpl_treasure', {
                 id : id,
                 x : x,
             }), location);
 
             zone.placeInZone('treasure_card_' + id);
+            
+            if ('tooltip' in this.gamedatas.treasure_list[type]) {
+                var tooltip = this.gamedatas.treasure_list[type].tooltip;
+                this.addTooltip( 'treasure_card_' + id, tooltip, '' );
+            }
+
 
         },
 
@@ -751,6 +762,11 @@ function (dojo, declare) {
                     id : id,
                     x : x,
                 }), 'treasure_card_area');
+                debugger;
+                if ('tooltip' in this.gamedatas.treasure_list[type]) {
+                    var tooltip = this.gamedatas.treasure_list[type].tooltip;
+                    this.addTooltip( 'treasure_card_' + id, tooltip, '' );
+                }
             } else {
                 this.player_card_area[player_id].removeFromZone('treasure_card_' + id, false);
             }
@@ -773,6 +789,8 @@ function (dojo, declare) {
 
             console.log( 'placeFigure' );
             x = this.gamedatas.treasure_list[treasure].fig * 88.5;
+            var tooltip = this.gamedatas.treasure_list[treasure].name;
+
 
             if (player_id == 0) {
                 dojo.place(this.format_block('jstpl_figure', {
@@ -787,6 +805,9 @@ function (dojo, declare) {
                 }), 'player_figure_area_' + player_id);
                 this.figure_area[player_id].placeInZone('figure_' + treasure);
             }
+
+            this.addTooltip( 'figure_' + treasure, tooltip, '' );
+
         },
 
         moveFigure : function(treasure, player_id) {
