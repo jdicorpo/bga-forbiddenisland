@@ -1376,6 +1376,9 @@ function (dojo, declare) {
             dojo.subscribe( 'reshuffleTreasureDeck', this, "notif_reshuffleTreasureDeck" );
             this.notifqueue.setSynchronous( 'reshuffleTreasureDeck', 1000 );
 
+            dojo.subscribe( 'reshuffleFloodDeck', this, "notif_reshuffleFloodDeck" );
+            this.notifqueue.setSynchronous( 'reshuffleFloodDeck', 1000 );
+
             dojo.subscribe( 'updateCardCount', this, "notif_updateCardCount" );
             
         },  
@@ -1532,6 +1535,11 @@ function (dojo, declare) {
        notif_reshuffleTreasureDeck: function( notif )
        {
             this.treasure_card_area.removeAll();
+       },
+
+       notif_reshuffleFloodDeck: function( notif )
+       {
+            this.flood_card_area.removeAll();
        },
 
        notif_updateCardCount: function( notif )

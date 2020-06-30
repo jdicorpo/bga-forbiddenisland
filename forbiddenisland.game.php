@@ -680,8 +680,15 @@ class forbiddenisland extends Table
             return $cards;
         }
 
-        function treasureDeckReshuffle () {
+        function treasureDeckReshuffle() {
             self::notifyAllPlayers( "reshuffleTreasureDeck", clienttranslate( 'Treasure deck reshuffled.' ), array(
+            ) );
+        }
+
+        function floodDeckReshuffle() {
+            $this->flood_deck->moveAllCardsInLocation("flood_area", "deck");
+            $this->flood_deck->shuffle("deck");
+            self::notifyAllPlayers( "reshuffleFloodDeck", clienttranslate( 'Flood deck reshuffled.' ), array(
             ) );
         }
 
@@ -1420,12 +1427,19 @@ class forbiddenisland extends Table
         $remain_flood_cards = $this->getGameStateValue('remaining_flood_cards');
 
         $flood_card = $this->flood_deck->pickCardForLocation( 'deck', 'flood_area' );
+        
+        if ($flood_card == null) {
+            $this->floodDeckReshuffle();
+            $flood_card = $this->flood_deck->pickCardForLocation( 'deck', 'flood_area' );
+        }
+
         $tiles = $this->tiles->getCardsOfType($flood_card['type']);
         $tile = array_shift($tiles);
-        $tile_name = $this->tile_list[$tile['type']]['name'];
 
         $remain_flood_cards -= 1;
         $this->setGameStateValue("remaining_flood_cards", $remain_flood_cards);
+            
+        $tile_name = $this->tile_list[$tile['type']]['name'];
 
         if ($tile['location'] == 'unflooded') {
 
