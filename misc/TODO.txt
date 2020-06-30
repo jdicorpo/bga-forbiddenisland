@@ -1,10 +1,7 @@
-* tooltips
-* server side checks for give card
-
 * support other maps
 
 * support high-res graphics
 * support board size scaling (thething)
 
 BUGS:
-* no known bugs
+* tooltips not showing in treasure discard area
