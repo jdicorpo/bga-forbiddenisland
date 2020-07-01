@@ -168,7 +168,7 @@ function (dojo, declare) {
                 $('cardcount_' + player_id).innerHTML = Object.keys(gamedatas.player_card_area[player_id].treasure_cards).length;
                 for (var treasure of ['earth', 'fire', 'air', 'ocean']) {
                     if (gamedatas[treasure] == player_id) {
-                        x = this.gamedatas.treasure_list[treasure].fig * 25;
+                        var x = this.gamedatas.treasure_list[treasure].fig * 25;
                         dojo.place(this.format_block('jstpl_figureicon', {
                             treasure: treasure,
                             x: x
