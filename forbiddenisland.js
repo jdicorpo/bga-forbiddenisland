@@ -974,6 +974,7 @@ function (dojo, declare) {
             {       
                 console.log( 'onCapture' );
                 this.ajaxcall( "/forbiddenisland/forbiddenisland/captureTreasure.html", {
+                    lock: true,
                 }, this, function( result ) {} );
             }
         },  
@@ -1070,6 +1071,7 @@ function (dojo, declare) {
 
             if ((this.selectedAction == 'heli_lift') && this.isWinCondition) {
                 this.ajaxcall( "/forbiddenisland/forbiddenisland/winGame.html", {
+                    lock: true,
                 }, this, function( result ) {} );
             }  // TODO else??
         },  
@@ -1084,6 +1086,7 @@ function (dojo, declare) {
                 if (! this.checkPossibleActions('cancel'))
                 return;
                 this.ajaxcall( "/forbiddenisland/forbiddenisland/cancelSpecial.html", {
+                    lock: true,
                 }, this, function( result ) {} );
             } else {
                 this.restoreServerGameState();
@@ -1099,6 +1102,7 @@ function (dojo, declare) {
             {       
                 console.log( 'onSkip' );
                 this.ajaxcall( "/forbiddenisland/forbiddenisland/skipAction.html", {
+                    lock: true
                 }, this, function( result ) {} );
             }
         }, 
@@ -1112,6 +1116,7 @@ function (dojo, declare) {
             var card_id = this.selectedCard;
             var id = card_id.split('_')[2];
             this.ajaxcall( "/forbiddenisland/forbiddenisland/playSpecial.html", {
+                lock: true,
                 id:id,
                 player_id:this.player_id
             }, this, function( result ) {} );
@@ -1130,6 +1135,7 @@ function (dojo, declare) {
             var card_id = this.selectedCard;
             var id = card_id.split('_')[2];
             this.ajaxcall( "/forbiddenisland/forbiddenisland/discardTreasure.html", {
+                lock: true,
                 id:id
             }, this, function( result ) {} );
         },
@@ -1147,6 +1153,7 @@ function (dojo, declare) {
                     case 'pilot':
                         if ( this.checkAction( 'move' ) && dojo.hasClass(tile_id, 'possibleMove')) {  
                             this.ajaxcall( "/forbiddenisland/forbiddenisland/moveAction.html", {
+                                lock: true,
                                 tile_id:tile_id,
                                 pilot: true
                             }, this, function( result ) {} );
@@ -1156,6 +1163,7 @@ function (dojo, declare) {
                     case 'move':
                         if ( this.checkAction( 'move' ) && dojo.hasClass(tile_id, 'possibleMove')) {  
                             this.ajaxcall( "/forbiddenisland/forbiddenisland/moveAction.html", {
+                                lock: true,
                                 tile_id:tile_id
                             }, this, function( result ) {} );
                         }
@@ -1164,6 +1172,7 @@ function (dojo, declare) {
                     case 'shore_up':
                         if ( this.checkAction( 'shore_up' ) && dojo.hasClass(tile_id, 'possibleMove')) {  
                             this.ajaxcall( "/forbiddenisland/forbiddenisland/shoreUpAction.html", {
+                                lock: true,
                                 tile_id:tile_id
                             }, this, function( result ) {} );
                         }
@@ -1181,6 +1190,7 @@ function (dojo, declare) {
                             } else {
                                 var card_id = this.selectedCard.split('_')[2];
                                 this.ajaxcall( "/forbiddenisland/forbiddenisland/moveAction.html", {
+                                    lock: true,
                                     tile_id:tile_id,
                                     heli_lift: true,
                                     card_id: card_id,
@@ -1194,6 +1204,7 @@ function (dojo, declare) {
                         if( this.checkAction( 'shore_up' ) && dojo.hasClass(tile_id, 'possibleMove')) {  
                             var card_id = this.selectedCard.split('_')[2];
                             this.ajaxcall( "/forbiddenisland/forbiddenisland/shoreUpAction.html", {
+                                lock: true,
                                 tile_id:tile_id,
                                 sandbags: true,
                                 card_id: card_id
@@ -1204,6 +1215,7 @@ function (dojo, declare) {
                     case 'bonus_shoreup':
                         if ( this.checkAction( 'shore_up' ) && dojo.hasClass(tile_id, 'possibleMove')) {  
                             this.ajaxcall( "/forbiddenisland/forbiddenisland/shoreUpAction.html", {
+                                lock: true,
                                 tile_id:tile_id,
                                 bonus: true
                             }, this, function( result ) {} );
@@ -1223,6 +1235,7 @@ function (dojo, declare) {
                     case 'rescue':
                         if ( this.checkAction( 'move' )) {  
                             this.ajaxcall( "/forbiddenisland/forbiddenisland/moveAction.html", { 
+                                lock: true,
                                 tile_id:tile_id,
                                 rescue: true,
                                 players: [ this.player_id ].join(';')
@@ -1263,6 +1276,7 @@ function (dojo, declare) {
                                 { descriptionmyturn : "Would ${you} like to play the special action card?"});
                             } else {
                                 this.ajaxcall( "/forbiddenisland/forbiddenisland/discardTreasure.html", {
+                                    lock: true,
                                     id:id
                                 }, this, function( result ) {} );
                             }
@@ -1299,6 +1313,7 @@ function (dojo, declare) {
                     this.selectedCard = card_id;
                     var id = card_id.split('_')[2];
                     this.ajaxcall( "/forbiddenisland/forbiddenisland/playSpecial.html", {
+                        lock: true,
                         id:id,
                         player_id: this.player_id
                     }, this, function( result ) {} );
@@ -1323,6 +1338,7 @@ function (dojo, declare) {
                         var target_player_id = target_player_area.split('_')[3];
                         var id = card_id.split('_')[2];
                         this.ajaxcall( "/forbiddenisland/forbiddenisland/giveTreasure.html", { 
+                            lock: true,
                             id:id,
                             target_player_id:target_player_id
                         }, this, function( result ) {} );                        
