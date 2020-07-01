@@ -622,7 +622,7 @@ class forbiddenisland extends Table
             $flood_discards = $this->flood_deck->countCardsInLocation("flood_area");
 
             if ($skip_reshuffle) {
-                $message = "Waters Rise! Second card drawn in a row. Water level is now ".$water_level.". ".$new_flood_draw." flood cards will be drawn at the end of each turn.";
+                $message = clienttranslate( 'Waters Rise! Second card drawn in a row. Water level is now ${water_level}. ${new_flood_draw} flood cards will be drawn at the end of each turn.');
             } else {
                 $this->flood_deck->shuffle("flood_area");
                 // $this->flood_deck->moveAllCardsInLocationKeepOrder("flood_area", "deck");
@@ -630,10 +630,10 @@ class forbiddenisland extends Table
                 foreach ($cards as $id => $value) {
                     $this->flood_deck->insertCardOnExtremePosition( $id, 'deck', 'top');
                 }
-                $message = "Waters Rise!  Reshuffling ".$flood_discards." flood discards on top of deck. Water level is now ".$water_level.".  ".$new_flood_draw." flood cards will be drawn at the end of each turn.";           
+                $message = clienttranslate( 'Waters Rise!  Reshuffling ${flood_discards} flood discards on top of deck. Water level is now ${water_level}.  ${new_flood_draw} flood cards will be drawn at the end of each turn.');           
             }
 
-            self::notifyAllPlayers( "watersRise", clienttranslate( $message ), array(
+            self::notifyAllPlayers( "watersRise", $message, array(
                 'water_level' => $water_level,
                 'flood_discards' => $flood_discards,
                 'new_flood_draw' => $new_flood_draw,
@@ -761,7 +761,6 @@ class forbiddenisland extends Table
 
             // determine next state
             $state = $this->gamestate->state();
-            self::dump('state = ', $state['name']);
             switch ($state['name']) {
                 case 'playerActions':
                 case 'bonusShoreup':
@@ -966,12 +965,12 @@ class forbiddenisland extends Table
                     $sql = "UPDATE player SET location='$tile_id'
                             WHERE player_id='$target_player_id'";
                     self::DbQuery( $sql );
-                    $message = '${player_name} moved ${target_name} to ${tile_name}';
+                    $message = clienttranslate('${player_name} moved ${target_name} to ${tile_name}');
                 } else {
                     $sql = "UPDATE player SET location='$tile_id'
                             WHERE player_id='$player_id'";
                     self::DbQuery( $sql );
-                    $message = '${player_name} moved to ${tile_name}';
+                    $message = clienttranslate('${player_name} moved to ${tile_name}');
                 }
             } else {
                 foreach ($players as $x) {
@@ -980,14 +979,14 @@ class forbiddenisland extends Table
                     self::DbQuery( $sql );
                 }
                 if ($heli_lift) {
-                    $message = '${player_name} played Helicopter Lift to ${tile_name}';
+                    $message = clienttranslate('${player_name} played Helicopter Lift to ${tile_name}');
                 } else {
-                    $message = '${player_name} rescued pawn to ${tile_name}';
+                    $message = clienttranslate('${player_name} rescued pawn to ${tile_name}');
                 }
             }
 
             // Notify
-            self::notifyAllPlayers( "moveAction", clienttranslate( $message ), array(
+            self::notifyAllPlayers( "moveAction", $message, array(
                 'player_id' => $player_id,
                 'target_player_id' => $target_player_id,
                 'player_tile_id' => $player_tile_id,

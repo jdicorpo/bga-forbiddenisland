@@ -14,28 +14,6 @@
  *
  */
 
-/*
-*
-*   Game state machine is a tool used to facilitate game developpement by doing common stuff that can be set up
-*   in a very easy way from this configuration file.
-*
-*
-*   States types:
-*   _ manager: game manager can make the game progress to the next state.
-*   _ game: this is an (unstable) game state. the game is going to progress to the next state as soon as current action has been accomplished
-*   _ activeplayer: an action is expected from the activeplayer
-*
-*   Arguments:
-*   _ possibleactions: array that specify possible player actions on this step (for state types "manager" and "activeplayer")
-*       (correspond to actions names)
-*   _ action: name of the method to call to process the action (for state type "game")
-*   _ transitions: name of transitions and corresponding next state
-*       (name of transitions correspond to "nextState" argument)
-*   _ description: description is displayed on top of the main content.
-*   _ descriptionmyturn (optional): alternative description displayed when it's player's turn
-*
-*/
-
 // define contants for state ids
 if (!defined('STATE_END_GAME')) { // ensure this block is only invoked once, since it is included multiple times
     define("STATE_PLAYER_ACTIONS", 2);
@@ -88,9 +66,7 @@ $machinestates = array(
         "description" => clienttranslate('${actplayer} is drawing treasure cards'),
         "descriptionmyturn" => clienttranslate('${you} are drawing treasure cards'),
         "type" => "game",
-        // "args" => "argPlayerActions",
         "action" => "stDrawTreasureCards",
-        // "possibleactions" => array( "move", "pass" ),
         "transitions" => array( 
             "set_flood" => STATE_SET_FLOOD_CARDS,
             "discard" => STATE_DISCARD_TREASURE_CARDS
@@ -101,7 +77,6 @@ $machinestates = array(
         "name" => "discardTreasure",
         "description" => clienttranslate('${actplayer} must select cards to discard (down to 5)'),
         "descriptionmyturn" => clienttranslate('${you} must select cards to discard (down to 5)'),
-        // "type" => "activeplayer",
         "type" => "multipleactiveplayer",
         "action" => "stDiscardTreasure",
         "args" => "argDiscardTreasure",
@@ -122,8 +97,6 @@ $machinestates = array(
         "descriptionmyturn" => clienttranslate('Drawing flood cards'),
         "type" => "game",
         "action" => "stSetFloodCards",
-        // "args" => "argDrawFloodCards",
-        // "possibleactions" => array( "move", "pass" ),
         "transitions" => array( 
             "draw_flood" => STATE_DRAW_FLOOD_CARDS
         )
@@ -136,7 +109,6 @@ $machinestates = array(
         "type" => "game",
         "action" => "stDrawFloodCards",
         "args" => "argDrawFloodCards",
-        // "possibleactions" => array( "move", "pass" ),
         "transitions" => array( 
             "draw_flood" => STATE_DRAW_FLOOD_CARDS,
             "rescue_pawn" => STATE_RESCUE_PAWN, 
@@ -149,7 +121,6 @@ $machinestates = array(
         "name" => "rescuePawn",
         "description" => clienttranslate('Other players are rescuing their pawns'),
         "descriptionmyturn" => clienttranslate('${you} rescue your pawn.  Select a tile to move to.'),
-        // "type" => "activeplayer",
         "type" => "multipleactiveplayer",
         "action" => "stRescuePawn",
         "args" => "argMultiPlayerActions",
@@ -178,7 +149,6 @@ $machinestates = array(
         "name" => "sandbags",
         "description" => clienttranslate('${actplayer} is playing Sandbags. '),
         "descriptionmyturn" => clienttranslate('${you} are playing Sandbags. Select tile to shore up. '),
-        // "type" => "activeplayer",
         "type" => "multipleactiveplayer",
         "action" => "stSpecialAction",
         "args" => "argPlayerActions",
@@ -196,7 +166,6 @@ $machinestates = array(
         "name" => "heli_lift",
         "description" => clienttranslate('${actplayer} is playing Helicopter Lift.'),
         "descriptionmyturn" => clienttranslate('${you} are playing Helicopter Lift.  Select starting tile.'),
-        // "type" => "activeplayer",
         "type" => "multipleactiveplayer",
         "action" => "stSpecialAction",
         "args" => "argPlayerActions",
@@ -227,10 +196,7 @@ $machinestates = array(
     STATE_FINAL => array(
         "name" => "final",
         "type" => "game",
-        // "args" => "argPlayerActions",
         "action" => "stFinal",
-        // "updateGameProgression" => true,
-        // "possibleactions" => array( "move", "pass" ),
         "transitions" => array( 
             "end" => STATE_END_GAME 
         )
