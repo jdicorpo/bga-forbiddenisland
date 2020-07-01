@@ -1069,6 +1069,9 @@ function (dojo, declare) {
         {
             console.log( 'onConfirm' );
 
+            if (! this.checkAction('win'))
+            return;
+
             if ((this.selectedAction == 'heli_lift') && this.isWinCondition) {
                 this.ajaxcall( "/forbiddenisland/forbiddenisland/winGame.html", {
                     lock: true,
@@ -1225,6 +1228,7 @@ function (dojo, declare) {
                     case 'navigator':
                         if ( this.checkAction( 'move' )) {  
                             this.ajaxcall( "/forbiddenisland/forbiddenisland/moveAction.html", { 
+                                lock: true,
                                 tile_id:tile_id,
                                 navigator: true,
                                 players: this.selectedPlayers.join(';')

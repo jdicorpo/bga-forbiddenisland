@@ -2,6 +2,8 @@
 
 $gameinfos = array( 
 
+'game_name' => 'Forbidden Island',
+
 // Game designer (or game designers, separated by commas)
 'designer' => 'Matt Leacock',       
 
@@ -101,6 +103,6 @@ $gameinfos = array(
 // Games categories
 //  You can attribute any number of "tags" to your game.
 //  Each tag has a specific ID (ex: 22 for the category "Prototype", 101 for the tag "Science-fiction theme game")
-'tags' => array( 1 )
+'tags' => array( 2, 11, 20, 103, 210 )
 
 );

@@ -1299,7 +1299,7 @@ class forbiddenisland extends Table
 
     function winGame()
     {
-        // self::checkAction( 'cancel' );
+        self::checkAction( 'win' );
         if (self::isWinCondition()) {
             $this->setGameStateValue("players_win", 1);
             $this->gamestate->nextState( 'final' );
