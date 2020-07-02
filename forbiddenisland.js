@@ -762,7 +762,6 @@ function (dojo, declare) {
                     id : id,
                     x : x,
                 }), 'treasure_card_area');
-                debugger;
                 if ('tooltip' in this.gamedatas.treasure_list[type]) {
                     var tooltip = this.gamedatas.treasure_list[type].tooltip;
                     this.addTooltip( 'treasure_card_' + id, tooltip, '' );
