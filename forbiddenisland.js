@@ -122,7 +122,7 @@ function (dojo, declare) {
                 var x = Math.trunc( tile.location_arg / 10) ;
                 var y = tile.location_arg % 10;
                 
-                this.placeTile( x, y, tile.type);
+                this.placeTile( x, y, tile.type, flooded = false, sunk = false);
             }
 
             for( var i in gamedatas.flooded )
@@ -131,7 +131,7 @@ function (dojo, declare) {
                 var x = Math.trunc( tile.location_arg / 10) ;
                 var y = tile.location_arg % 10;
 
-                this.placeTile( x, y, tile.type, flooded = true);
+                this.placeTile( x, y, tile.type, flooded = true, sunk = false);
             }
 
             for( var i in gamedatas.sunk )
@@ -144,6 +144,7 @@ function (dojo, declare) {
             }
 
             // Setting up player boards
+            var treasures = ['earth', 'fire', 'air', 'ocean'];
             for( var player_id in gamedatas.players )
             {
                 var player = gamedatas.players[player_id];
@@ -166,7 +167,7 @@ function (dojo, declare) {
                     color: player.color
                 }), playerBoardDiv);
                 $('cardcount_' + player_id).innerHTML = Object.keys(gamedatas.player_card_area[player_id].treasure_cards).length;
-                for (var treasure in ['earth', 'fire', 'air', 'ocean']) {
+                treasures.forEach( function(treasure, index) {
                     if (gamedatas[treasure] == player_id) {
                         var x = this.gamedatas.treasure_list[treasure].fig * 25;
                         dojo.place(this.format_block('jstpl_figureicon', {
@@ -174,9 +175,8 @@ function (dojo, declare) {
                             x: x
                         }), 'p_board_icon_' + player_id, 'last');
                     }
-                }
+                }, this);
             }
-
             // setup the flood deck area
             this.flood_card_area.create( this, 'flood_card_area', this.cardwidth - 90, this.cardheight);
             this.flood_card_area.setFluidWidth();
@@ -192,14 +192,14 @@ function (dojo, declare) {
             for( var card_id in gamedatas.treasure_discards )
             {
                 var card = gamedatas.treasure_discards[card_id]
-                this.discardTreasure(card_id, 0, card.type, place = true);
+                this.discardTreasure(card_id, 0, card.type, type = null, place = true);
             }
 
-            for (treasure of ['earth', 'fire', 'air', 'ocean']) {
+            treasures.forEach( function(treasure, index) {
                 this.figure_area[treasure].create( this, 'starting_area_' + treasure, this.figurewidth, this.figureheight );
                 this.figure_area[treasure].setFluidWidth();
                 this.placeFigure(treasure, this.gamedatas[treasure]);
-            }
+            }, this);
 
             this.placeWaterLevel(this.gamedatas.water_level);
 
@@ -409,7 +409,7 @@ function (dojo, declare) {
                             return obj[key];
                         });
                         if (args.discard_treasure_player == this.player_id) {
-                            this.updatePossibleCards( this.player_treasure_cards );
+                            this.updatePossibleCards( this.player_treasure_cards, give=false );
                             this.selectedAction = 'discard';
                         }
                         break;
@@ -511,8 +511,8 @@ function (dojo, declare) {
 
         hasSpecialCard: function(cards) {
             if (typeof cards !== 'undefined') {
-                for (let [id, value] of Object.entries(cards)) {
-                    if ((value.type == 'sandbags' || value.type == 'heli_lift')) {
+                for (var id in cards) {
+                    if ((cards[id].type == 'sandbags' || cards[id].type == 'heli_lift')) {
                         return true;
                     }
                 };
@@ -520,7 +520,7 @@ function (dojo, declare) {
             return false;
         },
 
-        updatePossibleCards: function(cards, give = false) {
+        updatePossibleCards: function(cards, give) {
 
             this.clearLastAction();
             if (typeof cards !== 'undefined') {
@@ -575,7 +575,7 @@ function (dojo, declare) {
             this.clearLastAction();
 
             var players = this.gamedatas.players;
-            for (let [player_id, value] of Object.entries(players)) {
+            for (var player_id in players) {
                 if (player_id != this.player_id) {
                     var node = $('player_card_area_' + player_id);
                     dojo.addClass(node, 'possiblePlayer');
@@ -599,7 +599,7 @@ function (dojo, declare) {
 
         },
 
-        placeTile : function(a, b, tile_id, flooded = false, sunk = false) {
+        placeTile : function(a, b, tile_id, flooded, sunk) {
             console.log( 'placeTile' );
 
             var board_id = a + '_' + b;
@@ -751,7 +751,7 @@ function (dojo, declare) {
         
         },
 
-        discardTreasure : function(id, player_id, type = null, place = false) {
+        discardTreasure : function(id, player_id, type, place) {
             console.log( 'discardTreasure' );
 
             if (place) {
@@ -862,7 +862,8 @@ function (dojo, declare) {
 
             this.pawn_area[tile_id].placeInZone(player_id);
 
-            setTimeout(() => { $('location_' + player_id).innerHTML = this.gamedatas.tile_list[tile_id].name; }, 1000);
+            // setTimeout(() => { $('location_' + player_id).innerHTML = this.gamedatas.tile_list[tile_id].name; }, 1000);
+            $('location_' + player_id).innerHTML = this.gamedatas.tile_list[tile_id].name;
                         
         },
 
@@ -1431,7 +1432,7 @@ function (dojo, declare) {
             
             this.clearLastAction();
             if (notif.args.heli_lift) {
-                this.discardTreasure(notif.args.card_id, notif.args.player_id);
+                this.discardTreasure(notif.args.card_id, notif.args.player_id, type = null, place = false);
                 notif.args.players.split(',').forEach( function(x) {
                     this.movePawn( notif.args.tile_id, x );
                 }, this);
@@ -1453,7 +1454,7 @@ function (dojo, declare) {
             this.unfloodTile(notif.args.tile_id);
 
             if (notif.args.sandbags) {
-                this.discardTreasure(notif.args.card_id, notif.args.player_id);
+                this.discardTreasure(notif.args.card_id, notif.args.player_id, type = null, place = false);
             }
             this.special_action = false;
 
@@ -1499,7 +1500,7 @@ function (dojo, declare) {
             console.log( 'notif_watersRise' );
             console.log( notif );
 
-            this.discardTreasure(notif.args.card.id, notif.args.player_id);
+            this.discardTreasure(notif.args.card.id, notif.args.player_id, type = null, place = false);
 
             this.flood_card_area.removeAll();
 
@@ -1525,7 +1526,7 @@ function (dojo, declare) {
             var player_id = notif.args.player_id;
             var card_id = notif.args.card.id;
             this.clearLastAction();
-            this.discardTreasure(card_id, notif.args.player_id);
+            this.discardTreasure(card_id, notif.args.player_id, type = null, place = false);
 
             var cards = {};
             for( var c in this.all_player_treasure_cards[player_id]) {
@@ -1559,7 +1560,7 @@ function (dojo, declare) {
             this.clearLastAction();
             notif.args.cards.forEach(
                 function (c, index) {
-                    this.discardTreasure(c.id, player_id);
+                    this.discardTreasure(c.id, player_id, type = null, place = false);
             }, this);
 
             this.moveFigure(treasure, player_id);
@@ -1585,7 +1586,7 @@ function (dojo, declare) {
 
        notif_updateCardCount: function( notif )
        {
-            for (const player_id in notif.args.ncards) {
+            for (var player_id in notif.args.ncards) {
                 $('cardcount_' + player_id).innerHTML = notif.args.ncards[player_id];
             };
        },
