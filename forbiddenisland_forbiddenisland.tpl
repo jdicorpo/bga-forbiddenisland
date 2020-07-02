@@ -31,16 +31,21 @@
             <div id="island_tile_{X}_{Y}" class="island_tile_location" style="left: {LEFT}px; top: {TOP}px;">
             </div>
             <!-- END island_tile --> 
-            <div id="water_level_meter" style="left: 818px; top: 142px;">
-            <!-- BEGIN water_level -->
-                <!-- <div id="water_level_{LVL}" class="water_level" style="left: {LEFT}px; top:{TOP}px"></div> -->
-                <div id="water_level_{LVL}" class="water_level" style="top:{TOP}px"></div>
-            <!-- END water_level --> 
+
+            <!-- BEGIN water_level_meter -->
+            <div id="water_level_meter" style="left: {LEFT}px; top: {TOP}px;">
+
+                <!-- BEGIN water_level -->
+                    <div id="water_level_{LVL}" class="water_level" style="top:{TOP_LVL}px"></div>
+                <!-- END water_level --> 
+
             </div>
-            <div id="starting_area_earth" class="treasure_starting_area" style="left: 0px; top: 0px;"></div>
-            <div id="starting_area_air" class="treasure_starting_area" style="left: 680px; top: 0px;"></div>
-            <div id="starting_area_fire" class="treasure_starting_area" style="left: 0px; top: 680px;"></div>
-            <div id="starting_area_ocean" class="treasure_starting_area" style="left: 680px; top: 680px;"></div>
+            <!-- END water_level_meter --> 
+
+            <!-- BEGIN treasure_starting_area -->
+            <div id="starting_area_{TREASURE}" class="treasure_starting_area" style="left: {LEFT}px; top: {TOP}px;"></div>
+            <!-- END treasure_starting_area -->
+            
         </div>
 
     <div id="player_area_wrapper">

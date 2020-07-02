@@ -34,6 +34,45 @@ $this->not_in_map = array(
     "1_6", "2_6", "5_6", "6_6"
 );
 
+$this->island_map = array(
+    1 => array(
+        'name' => clienttranslate("Forbidden Island"),
+        'max_x' => 6,
+        'max_y' => 6,
+        'map' => array (
+                          "3_1", "4_1",
+                   "2_2", "3_2", "4_2", "5_2",
+            "1_3", "2_3", "3_3", "4_3", "5_3", "6_3",
+            "1_4", "2_4", "3_4", "4_4", "5_4", "6_4",
+                   "2_5", "3_5", "4_5", "5_5",
+                          "3_6", "4_6"
+        ),
+        'water_level_meter' => "7_2",
+        'earth' => "1_1",
+        'air' => "6_1",
+        'fire' => "1_6",
+        'ocean' => "6_6",
+    ),
+    2 => array(
+        'name' => clienttranslate("Treasure Island"),
+        'max_x' => 7,
+        'max_y' => 6,
+        'map' => array (
+            "1_1", "2_1",                      "6_1", "7_1",
+                   "2_2", "3_2", "4_2", "5_2", "6_2",
+                          "3_3", "4_3", "5_3",
+                          "3_4", "4_4", "5_4",
+                   "2_5", "3_5", "4_5", "5_5", "6_5",
+            "1_6", "2_6",                      "6_6", "7_6"
+        ),
+        'water_level_meter' => "7_3",
+        'earth' => "3_1",
+        'air' => "7_2",
+        'fire' => "1_5",
+        'ocean' => "5_6",
+    ),
+);
+
 $this->player_list = array(
     'engineer' => array(
         'name' => clienttranslate("Engineer"),

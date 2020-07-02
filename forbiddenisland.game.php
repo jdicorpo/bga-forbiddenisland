@@ -191,13 +191,18 @@ class forbiddenisland extends Table
         $this->tiles->createCards( $card_deck, 'deck' );
         $this->tiles->shuffle( 'deck' );
 
-        for( $x=1; $x<=6; $x++ )
+        $island_map_id = self::getGameStateValue("island_map");
+        $island_map = $this->island_map[$island_map_id]['map'];
+        $max_x = $this->island_map[$island_map_id]['max_x'];
+        $max_y = $this->island_map[$island_map_id]['max_y'];
+
+        for( $x=1; $x<=$max_x; $x++ )
         {
-            for( $y=1; $y<=6; $y++ )
+            for( $y=1; $y<=$max_y; $y++ )
             {
                 $tile_location = $x . "_" . $y;
                 $tile_value = $x*10 + $y;
-                if (!in_array($tile_location, $this->not_in_map)) {
+                if (in_array($tile_location, $island_map)) {
                     $tile = $this->tiles->pickCardForLocation( 'deck', 'unflooded', $tile_value);
                 }
             }        

@@ -82,25 +82,22 @@ class view_forbiddenisland_forbiddenisland extends game_view
         $template = self::getTemplateName();
         $num = $players_nbr;
 
+        $island_map_id = $this->game->getGameStateValue("island_map");
+        $island_map = $this->game->island_map[$island_map_id]['map'];
+        $max_x = $this->game->island_map[$island_map_id]['max_x'];
+        $max_y = $this->game->island_map[$island_map_id]['max_y'];
+
         $this->page->begin_block($template, "island_tile" );
         
-        // temporary - to be removed
-        $not_in_map = array( 
-            "1_1", "2_1", "5_1", "6_1",
-            "1_2", "6_2",
-            "1_5", "6_5",
-            "1_6", "2_6", "5_6", "6_6"
-        );
-
         $hor_scale = 128+8;
         $ver_scale = 128+8;
         
-        for( $x=1; $x<=6; $x++ )
+        for( $x=1; $x<=$max_x; $x++ )
         {
-            for( $y=1; $y<=6; $y++ )
+            for( $y=1; $y<=$max_y; $y++ )
             {
                 $tile_location = $x . "_" . $y;
-                if (!in_array($tile_location, $not_in_map)) {
+                if (in_array($tile_location, $island_map)) {
                     $this->page->insert_block( "island_tile", array(
                         'X' => $x,
                         'Y' => $y,
@@ -111,16 +108,37 @@ class view_forbiddenisland_forbiddenisland extends game_view
             }        
         }
 
+        $water_level_meter = $this->game->island_map[$island_map_id]['water_level_meter'];
+
         $ver_pos = array( 10 => 16, 9 => 50, 8 => 83, 7 => 112, 6 => 144, 5 => 178, 4 => 210, 
             3 => 244, 2 => 278, 1 => 311 );
         $this->page->begin_block($template, "water_level" );
+        $this->page->begin_block($template, "water_level_meter" );
+
         for( $y=10; $y>=1; $y-- )
         {
             $this->page->insert_block( "water_level", array(
                 'LVL' => $y,
-                'TOP' => $ver_pos[$y],
+                'TOP_LVL' => $ver_pos[$y],
             ) );
         }   
+
+        $this->page->insert_block( "water_level_meter", array(
+            'LEFT' => (explode("_", $water_level_meter)[0] - 1) * $hor_scale,
+            'TOP' => (explode("_", $water_level_meter)[1] - 1) * $ver_scale,
+        ) );
+
+        $this->page->begin_block($template, "treasure_starting_area" );
+
+        $all_treasures = array('earth', 'air', 'fire', 'ocean');
+        foreach($all_treasures as $treasure) {
+            $treasure_location = $this->game->island_map[$island_map_id][$treasure];
+            $this->page->insert_block( "treasure_starting_area", array(
+                'TREASURE' => $treasure,
+                'LEFT' => (explode("_", $treasure_location)[0] - 1) * $hor_scale,
+                'TOP' => (explode("_", $treasure_location)[1] - 1) * $ver_scale,
+            ) );
+        }
 
         $this->page->begin_block($template, "player");
         foreach ( $players as $player_id => $info ) {
