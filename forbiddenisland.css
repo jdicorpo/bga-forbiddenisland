@@ -46,6 +46,11 @@
 
 @import url(../../../css/csslayer.css);
 
+html {
+    /* background: url(img/ocean-back-2.jpg) */
+    background: url(img/ocean-back-3.jpg);
+}
+
 .anchor {
 	position: relative;
 	width: 100%; 
