@@ -256,7 +256,7 @@ class forbiddenisland extends Table
         $result['player_list'] = $this->player_list;
         $result['flood_list'] = $this->flood_list;
         $result['treasure_list'] = $this->treasure_list;
-        $result['not_in_map'] = $this->not_in_map;
+        // $result['not_in_map'] = $this->not_in_map;
 
         $result['remaining_actions'] = $this->getGameStateValue("remaining_actions");
         $result['water_level'] = $this->getGameStateValue("water_level");
@@ -1231,8 +1231,18 @@ class forbiddenisland extends Table
             $tiles = $this->tiles->getCardsOfType($player_tile_id);
             $tile = array_shift($tiles);
 
-            if (($treasure != 'none') && ($this->getGameStateValue($treasure) == 0) 
-                && (count($cards) >= 4) && ($tile['location'] == 'unflooded')) {
+            if ($treasure == 'none') {
+                throw new BgaUserException( self::_("You are not on a treasure tile." ));
+            } elseif ($this->getGameStateValue($treasure) != 0) {
+                throw new BgaUserException( self::_("This treasure is already captured." ));
+            } elseif (count($cards) < 4) {
+                throw new BgaUserException( self::_("You need 4 matching treasure cards." ));
+            } elseif ($tile['location'] != 'unflooded') {
+                throw new BgaUserException( self::_("The must not be flooded." ));
+            } else {
+
+            // if (($treasure != 'none') && ($this->getGameStateValue($treasure) == 0) 
+            //     && (count($cards) >= 4) && ($tile['location'] == 'unflooded')) {
 
                 $cards = array_slice($cards, 0, 4);
                 $func = function($c) {
@@ -1254,8 +1264,6 @@ class forbiddenisland extends Table
                     ) );
 
                 $this->updateCardCount();
-            } else {
-                throw new feException( "Invalid action" );
             }
         } else {
             throw new feException( "No remaining actions" );
@@ -1631,6 +1639,9 @@ class forbiddenisland extends Table
     	
         if ($state['type'] === "activeplayer") {
             switch ($statename) {
+                case 'playerActions':
+                case 'bonusShoreup':
+                case 'discardTreasure':
                 default:
                     $this->gamestate->nextState( "zombiePass" );
                 	break;

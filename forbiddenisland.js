@@ -112,8 +112,8 @@ function (dojo, declare) {
                 var img_id = gamedatas.tile_list[tile].img_id;
                 this.board.addItemType(tile, tile, g_gamethemeurl + 'img/tiles.jpg', img_id);
                 this.pawn_area[tile] = new ebg.zone();
-                this.pawn_area[tile].itemIdToCoords = function( i, control_width ) { return {  x:32*(i%4), y:1, w:32, h:57 } }; 
-                this.pawn_area[tile].setPattern( 'custom' );
+                // this.pawn_area[tile].itemIdToCoords = function( i, control_width ) { return {  x:32*(i%4), y:1, w:32, h:57 } }; 
+                // this.pawn_area[tile].setPattern( 'custom' );
             }
 
             for( var i in gamedatas.unflooded )
@@ -192,7 +192,7 @@ function (dojo, declare) {
             for( var card_id in gamedatas.treasure_discards )
             {
                 var card = gamedatas.treasure_discards[card_id]
-                this.discardTreasure(card_id, 0, card.type, type = null, place = true);
+                this.discardTreasure(card_id, 0, card.type, true);
             }
 
             treasures.forEach( function(treasure, index) {
@@ -203,9 +203,11 @@ function (dojo, declare) {
 
             this.placeWaterLevel(this.gamedatas.water_level);
 
-            dojo.query( '.island_tile').connect( 'onclick', this, 'onTile');
-            dojo.query( '.pawn_area').connect( 'onclick', this, 'onTile');
-            dojo.query( '.island_tile_sunk').connect( 'onclick', this, 'onTile');
+            if (!this.isSpectator) {
+                dojo.query( '.island_tile').connect( 'onclick', this, 'onTile');
+                dojo.query( '.pawn_area').connect( 'onclick', this, 'onTile');
+                dojo.query( '.island_tile_sunk').connect( 'onclick', this, 'onTile');
+            }
 
             // Setup game notifications to handle (see "setupNotifications" method below)
             this.setupNotifications();
@@ -231,10 +233,12 @@ function (dojo, declare) {
                 this.selectedAction = 'move';
                 this.possibleActions = args.args.possibleActions;
                 this.all_player_treasure_cards = args.args.player_treasure_cards;
-                var obj = args.args.player_treasure_cards[this.player_id];
-                this.player_treasure_cards = Object.keys(obj).map(function(key) {
-                    return obj[key];
-                });
+                if (!this.isSpectator) {
+                    var obj = args.args.player_treasure_cards[this.player_id];
+                    this.player_treasure_cards = Object.keys(obj).map(function(key) {
+                        return obj[key];
+                    });
+                }
                 // $('cardcount_' + this.player_id).innerHTML = this.player_treasure_cards.length;
                 this.updatePossibleMoves( this.possibleActions.move );
                 var obj = args.args.colocated_players;
@@ -395,11 +399,11 @@ function (dojo, declare) {
                         this.addActionButton( 'shore_up_btn', _('Shore Up'), 'onShoreUp' ); 
                         this.addActionButton( 'give_treasure_btn', _('Give Card'), 'onGiveCard' ); 
                         this.addActionButton( 'capture_treasure_btn', _('Capture Treasure'), 'onCapture' ); 
-                        this.addActionButton( 'skip_btn', _('Skip'), 'onSkip' ); 
+                        this.addActionButton( 'skip_btn', _('Skip'), 'onSkip', null, false, 'gray' ); 
                         break;
 
                     case 'bonusShoreup':
-                        this.addActionButton( 'skip_btn', _('Skip'), 'onSkip' ); 
+                        this.addActionButton( 'skip_btn', _('Skip'), 'onSkip', null, false, 'gray' ); 
                         break;
                         
                     case 'discardTreasure':
@@ -483,7 +487,7 @@ function (dojo, declare) {
             {
                 // these states can all occur out of turn
                 case 'playerActions':
-                    if (this.hasSpecialCard(args.player_treasure_cards[this.player_id])) {
+                    if (!this.isSpectator && this.hasSpecialCard(args.player_treasure_cards[this.player_id])) {
                         this.addActionButton( 'player_special_btn', _('Play Special'), 'onPlaySpecial', null, false, 'red' ); 
                     }
                     break;
@@ -732,6 +736,7 @@ function (dojo, declare) {
             }), location);
 
             zone.placeInZone('treasure_card_' + id);
+            // zone.placeInZone('treasure_card_' + id, idx+1);
             
             if ('tooltip' in this.gamedatas.treasure_list[type]) {
                 var tooltip = this.gamedatas.treasure_list[type].tooltip;
@@ -767,6 +772,7 @@ function (dojo, declare) {
                     this.addTooltip( 'treasure_card_' + id, tooltip, '' );
                 }
             } else {
+                debugger;
                 this.player_card_area[player_id].removeFromZone('treasure_card_' + id, false);
             }
 

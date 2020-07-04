@@ -76,6 +76,8 @@ class view_forbiddenisland_forbiddenisland extends game_view
         // Get players & players number
         $players = $this->game->loadPlayersBasicInfos();
         $players_nbr = count( $players );
+        global $g_user;
+        $cplayer = $g_user->get_id();
 
         /*********** Place your code below:  ************/
 
@@ -141,16 +143,21 @@ class view_forbiddenisland_forbiddenisland extends game_view
         }
 
         $this->page->begin_block($template, "player");
-        foreach ( $players as $player_id => $info ) {
-            $this->page->insert_block("player", array (
-                    "PLAYER_ID" => $player_id,
-                    "PLAYER_NAME" => $players [$player_id] ['player_name'],
-                    "PLAYER_COLOR" => $players [$player_id] ['player_color']
-                ));
+        
+        if (isset($players [$cplayer])) { // may be not set if spectator
+            $player_id = $cplayer;
+        } else {
+            $player_id = $this->game->getNextPlayerTable()[0];
         }
 
-        // var_dump( $viewArgs );
-        // var_dump( $this );
+        for ($x = 0; $x < $players_nbr; $x++) {
+            $this->page->insert_block("player", array (
+                "PLAYER_ID" => $player_id,
+                "PLAYER_NAME" => $players[$player_id]['player_name'],
+                "PLAYER_COLOR" => $players[$player_id]['player_color']
+            ));            
+            $player_id = $this->game->getPlayerAfter($player_id);
+        }
 
       /*********** Do not change anything below this line  ************/
     }

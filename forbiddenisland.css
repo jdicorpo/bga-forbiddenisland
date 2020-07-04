@@ -48,7 +48,7 @@
 
 html {
     /* background: url(img/ocean-back-2.jpg) */
-    background: url(img/ocean-back-3.jpg);
+    background: url(img/ocean-back-4.jpg);
 }
 
 .anchor {
@@ -119,7 +119,7 @@ html {
     font-size: small; */
 	background-clip: content-box;
     position: absolute;
-    opacity: 70%;
+    opacity: 75%;
 }
 
 .island_tile_sunk {
@@ -261,12 +261,11 @@ html {
     /* color: white; */
     display: inline-block;
     font-weight: 900;
-    font-size: 18px;
+    font-size: 20px;
     /* text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px gray, 0 0 30px grey, 0 0 40px grey, 0 0 55px black, 0 0 75px black; */
     text-transform: uppercase;
-    transform: rotate(90deg) translateX(-25px);
-    transform: rotate(90deg);
-    transform-origin: 0.5em center 0;
+    transform: rotate(90deg) translateY(-1.5em);
+    transform-origin: top left;
     /* float: left; */
     max-width: 210px; 
     /* margin-right: -160px; */
@@ -359,22 +358,24 @@ html {
 }
 
 .possibleMove.island_tile {
-    box-shadow: 0px 0px 4px 4px orangered !important;
+    /* box-shadow: 0px 0px 4px 4px orangered !important; */
+    box-shadow: 0px 0px 6px 6px orangered !important;
     /* background-color:rgba(0, 0, 0, 0.5); */
     opacity: 100%;
 }
 
 .possibleMove.otherPlayer.island_tile {
-    box-shadow: 0px 0px 4px 4px purple !important;
+    box-shadow: 0px 0px 6px 6px purple !important;
 }
 
 .possibleCard {
     cursor: pointer;
     box-shadow: 0px 0px 4px 4px orangered !important;
+    /* box-shadow: 0px 0px 4px 4px yellow !important; */
 }
 
 .possibleCard:hover {
-	box-shadow: 0px 0px 4px 2px blue !important;
+	box-shadow: 0px 0px 4px 4px blue !important;
 }
 
 .possiblePlayer {
@@ -383,12 +384,12 @@ html {
 }
 
 .possiblePlayer:hover {
-	box-shadow: 0px 0px 4px 2px blue !important;
+	box-shadow: 0px 0px 4px 4px blue !important;
 }
 
 .selected {
 	cursor: pointer;
-	box-shadow: 0px 0px 4px 2px blue !important;
+	box-shadow: 0px 0px 4px 4px blue !important;
 }
 
 .possiblePawn {
@@ -467,6 +468,30 @@ html {
     margin-right: 5px;
     margin-top: 5px;
     position: relative;
+}
+
+.color_ED0023 {
+	color: #ED0023;
+}
+
+.color_006EB2 {
+	color: #006EB2;
+}
+
+.color_FFEC35 {
+	color: #FFEC35;
+}
+
+.color_109D4C {
+	color: #109D4C
+}
+
+.color_1F1D1D {
+	color: #1F1D1D;
+}
+
+.color_BEC1C4 {
+	color: #BEC1C4;
 }
 
 
