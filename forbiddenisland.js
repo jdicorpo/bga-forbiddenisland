@@ -776,7 +776,6 @@ function (dojo, declare) {
                     this.addTooltip( 'treasure_card_' + id, tooltip, '' );
                 }
             } else {
-                debugger;
                 this.player_card_area[player_id].removeFromZone('treasure_card_' + id, false);
             }
 
