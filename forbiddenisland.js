@@ -470,7 +470,13 @@ function (dojo, declare) {
 
                     case 'client_selectChooseDiscardSpecial':
                         this.addActionButton( 'play_btn', _('Play'), 'onPlayDiscard', null, false, 'blue' );
-                        this.addActionButton( 'discard_btn', _('Discard'), 'onDiscardSpecial', null, false, 'gray' );
+                        this.addActionButton( 'discard_btn', _('Discard'), 'onDiscard', null, false, 'gray' );
+                        this.addActionButton( 'cancel_btn', _('Cancel'), 'onCancel', null, false, 'gray' );
+                        break;
+                        
+                    case 'client_confirmDiscard':
+                        this.addActionButton( 'discard_btn', _('Discard'), 'onDiscard', null, false, 'red' );
+                        this.addActionButton( 'cancel_btn', _('Cancel'), 'onCancel', null, false, 'gray' );
                         break;
 
                     case 'client_confirmWinGame':
@@ -537,7 +543,6 @@ function (dojo, declare) {
                         }
                     }, this);
             }
-            // this.connectClass('possibleCard', 'onclick', 'onCard');
         },
 
         updateSpecialCards: function(cards) {
@@ -553,7 +558,6 @@ function (dojo, declare) {
                         }
                     }, this);
                 }
-                // this.connectClass('possibleCard', 'onclick', 'onCard');
         },
 
         updateColocatedPlayers: function(players) {
@@ -1132,11 +1136,11 @@ function (dojo, declare) {
         
         },
 
-        onDiscardSpecial: function()
+        onDiscard: function()
         {
             // Discard Special card
 
-            console.log( 'onDiscardSpecial' );
+            console.log( 'onDiscard' );
 
             if (! this.checkAction( 'discard' ))
                 return;
@@ -1285,10 +1289,12 @@ function (dojo, declare) {
                                 this.setClientState("client_selectChooseDiscardSpecial", 
                                 { descriptionmyturn : "Would ${you} like to play the special action card?"});
                             } else {
-                                this.ajaxcall( "/forbiddenisland/forbiddenisland/discardTreasure.html", {
-                                    lock: true,
-                                    id:id
-                                }, this, function( result ) {} );
+                                this.setClientState("client_confirmDiscard", 
+                                { descriptionmyturn : "Confirm to discard " + this.gamedatas.treasure_list[card_type].name });
+                                // this.ajaxcall( "/forbiddenisland/forbiddenisland/discardTreasure.html", {
+                                //     lock: true,
+                                //     id:id
+                                // }, this, function( result ) {} );
                             }
                         }
                         break;
