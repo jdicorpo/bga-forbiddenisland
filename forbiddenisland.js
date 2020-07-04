@@ -203,11 +203,11 @@ function (dojo, declare) {
 
             this.placeWaterLevel(this.gamedatas.water_level);
 
-            if (!this.isSpectator) {
-                dojo.query( '.island_tile').connect( 'onclick', this, 'onTile');
-                dojo.query( '.pawn_area').connect( 'onclick', this, 'onTile');
-                dojo.query( '.island_tile_sunk').connect( 'onclick', this, 'onTile');
-            }
+            // if (!this.isSpectator) {
+            //     dojo.query( '.island_tile').connect( 'onclick', this, 'onTile');
+            //     dojo.query( '.pawn_area').connect( 'onclick', this, 'onTile');
+            //     dojo.query( '.island_tile_sunk').connect( 'onclick', this, 'onTile');
+            // }
 
             // Setup game notifications to handle (see "setupNotifications" method below)
             this.setupNotifications();
@@ -880,15 +880,23 @@ function (dojo, declare) {
         {
             this.clearLastAction();
 
-            console.log( 'updatePossibleMoves' );
+            console.log( 'updatePossibleMoves, no = ' + possibleMoves.length );
 
             if ((typeof possibleMoves !== 'undefined') && (possibleMoves.length > 0)) {
                 possibleMoves.forEach(
                     function (tile_id, index) {
-                        // if (!(dojo.query('#'+tile_id).hasClass( 'possibleMove' ))) {
-                            dojo.query('#'+tile_id).addClass( 'possibleMove' );
-                            dojo.query('#pawn_area_'+tile_id).addClass( 'possibleMove' );
-                        // }
+                        var node = $( tile_id );
+                        // dojo.query('#'+tile_id).addClass( 'possibleMove' );
+                        if (!dojo.hasClass(node, 'possibleMove' )) {
+                            dojo.addClass(node, 'possibleMove' );
+                            this.handles.push(dojo.connect(node,'onclick', this, 'onTile'));
+                        }
+                        var node2 = $( 'pawn_area_' + tile_id );
+                        // dojo.query('#pawn_area_'+tile_id).addClass( 'possibleMove' );
+                        if (!dojo.hasClass(node2, 'possibleMove' )) {
+                            dojo.addClass(node2, 'possibleMove' );
+                            this.handles.push(dojo.connect(node2,'onclick', this, 'onTile'));
+                        }
                     }, this);
 
                 // if( this.isCurrentPlayerActive() )
@@ -941,6 +949,8 @@ function (dojo, declare) {
 
         clearLastAction : function( )
         {
+            console.log( 'clearLastAction, handles = ' + this.handles.length );
+
             // Remove current possible moves
             dojo.query( '.possibleMove' ).removeClass( 'possibleMove' );
             dojo.query( '.otherPlayer' ).removeClass( 'otherPlayer' );
@@ -952,6 +962,7 @@ function (dojo, declare) {
             dojo.query( '.fadeTile' ).removeClass( 'fadeTile' );
 
             dojo.forEach(this.handles, dojo.disconnect);
+            this.handles = [];
 
         },
 
@@ -1275,6 +1286,7 @@ function (dojo, declare) {
                     case 'discard':
                         if ( this.checkAction( 'discard' ) && dojo.hasClass(dojo.byId(card_id), 'possibleCard')) {  
                             var node = $(card_id);
+                            dojo.query( '.selected' ).removeClass( 'selected' );
                             dojo.addClass(node, 'selected');
                             this.selectedCard = card_id;
                             var id = card_id.split('_')[2];
@@ -1289,7 +1301,7 @@ function (dojo, declare) {
                                 { descriptionmyturn : "Would ${you} like to play the special action card?"});
                             } else {
                                 this.setClientState("client_confirmDiscard", 
-                                { descriptionmyturn : "Confirm to discard " + this.gamedatas.treasure_list[card_type].name });
+                                { descriptionmyturn : "Confirm to discard treasure card '" + this.gamedatas.treasure_list[card_type].name + "'"});
                                 // this.ajaxcall( "/forbiddenisland/forbiddenisland/discardTreasure.html", {
                                 //     lock: true,
                                 //     id:id

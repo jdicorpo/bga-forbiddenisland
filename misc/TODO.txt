@@ -3,6 +3,11 @@
 * support high-res graphics
 * support board size scaling (thething)
 
+* finish zombie mode
+* check mobile compatibility
+
+* add white background for player name
+
 BUGS:
 * tooltips not showing in treasure discard area
 
@@ -16,7 +21,6 @@ EC Feedback
    - Click on a tile
    - The appropriate buttons appear on the status bar depending on what can be done on this tile: You may [Move] [Shore up] [...] [Cancel]
    - The action is confirmed by clicking on the appropriate button (of course, the special actions have a different workflow)
-* for discarding cards, there should also be a confirmation step to prevent misclicks. The player should select all the cards to discard, then click a "Discard" button.
 
 FIXED:
 * when trying to get a treasure, I got an error "Invalid action". I messed up as I didn't have enough cards, but the error message should tell me why (to help the players learn the game, and limit erroneous bug reports)
@@ -25,4 +29,5 @@ FIXED:
 * not sure what the Island map option is for when creating a table?
 * the player name written vertically on the left of the hand should be of the player color, and written with the top of the letters left to match the writing on the deck cards (it's easier to read that way)
 * the hands under the board should be ordered with the current player hand first, then other players in the play order
+* for discarding cards, there should also be a confirmation step to prevent misclicks. The player should select all the cards to discard, then click a "Discard" button.
 

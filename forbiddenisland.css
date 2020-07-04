@@ -154,7 +154,7 @@ html {
     /* background-image: url(img/tiles.jpg); */
 	/* border-radius: 10px; */
 	/* box-shadow: 1px 1px 1px 0px #222; */
-	/* z-index: 20; */
+	z-index: 5;
     /* width: 128px; */
     width: 95%;
 	/* max-width: 128px; */
@@ -175,7 +175,7 @@ html {
     border-radius: 10px;
     background-size: auto 57px;
 	/* box-shadow: 1px 1px 1px 0px #222; */
-	z-index: 5;
+	z-index: 10;
 	width: 31.5px;
 	height: 57px;
 	/* background-size: calc(400px * 4);  */

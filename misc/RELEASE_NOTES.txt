@@ -1,0 +1,12 @@
+Jul xx
+*  #20230 - "Could not claim treasure from flooded tile"
+* added debugLoadReport
+* multiple cards showing selected
+* #20220 - "Need to press F5 to shore up near-by tile"
+
+Jul 03
+* player feedback on capture treasure failure
+* player board order
+* confirm on discard
+* flip player name on player board, add player color
+* fix issue with spectator
