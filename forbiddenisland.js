@@ -399,7 +399,7 @@ function (dojo, declare) {
                         this.addActionButton( 'shore_up_btn', _('Shore Up'), 'onShoreUp' ); 
                         this.addActionButton( 'give_treasure_btn', _('Give Card'), 'onGiveCard' ); 
                         this.addActionButton( 'capture_treasure_btn', _('Capture Treasure'), 'onCapture' ); 
-                        this.addActionButton( 'skip_btn', _('Skip'), 'onSkip', null, false, 'gray' ); 
+                        this.addActionButton( 'skip_btn', _('End Turn'), 'onSkip', null, false, 'gray' ); 
                         break;
 
                     case 'bonusShoreup':
@@ -476,6 +476,11 @@ function (dojo, declare) {
                         
                     case 'client_confirmDiscard':
                         this.addActionButton( 'discard_btn', _('Discard'), 'onDiscard', null, false, 'red' );
+                        this.addActionButton( 'cancel_btn', _('Cancel'), 'onCancel', null, false, 'gray' );
+                        break;
+                        
+                    case 'client_endTurn':
+                        this.addActionButton( 'confirm_btn', _('Confirm'), 'onConfirm', null, false, 'red' );
                         this.addActionButton( 'cancel_btn', _('Cancel'), 'onCancel', null, false, 'gray' );
                         break;
 
@@ -880,7 +885,7 @@ function (dojo, declare) {
         {
             this.clearLastAction();
 
-            console.log( 'updatePossibleMoves, no = ' + possibleMoves.length );
+            console.log( 'updatePossibleMoves' );
 
             if ((typeof possibleMoves !== 'undefined') && (possibleMoves.length > 0)) {
                 possibleMoves.forEach(
@@ -1089,14 +1094,20 @@ function (dojo, declare) {
         {
             console.log( 'onConfirm' );
 
-            if (! this.checkAction('win'))
-            return;
-
             if ((this.selectedAction == 'heli_lift') && this.isWinCondition) {
+                if (! this.checkAction('win'))
+                return;
                 this.ajaxcall( "/forbiddenisland/forbiddenisland/winGame.html", {
                     lock: true,
                 }, this, function( result ) {} );
-            }  // TODO else??
+            } else if (this.selectedAction == 'skip') {
+                if (! this.checkAction('skip'))
+                return;
+                this.ajaxcall( "/forbiddenisland/forbiddenisland/skipAction.html", {
+                    lock: true
+                }, this, function( result ) {} );
+            } // TODO else??
+            
         },  
 
         onCancel: function()
@@ -1124,9 +1135,18 @@ function (dojo, declare) {
             if( this.isCurrentPlayerActive() )
             {       
                 console.log( 'onSkip' );
-                this.ajaxcall( "/forbiddenisland/forbiddenisland/skipAction.html", {
-                    lock: true
-                }, this, function( result ) {} );
+
+                this.selectedAction = 'bonus_shoreup';
+                if (this.selectedAction == 'bonus_shoreup') {
+                    this.ajaxcall( "/forbiddenisland/forbiddenisland/skipAction.html", {
+                        lock: true
+                    }, this, function( result ) {} );
+                } else {
+                    this.selectedAction = 'skip';
+                    this.setClientState("client_endTurn", { descriptionmyturn : "Confirm to your end turn "});
+                }
+
+
             }
         }, 
         
@@ -1412,39 +1432,31 @@ function (dojo, declare) {
 
             dojo.subscribe( 'moveAction', this, "notif_moveAction" );
             this.notifqueue.setSynchronous( 'moveAction', 1000 );
-
             dojo.subscribe( 'shoreUpAction', this, "notif_shoreUpAction" );
             this.notifqueue.setSynchronous( 'shoreUpAction', 1000 );
-            
             dojo.subscribe( 'floodTile', this, "notif_floodTile" );
             this.notifqueue.setSynchronous( 'floodTile', 1000 );
-
             dojo.subscribe( 'sinkTile', this, "notif_sinkTile" );
             this.notifqueue.setSynchronous( 'sinkTile', 1000 );
-            
             dojo.subscribe( 'watersRise', this, "notif_watersRise" );
             this.notifqueue.setSynchronous( 'watersRise', 1000 );
-
             dojo.subscribe( 'drawTreasure', this, "notif_drawTreasure" );
             this.notifqueue.setSynchronous( 'drawTreasure', 2000 );
-
             dojo.subscribe( 'discardTreasure', this, "notif_discardTreasure" );
             this.notifqueue.setSynchronous( 'discardTreasure', 1000 );
-
             dojo.subscribe( 'giveTreasure', this, "notif_giveTreasure" );
             this.notifqueue.setSynchronous( 'giveTreasure', 1000 );
-
             dojo.subscribe( 'captureTreasure', this, "notif_captureTreasure" );
             this.notifqueue.setSynchronous( 'captureTreasure', 1000 );
-
             dojo.subscribe( 'reshuffleTreasureDeck', this, "notif_reshuffleTreasureDeck" );
             this.notifqueue.setSynchronous( 'reshuffleTreasureDeck', 1000 );
-
             dojo.subscribe( 'reshuffleFloodDeck', this, "notif_reshuffleFloodDeck" );
             this.notifqueue.setSynchronous( 'reshuffleFloodDeck', 1000 );
-
             dojo.subscribe( 'updateCardCount', this, "notif_updateCardCount" );
-            
+            dojo.subscribe('log', this, "notif_log");
+            dojo.subscribe('animate', this, "notif_animate");
+            this.notifqueue.setSynchronous('animate', 1000);
+
         },  
         
        notif_moveAction: function( notif )
@@ -1612,5 +1624,16 @@ function (dojo, declare) {
                 $('cardcount_' + player_id).innerHTML = notif.args.ncards[player_id];
             };
        },
+
+       notif_animate : function(notif) {
+            // do nothing, just there to play animation from previous notifications
+       },
+
+       notif_log : function(notif) {
+            // this is for debugging php side
+            console.log(notif.log);
+            console.log(notif.args);
+        },
+
    });             
 });

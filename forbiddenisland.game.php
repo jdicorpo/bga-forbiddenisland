@@ -313,7 +313,14 @@ class forbiddenisland extends Table
 
             $players = $this->loadPlayersBasicInfos();
             foreach ( $players as $pid => $player_info ) {
-                $result = array_merge($result, $this->getPossibleNavigator( $pid ));
+                $player_moves = $this->getPossibleNavigator( $pid );
+                $result = array_merge_recursive($result, $player_moves);
+                // self::notifyAllPlayers( "log", "getPossibleActions", array(
+                //     'result' => $result,
+                //     'player_moves' => $player_moves,
+                //     'pid' => $pid,
+                //     'player_id' => $player_id
+                // ) );
             }
 
             return $result;
@@ -397,6 +404,11 @@ class forbiddenisland extends Table
                 }
             }
 
+            // self::notifyAllPlayers( "log", "getPossibleNavigator", array(
+            //     'result' => $result,
+            //     'player_id' => $player_id
+            // ) );
+            
             return $result;
 
         }
@@ -1153,6 +1165,34 @@ class forbiddenisland extends Table
 
     }
 
+    // function skipAction( )
+    // {
+    //     self::checkAction( 'skip' );
+
+    //     $player_id = self::getActivePlayerId();
+
+    //     $player_tile_id = $this->getPlayerLocation($player_id);
+
+    //     if ($this->getGameStateValue("remaining_actions") > 0) {
+    //         $this->incGameStateValue("remaining_actions", -1);
+    //         self::incStat(1, "skip", $player_id);
+
+    //         // Notify
+    //         self::notifyAllPlayers( "skipAction", clienttranslate( '${player_name} skipped an action' ), array(
+    //             'player_id' => $player_id,
+    //             'player_name' => self::getActivePlayerName(),
+    //         ) );
+    //     } else {
+    //         $state = $this->gamestate->state();
+    //         if ($state['name'] != 'bonusShoreup') {
+    //             throw new feException( "No remaining actions" );
+    //         }
+    //     }
+
+    //     $this->setNextState( 'skip', $player_id ); 
+        
+    // }
+
     function skipAction( )
     {
         self::checkAction( 'skip' );
@@ -1161,17 +1201,19 @@ class forbiddenisland extends Table
 
         $player_tile_id = $this->getPlayerLocation($player_id);
 
-        if ($this->getGameStateValue("remaining_actions") > 0) {
-            $this->incGameStateValue("remaining_actions", -1);
-            self::incStat(1, "skip", $player_id);
+        $remaining_actions = $this->getGameStateValue("remaining_actions");
+        $state = $this->gamestate->state();
+
+        if (($remaining_actions > 0) and ($state['name'] == 'playerActions')) {
+            self::incStat($remaining_actions, "skip", $player_id);
+            $this->setGameStateValue("remaining_actions", 0);
 
             // Notify
-            self::notifyAllPlayers( "skipAction", clienttranslate( '${player_name} skipped an action' ), array(
+            self::notifyAllPlayers( "skipAction", clienttranslate( '${player_name} ended their turn.' ), array(
                 'player_id' => $player_id,
                 'player_name' => self::getActivePlayerName(),
             ) );
         } else {
-            $state = $this->gamestate->state();
             if ($state['name'] != 'bonusShoreup') {
                 throw new feException( "No remaining actions" );
             }

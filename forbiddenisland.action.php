@@ -75,7 +75,7 @@ class action_forbiddenisland extends APP_GameAction
 
     public function skipAction()
     {
-        self::setAjaxMode();     
+        self::setAjaxMode();
         $result = $this->game->skipAction();
         self::ajaxResponse( );
     }
