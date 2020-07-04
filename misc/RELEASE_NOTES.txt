@@ -1,8 +1,10 @@
-Jul xx
+Jul 04
 *  #20230 - "Could not claim treasure from flooded tile"
 * added debugLoadReport
 * multiple cards showing selected
 * #20220 - "Need to press F5 to shore up near-by tile"
+* fixed Navigator issue
+* implemented End Turn instead of skip
 
 Jul 03
 * player feedback on capture treasure failure
