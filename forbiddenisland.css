@@ -494,4 +494,9 @@ html {
 	color: #BEC1C4;
 }
 
+.tableWindow {
+    /* font-size: 20px !important; */
+    font-size: 18px !important;
+    text-align: left !important;
+}
 

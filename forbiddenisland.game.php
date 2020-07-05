@@ -408,7 +408,7 @@ class forbiddenisland extends Table
             //     'result' => $result,
             //     'player_id' => $player_id
             // ) );
-            
+
             return $result;
 
         }
@@ -709,14 +709,39 @@ class forbiddenisland extends Table
             ) );
         }
 
-        function isWinCondition() {
-            $nPlayers = count($this->getPlayersAtLocation('fools_landing'));
+        function countTreasures() {
             $nTreaures = ($this->getGameStateValue('air') != 0) ? 1 : 0;
             $nTreaures += ($this->getGameStateValue('earth') != 0) ? 1 : 0 ;
             $nTreaures += ($this->getGameStateValue('fire') != 0) ? 1 : 0;
             $nTreaures += ($this->getGameStateValue('ocean') != 0) ? 1 : 0;
+            return $nTreaures;
+        }
+
+        function isWinCondition() {
+            $nPlayers = count($this->getPlayersAtLocation('fools_landing'));
+            $nTreaures = $this->countTreasures();
 
             return (($nPlayers == $this->getPlayersNumber()) and ($nTreaures == 4)) ? true : false;
+        }
+
+        function checkFoolsLanding() {
+            $tiles = $this->tiles->getCardsOfType('fools_landing');
+            $tile = array_shift($tiles);
+            return $tile['location'];
+        }
+
+        function checkTreasureTiles($treasure) {
+            $tile_id_0 = $this->treasure_list[$treasure]['tiles'][0];
+            $tiles = $this->tiles->getCardsOfType($tile_id_0);
+            $tile_0 = array_shift($tiles);
+            $tile_id_1 = $this->treasure_list[$treasure]['tiles'][1];
+            $tiles = $this->tiles->getCardsOfType($tile_id_1);
+            $tile_1 = array_shift($tiles);
+
+            $nTiles = ($tile_0['location'] != 'sunk') ? 1 : 0;
+            $nTiles += ($tile_1['location'] != 'sunk') ? 1 : 0;
+
+            return $nTiles;
         }
 
         function isGameLost( $current_tile = NULL ) {
@@ -728,9 +753,7 @@ class forbiddenisland extends Table
             }
 
             // check if Fool's Landing is sunk
-            $tiles = $this->tiles->getCardsOfType('fools_landing');
-            $tile = array_shift($tiles);
-            if ($tile['location'] == 'sunk') {
+            if ($this->checkFoolsLanding() == 'sunk') {
                 return true;
             }
 
@@ -1681,14 +1704,78 @@ class forbiddenisland extends Table
                 self::DbQuery( "UPDATE player SET player_score=1 WHERE player_id=$player_id" );
             }
             self::setStat(true, "players_won");
-
+            $title = clienttranslate("The Players Won!!");
         } else {
             foreach ( $players as $player_id => $player_info ) {
                 self::DbQuery( "UPDATE player SET player_score=0 WHERE player_id=$player_id" );
             }
+            $title = clienttranslate("The Players Lost");
         }
 
+        $table = [];
+        $table[] = array(clienttranslate("Treasures <b>Captured</b>"), $this->countTreasures());
+        $table[] = array(" ", " ");
+
+        $all_treasures = array('earth', 'air', 'fire', 'ocean');
+        foreach( $all_treasures as $treasure ) {
+
+            $treasureName = $this->treasure_list[$treasure]['name'];
+            $captured = ($this->getGameStateValue($treasure) != 0) ? true : false;
+            $captured_text = ($captured) ? clienttranslate('<p style="color:green; font-weight:bold">Captured</p>') : clienttranslate('Not Captured');
+
+            $table[] = array( 
+                array(
+                    'str' => '     '.clienttranslate('Treasure <b>${treasure}</b>'), 
+                    'args' => array('treasure' => $treasureName)
+                ), 
+                $captured_text
+            );
+            $count = $this->checkTreasureTiles($treasure);
+            $count_text = (($count == 0) and (!$captured)) ? '<p style="color:red; font-weight:bold">0</p>' : $count;
+            $table[] = array( 
+                array(
+                    // 'str' => '     '.clienttranslate('${treasure} Tiles Remaining'), 
+                    'str' => '     '.clienttranslate('Tiles Remaining'), 
+                    'args' => array('treasure' => $treasureName)
+                ), 
+                $count_text
+            );
+            $table[] = array(" ", " ");
+        }
+
+        switch($this->checkFoolsLanding()) {
+            case 'sunk':
+                $status = clienttranslate('<p style="color:red; font-weight:bold">Sunk</p>');
+                break;
+            case 'flooded':
+                $status = clienttranslate('Flooded');
+                break;
+            default:
+                $status = clienttranslate('Unflooded');
+                break;
+        }
+
+        $table[] = array(clienttranslate("<b>Fool's Landing<b>"), $status);
+        $table[] = array(clienttranslate("Island Tiles Sunk"),  
+            $this->tiles->countCardsInLocation("sunk")
+        );
+
+        $table[] = array(clienttranslate("Island Tiles Remaining"),  
+            $this->tiles->countCardsInLocation("unflooded") +
+            $this->tiles->countCardsInLocation("flooded")
+        );
+
+        $this->notifyAllPlayers("tableWindow", '', array (
+            "id" => 'finalresults',
+            "title" => $title,
+            "table" => $table,
+            // "header" => clienttranslate('Final Scoring'),
+            "closing" => clienttranslate("Close"),
+            "footer" => '' 
+        ));
+
         $this->gamestate->nextState( 'end' );
+        // $this->gamestate->nextState( 'debug' );
     }
 
 //////////////////////////////////////////////////////////////////////////////

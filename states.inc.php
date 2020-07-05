@@ -176,7 +176,7 @@ $machinestates = array(
             "draw_treasure" => STATE_DRAW_TREASURE_CARDS,
             "discard" => STATE_DISCARD_TREASURE_CARDS,
             "set_flood" => STATE_SET_FLOOD_CARDS,
-            "final" => STATE_END_GAME
+            "final" => STATE_FINAL
         )
     ),
 
@@ -198,7 +198,8 @@ $machinestates = array(
         "type" => "game",
         "action" => "stFinal",
         "transitions" => array( 
-            "end" => STATE_END_GAME 
+            "end" => STATE_END_GAME,
+            "debug" => STATE_PLAYER_ACTIONS
         )
     ),
 

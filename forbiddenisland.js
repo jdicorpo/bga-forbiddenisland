@@ -470,7 +470,7 @@ function (dojo, declare) {
 
                     case 'client_selectChooseDiscardSpecial':
                         this.addActionButton( 'play_btn', _('Play'), 'onPlayDiscard', null, false, 'blue' );
-                        this.addActionButton( 'discard_btn', _('Discard'), 'onDiscard', null, false, 'gray' );
+                        this.addActionButton( 'discard_btn', _('Discard'), 'onDiscard', null, false, 'red' );
                         this.addActionButton( 'cancel_btn', _('Cancel'), 'onCancel', null, false, 'gray' );
                         break;
                         
@@ -1135,8 +1135,6 @@ function (dojo, declare) {
             if( this.isCurrentPlayerActive() )
             {       
                 console.log( 'onSkip' );
-
-                this.selectedAction = 'bonus_shoreup';
                 if (this.selectedAction == 'bonus_shoreup') {
                     this.ajaxcall( "/forbiddenisland/forbiddenisland/skipAction.html", {
                         lock: true
