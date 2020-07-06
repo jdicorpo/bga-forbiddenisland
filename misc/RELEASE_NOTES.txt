@@ -1,3 +1,10 @@
+Jul 05
+* #20301: "NAVIGATOR POWER DOESN'T WORK"
+* #20310: "DIVER RULES NOT RESPECTED"
+* End game result table
+* #20283: "COULD NOT SELECT MANY TILES FOR HELICOPTER LIFT DESTINATION"
+* added new island maps
+
 Jul 04
 *  #20230 - "Could not claim treasure from flooded tile"
 * added debugLoadReport

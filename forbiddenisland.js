@@ -892,13 +892,13 @@ function (dojo, declare) {
                     function (tile_id, index) {
                         var node = $( tile_id );
                         // dojo.query('#'+tile_id).addClass( 'possibleMove' );
-                        if (!dojo.hasClass(node, 'possibleMove' )) {
+                        if (node && !dojo.hasClass(node, 'possibleMove' )) {
                             dojo.addClass(node, 'possibleMove' );
                             this.handles.push(dojo.connect(node,'onclick', this, 'onTile'));
                         }
                         var node2 = $( 'pawn_area_' + tile_id );
                         // dojo.query('#pawn_area_'+tile_id).addClass( 'possibleMove' );
-                        if (!dojo.hasClass(node2, 'possibleMove' )) {
+                        if (node2 && !dojo.hasClass(node2, 'possibleMove' )) {
                             dojo.addClass(node2, 'possibleMove' );
                             this.handles.push(dojo.connect(node2,'onclick', this, 'onTile'));
                         }
@@ -1064,7 +1064,7 @@ function (dojo, declare) {
                 console.log( 'onNavigator' );
                 
                 this.selectedAction = 'navigator';
-                this.setClientState("client_selectNavigatorPlayer", { descriptionmyturn : "Navigator: ${you} must select a player."});
+                this.setClientState("client_selectNavigatorPlayer", { descriptionmyturn : "Navigator: ${you} must select a player >>> "});
             }
         },
 
@@ -1227,7 +1227,7 @@ function (dojo, declare) {
                             } else if (this.startingTile == null) {
                                 this.startingTile = tile_id;
                                 this.setClientState("client_selectHeliLiftPlayers", 
-                                    { descriptionmyturn : "${you} are playing Helicopter Lift. Select players to move >> "});
+                                    { descriptionmyturn : "${you} are playing Helicopter Lift. Select players to move >>> "});
                             } else {
                                 var card_id = this.selectedCard.split('_')[2];
                                 this.ajaxcall( "/forbiddenisland/forbiddenisland/moveAction.html", {

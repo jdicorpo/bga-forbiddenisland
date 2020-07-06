@@ -38,8 +38,8 @@ $game_options = array(
         'values' => array(
             1 => array( 'name' => totranslate('Forbidden Island'), 'nobeginner' => false ),
             2 => array( 'name' => totranslate('Treasure Island'), 'nobeginner' => false ),
-        //     3 => array( 'name' => totranslate('Island of Shadows'), 'nobeginner' => false ),
-        //     4 => array( 'name' => totranslate('Volcano Island'), 'nobeginner' => false ),
+            3 => array( 'name' => totranslate('Island of Shadows'), 'nobeginner' => false ),
+            4 => array( 'name' => totranslate('Volcano Island'), 'nobeginner' => false ),
         ),
     ),
 );
