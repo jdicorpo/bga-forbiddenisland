@@ -333,6 +333,7 @@ class forbiddenisland extends Table
         {
             $player_tile_id = $this->getPlayerLocation($player_id);
             $result = array();
+            $checked = array();
 
             foreach ($this->tiles->getCardsInLocation('unflooded') as $id => $tile ) {
                     if ( $this->isTileAdjacent($tile['type'], $player_tile_id, $player_id) )
@@ -345,11 +346,16 @@ class forbiddenisland extends Table
                 if ( $this->isTileAdjacent($tile['type'], $player_tile_id, $player_id) )
                 {
                     $result['move'][] = $tile['type'];
+                    if ($this->getAdventurer( $player_id ) == 'diver') {
+                        $checked[] = $tile['type'];
+                        $tiles = $this->getDiverAdjacentTiles($tile['type'], $result, $player_id, $player_tile_id, $checked);
+                        $result['move'] = array_merge($result['move'], $tiles['move']);
+                    }
+
                 }
             }
 
             if ($this->getAdventurer( $player_id ) == 'diver') {
-                $checked = array();
                 foreach ($this->tiles->getCardsInLocation('sunk') as $id => $tile ) {
                     if ( $this->isTileAdjacent($tile['type'], $player_tile_id, $player_id) )
                     {
@@ -411,10 +417,22 @@ class forbiddenisland extends Table
             }
 
             if ($this->getAdventurer( $player_id ) == 'diver') {
+
                 foreach ($this->tiles->getCardsInLocation('sunk') as $id => $tile ) {
-                    $result = $this->nextLevelCheck($player_id, $player_tile_id, $result, $tile['type']);
+                    if ( $this->isTileAdjacent($tile['type'], $player_tile_id, $player_id) ) {
+                        $result = $this->nextLevelCheck($player_id, $player_tile_id, $result, $tile['type']);
+                    }
                 }
+
             }
+
+            // self::notifyAllPlayers( "log", "getPossibleNavigator", array(
+            //     'player_id' => $player_id,
+            //     'player_tile_id' => $player_tile_id,
+            //     'tile_id' => $tile_id,
+            //     // 'checked' => $checked,
+            //     'result' => $result,
+            // ) );
 
             return $result;
 
@@ -445,6 +463,9 @@ class forbiddenisland extends Table
                     and !$this->alreadyIncluded($tile['type'], $result, $start_tile_id) )
                 {
                     $result['move'][] = $tile['type'];
+                    $checked[] = $tile['type'];
+                    $tiles = $this->getDiverAdjacentTiles($tile['type'], $result, $player_id, $start_tile_id, $checked);
+                    $result['move'] = array_merge($result['move'], $tiles['move']);
                 }
             }
 

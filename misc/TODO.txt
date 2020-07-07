@@ -1,11 +1,7 @@
+TODO:
 * support other maps
-
 * support high-res graphics
-* support board size scaling (thething)
-
 * finish zombie mode
-* check mobile compatibility
-
 * add white background for player name
 
 BUGS:
