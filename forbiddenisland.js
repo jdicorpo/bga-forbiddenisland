@@ -98,11 +98,11 @@ function (dojo, declare) {
         {
             console.log( "Starting game setup" );
 
-            // TODO: added to speed up reload  (remove for production release)
-            // dojo.destroy('debug_output');
-            
-            // // TODO: Set up your game interface here, according to "gamedatas"
-            
+            // this.interface_min_width = 740;
+            // this.interface_max_width = 952;
+            this.interface_max_width = gamedatas.interface_max_width;
+            dojo.connect(window, "onresize", this, dojo.hitch(this, "adaptViewportSize"));
+
             this.board.create( this, $('island_tile'), this.tilewidth, this.tileheight );
 
             this.board.image_items_per_row = 8;
@@ -112,8 +112,6 @@ function (dojo, declare) {
                 var img_id = gamedatas.tile_list[tile].img_id;
                 this.board.addItemType(tile, tile, g_gamethemeurl + 'img/tiles.jpg', img_id);
                 this.pawn_area[tile] = new ebg.zone();
-                // this.pawn_area[tile].itemIdToCoords = function( i, control_width ) { return {  x:32*(i%4), y:1, w:32, h:57 } }; 
-                // this.pawn_area[tile].setPattern( 'custom' );
             }
 
             for( var i in gamedatas.unflooded )
@@ -203,18 +201,31 @@ function (dojo, declare) {
 
             this.placeWaterLevel(this.gamedatas.water_level);
 
-            // if (!this.isSpectator) {
-            //     dojo.query( '.island_tile').connect( 'onclick', this, 'onTile');
-            //     dojo.query( '.pawn_area').connect( 'onclick', this, 'onTile');
-            //     dojo.query( '.island_tile_sunk').connect( 'onclick', this, 'onTile');
-            // }
-
             // Setup game notifications to handle (see "setupNotifications" method below)
             this.setupNotifications();
 
             console.log( "Ending game setup" );
         },
        
+        adaptViewportSize : function() {
+            var pageid = "page-content";
+            var nodeid = "thething";
+    
+            var bodycoords = dojo.marginBox(pageid);
+            var contentWidth = bodycoords.w;
+    
+            var browserZoomLevel = window.devicePixelRatio; 
+            //console.log("zoom",browserZoomLevel);
+            if (contentWidth >= this.interface_max_width || browserZoomLevel >1  || this.control3dmode3d) {
+                dojo.style(nodeid,'transform','');
+                return;
+            }
+    
+            var percentageOn1 = contentWidth / this.interface_max_width;
+            // console.log("percentageOn1",percentageOn1);
+
+            dojo.style(nodeid, "transform", "scale(" + percentageOn1 + ")");
+        },
 
         ///////////////////////////////////////////////////
         //// Game & client states
@@ -1446,6 +1457,8 @@ function (dojo, declare) {
             this.notifqueue.setSynchronous( 'giveTreasure', 1000 );
             dojo.subscribe( 'captureTreasure', this, "notif_captureTreasure" );
             this.notifqueue.setSynchronous( 'captureTreasure', 1000 );
+            dojo.subscribe( 'captureAllTreasure', this, "notif_captureAllTreasure" );
+            this.notifqueue.setSynchronous( 'captureTreasure', 1000 );
             dojo.subscribe( 'reshuffleTreasureDeck', this, "notif_reshuffleTreasureDeck" );
             this.notifqueue.setSynchronous( 'reshuffleTreasureDeck', 1000 );
             dojo.subscribe( 'reshuffleFloodDeck', this, "notif_reshuffleFloodDeck" );
@@ -1604,6 +1617,11 @@ function (dojo, declare) {
 
             this.slideToObject('figureicon_' + treasure, 'p_board_icon_' + player_id);
 
+       },
+
+       notif_captureAllTreasure: function( notif )
+       {
+           this.showMessage( _("Your team has all four treasures!!  Return to Fool's Landing and play Helicopter Lift to escape the island and win the game!!"), 'info');
        },
 
        notif_reshuffleTreasureDeck: function( notif )

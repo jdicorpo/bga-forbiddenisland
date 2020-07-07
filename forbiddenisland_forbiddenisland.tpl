@@ -22,6 +22,7 @@
     
     See your "view" PHP file to check how to set variables and control blocks
 -->
+<div id="thething" class="thething">
 <div id="outer_wrapper" class="anchor">
         <div id="board">
             <div id="island_tile" style="visibility: hidden;">
@@ -80,6 +81,7 @@
         <!-- <div id="water_level_meter"></div> -->
     <!-- </div> -->
 
+</div>
 </div>
     
 

@@ -51,6 +51,15 @@ html {
     background: url(img/ocean-back-4.jpg);
 }
 
+#thething {
+    position: relative;
+    max-width: 1650px;
+	margin: auto;
+    transform-origin: top left;
+	transition: transform 1000ms ease;
+	transform: translateZ(0px);
+}
+
 .anchor {
 	position: relative;
 	width: 100%; 
@@ -212,7 +221,7 @@ html {
     display: inline-block;
 	position: relative;
     vertical-align: top;
-    width: 100%;
+    width: 95%;
     /* padding: 5px 0px 0px 10px; */
 }
 
@@ -294,7 +303,7 @@ html {
 
 .flood_deck_area {
     display: inline-block;
-    width: 100%;
+    width: 95%;
     height: 177.75px;
     position: relative;
 }
@@ -312,7 +321,7 @@ html {
 
 .treasure_deck_area {
     display: inline-block;
-    width: 100%;
+    width: 95%;
     height: 177.75px;
     position: realtive;
 }

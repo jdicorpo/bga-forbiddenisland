@@ -243,6 +243,11 @@ class forbiddenisland extends Table
             $result['player_card_area'][$player_id]['adventurer'] = $this->player_deck->getCardsInLocation( 'hand', $player_id );
             $result['player_card_area'][$player_id]['treasure_cards'] = $this->treasure_deck->getCardsInLocation( 'hand', $player_id );
         }
+
+        $island_map_id = self::getGameStateValue("island_map");
+        $island_map = $this->island_map[$island_map_id]['map'];
+        $max_x = $this->island_map[$island_map_id]['max_x'];
+        $result['interface_max_width'] = ($max_x + 1) * (128+8);
             
         $result['flood_card_area'] = $this->flood_deck->getCardsInLocation( 'flood_area' );
         $result['treasure_discards'] = $this->treasure_deck->getCardsInLocation( 'discard' );
@@ -753,7 +758,7 @@ class forbiddenisland extends Table
             return $nTiles;
         }
 
-        function isGameLost( $current_tile = NULL ) {
+        function isGameLost( $current_tile = null ) {
 
             // check if water level is 10 or greater
             $water_level = $this->getGameStateValue("water_level");
@@ -975,35 +980,40 @@ class forbiddenisland extends Table
         {
             
             // These are the id's from the BGAtable I need to debug.
-            $id0 = '85268563';
-            $id1 = '85278138';	
-            $id2 = '85278138';	
-            $id3 = '85278138';	
+            $id0 = '39141269';
+            $id1 = '84181184';	
+            // $id2 = '85278138';	
+            // $id3 = '85278138';	
             
             //player
             self::DbQuery("UPDATE player SET player_id=2320829 WHERE player_id = '" . $id0 . "'" );
             self::DbQuery("UPDATE player SET player_id=2320830 WHERE player_id = '" . $id1 . "'" );
-            self::DbQuery("UPDATE player SET player_id=2320831 WHERE player_id = '" . $id2 . "'" );
-            self::DbQuery("UPDATE player SET player_id=2320832 WHERE player_id = '" . $id3 . "'" );
+            // self::DbQuery("UPDATE player SET player_id=2320831 WHERE player_id = '" . $id2 . "'" );
+            // self::DbQuery("UPDATE player SET player_id=2320832 WHERE player_id = '" . $id3 . "'" );
             
             //global 
             self::DbQuery("UPDATE global SET global_value=2320829 WHERE global_value = '" . $id0 . "'" );
             self::DbQuery("UPDATE global SET global_value=2320830 WHERE global_value = '" . $id1 . "'" );
-            self::DbQuery("UPDATE global SET global_value=2320831 WHERE global_value = '" . $id2 . "'" );
-            self::DbQuery("UPDATE global SET global_value=2320832 WHERE global_value = '" . $id3 . "'" );
+            // self::DbQuery("UPDATE global SET global_value=2320831 WHERE global_value = '" . $id2 . "'" );
+            // self::DbQuery("UPDATE global SET global_value=2320832 WHERE global_value = '" . $id3 . "'" );
             
             //stats
             self::DbQuery("UPDATE stats SET stats_player_id=2320829 WHERE stats_player_id = '" . $id0 . "'" );
             self::DbQuery("UPDATE stats SET stats_player_id=2320830 WHERE stats_player_id = '" . $id1 . "'" );			
-            self::DbQuery("UPDATE stats SET stats_player_id=2320831 WHERE stats_player_id = '" . $id2 . "'" );			
-            self::DbQuery("UPDATE stats SET stats_player_id=2320832 WHERE stats_player_id = '" . $id3 . "'" );			
+            // self::DbQuery("UPDATE stats SET stats_player_id=2320831 WHERE stats_player_id = '" . $id2 . "'" );			
+            // self::DbQuery("UPDATE stats SET stats_player_id=2320832 WHERE stats_player_id = '" . $id3 . "'" );			
             
             // 'other' game specific tables. example:
             // tables specific to your schema that use player_ids
-            self::DbQuery("UPDATE card SET card_location_arg=2320829 WHERE card_location_arg = '" . $id0 . "'" );
-            self::DbQuery("UPDATE card SET card_location_arg=2320830 WHERE card_location_arg = '" . $id1 . "'" );
-            self::DbQuery("UPDATE card SET card_location_arg=2320831 WHERE card_location_arg = '" . $id2 . "'" );
-            self::DbQuery("UPDATE card SET card_location_arg=2320832 WHERE card_location_arg = '" . $id3 . "'" );
+            self::DbQuery("UPDATE treasure_deck SET card_location_arg=2320829 WHERE card_location_arg = '" . $id0 . "'" );
+            self::DbQuery("UPDATE treasure_deck SET card_location_arg=2320830 WHERE card_location_arg = '" . $id1 . "'" );
+            // self::DbQuery("UPDATE card SET card_location_arg=2320831 WHERE card_location_arg = '" . $id2 . "'" );
+            // self::DbQuery("UPDATE card SET card_location_arg=2320832 WHERE card_location_arg = '" . $id3 . "'" );
+
+            self::DbQuery("UPDATE player_deck SET card_location_arg=2320829 WHERE card_location_arg = '" . $id0 . "'" );
+            self::DbQuery("UPDATE player_deck SET card_location_arg=2320830 WHERE card_location_arg = '" . $id1 . "'" );
+            // self::DbQuery("UPDATE card SET card_location_arg=2320831 WHERE card_location_arg = '" . $id2 . "'" );
+            // self::DbQuery("UPDATE card SET card_location_arg=2320832 WHERE card_location_arg = '" . $id3 . "'" );
         
         }
 
@@ -1379,6 +1389,11 @@ class forbiddenisland extends Table
                     ) );
 
                 $this->updateCardCount();
+
+                if ($this->countTreasures() == 4) {
+                    self::notifyAllPlayers( "captureAllTreasure", clienttranslate( "Your team has <b>All Four Treasures</b>!!  Return to <b>Fool's Landing</b> and play <b>Helicopter Lift</b> to escape the island and win the game!!" ), array(
+                        ) );
+                }
             }
         } else {
             throw new feException( "No remaining actions" );
@@ -1586,6 +1601,7 @@ class forbiddenisland extends Table
             // } else {
             //     $this->gamestate->nextState( 'next_player' );
             // }
+            $current_tile = null;
 
         } elseif ($tile['location'] == 'flooded') {
 
@@ -1607,12 +1623,13 @@ class forbiddenisland extends Table
             } else {
                 $this->setGameStateValue("rescue_pawn_tile", 0);
             }
+            $current_tile = $tile['type'];
 
         } else {
             throw new feException( "Error: Flood card drawn for sunk tile." );
         }
 
-        if ($this->isGameLost($tile['type'])) {
+        if ($this->isGameLost($current_tile)) {
             $this->gamestate->nextState( 'final' );
         } else {
             $this->setNextState( 'draw_flood' );

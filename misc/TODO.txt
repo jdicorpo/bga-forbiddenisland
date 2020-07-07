@@ -13,7 +13,6 @@ BUGS:
 
 EC Feedback
 
-* skip is not a main action so it should use the 'gray' style for buttons. Also, rather than just skipping an action, I think it would actually be used only to end the player turn. So maybe it should be 'End turn' with a confirmation dialog.
 * cards in hand should be sorted by weight so that cards of the same type are grouped
 * in the player panels, there is some space, so instead of just text, there could be the icon of the card for the player role with a tooltip.
 * currently clicking a tile you can move to triggers the move. I feel like there should be a confirmation, otherwise there will be a lot of "misclick" complaints. The flow I suggest is
@@ -22,7 +21,7 @@ EC Feedback
    - The appropriate buttons appear on the status bar depending on what can be done on this tile: You may [Move] [Shore up] [...] [Cancel]
    - The action is confirmed by clicking on the appropriate button (of course, the special actions have a different workflow)
 
-FIXED:
+IMPLEMENTED:
 * when trying to get a treasure, I got an error "Invalid action". I messed up as I didn't have enough cards, but the error message should tell me why (to help the players learn the game, and limit erroneous bug reports)
 * there are no game_banner.jpg and game_displayX.jpg images to make the game page beautiful
 * for this game, we can definitely change the background to make it an ocean :)
@@ -30,4 +29,5 @@ FIXED:
 * the player name written vertically on the left of the hand should be of the player color, and written with the top of the letters left to match the writing on the deck cards (it's easier to read that way)
 * the hands under the board should be ordered with the current player hand first, then other players in the play order
 * for discarding cards, there should also be a confirmation step to prevent misclicks. The player should select all the cards to discard, then click a "Discard" button.
+* skip is not a main action so it should use the 'gray' style for buttons. Also, rather than just skipping an action, I think it would actually be used only to end the player turn. So maybe it should be 'End turn' with a confirmation dialog.
 
