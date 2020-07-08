@@ -158,11 +158,13 @@ function (dojo, declare) {
                 this.figure_area[player_id].create( this, 'player_figure_area_' + player_id, this.figurewidth, this.figureheight);
                 this.placeAllTreasureCards(player_id, gamedatas.player_card_area[player_id].treasure_cards);
                 var playerBoardDiv = dojo.byId('player_board_' + player_id);
+                var x = this.cardwidth * (gamedatas.player_list[player.adventurer].idx-1);
                 dojo.place(this.format_block('jstpl_player_board', {
                     id: player_id,
                     adventurer: gamedatas.player_list[player.adventurer].name,
                     location: gamedatas.tile_list[player.location].name,
-                    color: player.color
+                    color: player.color,
+                    x: x
                 }), playerBoardDiv);
                 $('cardcount_' + player_id).innerHTML = Object.keys(gamedatas.player_card_area[player_id].treasure_cards).length;
                 treasures.forEach( function(treasure, index) {
@@ -261,6 +263,7 @@ function (dojo, declare) {
                 this.pilot_action = args.args.pilot_action;
                 this.special_action = false;
                 this.selectedCard = 'treasure_card_' + args.args.special_card_id;
+                this.playerLocations = args.args.playerLocations;
                 break;
 
             case 'bonusShoreup':
@@ -399,7 +402,7 @@ function (dojo, declare) {
                 {
                     case 'playerActions':
                         var main = $('pagemaintitletext');
-                        main.innerHTML += 'take <span id="remaining_actions_value" style="font-weight:bold;color:#ED0023;">' 
+                        main.innerHTML += '<span id="remaining_actions_value" style="font-weight:bold;color:#ED0023;">' 
                             + args.remaining_actions + '</span>' + _(' action(s): ') + '<span style="font-weight:bold;color:#4871b6;">' 
                             + _('Move') + '</span>' + _(' or ');
                         if ((args.adventurer == 'pilot') && (args.pilot_action == 1)) {
@@ -455,6 +458,7 @@ function (dojo, declare) {
                     case 'client_selectShoreUp':
                     case 'client_selectGiveCard':
                     case 'client_selectGiveCardPlayers':
+                    case 'client_selectPilotDest':
                         this.addActionButton( 'cancel_btn', _('Cancel'), 'onCancel', null, false, 'red' );
                         break;
 
@@ -509,6 +513,11 @@ function (dojo, declare) {
             {
                 // these states can all occur out of turn
                 case 'playerActions':
+                    if (!this.isCurrentPlayerActive() ) {
+                        var main = $('pagemaintitletext');
+                            main.innerHTML += '<span id="remaining_actions_value" style="font-weight:bold;color:#ED0023;">' 
+                                + args.remaining_actions + '</span>' + _(' remaining action(s).');
+                    }
                     if (!this.isSpectator && this.hasSpecialCard(args.player_treasure_cards[this.player_id])) {
                         this.addActionButton( 'player_special_btn', _('Play Special'), 'onPlaySpecial', null, false, 'red' ); 
                     }
@@ -1064,6 +1073,11 @@ function (dojo, declare) {
                 console.log( 'onPilot' );
                 
                 this.selectedAction = 'pilot';
+                this.playerLocations.forEach( function(x) {
+                    if (x.id == this.player_id) {
+                        this.startingTile = x.location;
+                    }
+                }, this);
                 this.setClientState("client_selectPilotDest", { descriptionmyturn : "Pilot: ${you} must select a destination tile."});
             }
         },

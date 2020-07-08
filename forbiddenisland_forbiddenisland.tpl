@@ -109,6 +109,7 @@ var jstpl_player_board = '\<div id="p_board_${id}" class="p_board">\
     <div id="cards_${id}" class="card_icon"><span id="cardcount_${id}"  class="cardcount">0</span></div>\
     </div>\
 </div>';
+// <div class="player_symbol" style="background-position:-${x}px 0"></div>\
 
 </script>  
 

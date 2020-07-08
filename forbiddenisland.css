@@ -217,6 +217,11 @@ html {
     background-image: url(img/player.jpg);
 }
 
+.player_symbol {
+    background-image: url(img/player_symbols.png);
+    position: relative;
+}
+
 .player_area {
     display: inline-block;
 	position: relative;

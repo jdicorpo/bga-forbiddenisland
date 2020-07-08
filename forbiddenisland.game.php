@@ -332,7 +332,7 @@ class forbiddenisland extends Table
         function getPossibleMoves( $player_id )
         {
             $player_tile_id = $this->getPlayerLocation($player_id);
-            $result = array();
+            $result = array( 'move' => array(), 'navigator' => array());
             $checked = array();
 
             foreach ($this->tiles->getCardsInLocation('unflooded') as $id => $tile ) {
@@ -370,9 +370,17 @@ class forbiddenisland extends Table
         }
 
         function nextLevelCheck($player_id, $player_tile_id, $result, $tile_id) {
+
             foreach ($this->tiles->getCardsInLocation('unflooded') as $id => $tile ) {
-                if (! in_array($tile['type'], $result['navigator'][$player_id] ) and ($tile['type'] != $player_tile_id)) {
-                    if ( $this->isTileAdjacent($tile['type'], $tile_id, $player_id) )
+                if (array_key_exists('navigator', $result)) {
+                    if (! in_array($tile['type'], $result['navigator'][$player_id] ) and ($tile['type'] != $player_tile_id)) {
+                        if ( $this->isTileAdjacent($tile['type'], $tile_id, $player_id) )
+                        {
+                            $result['navigator'][$player_id][] = $tile['type'];
+                        }
+                    }
+                } else {
+                    if (( $this->isTileAdjacent($tile['type'], $tile_id, $player_id)) and ($tile['type'] != $player_tile_id))
                     {
                         $result['navigator'][$player_id][] = $tile['type'];
                     }
@@ -380,8 +388,15 @@ class forbiddenisland extends Table
             }
 
             foreach ($this->tiles->getCardsInLocation('flooded') as $id => $tile ) {
-                if (! in_array($tile['type'], $result['navigator'][$player_id] ) and ($tile['type'] != $player_tile_id)) {
-                    if ( $this->isTileAdjacent($tile['type'], $tile_id, $player_id) )
+                if (array_key_exists('navigator', $result)) {
+                    if (! in_array($tile['type'], $result['navigator'][$player_id] ) and ($tile['type'] != $player_tile_id)) {
+                        if ( $this->isTileAdjacent($tile['type'], $tile_id, $player_id) )
+                        {
+                            $result['navigator'][$player_id][] = $tile['type'];
+                        }
+                    }
+                } else {
+                    if (( $this->isTileAdjacent($tile['type'], $tile_id, $player_id)) and ($tile['type'] != $player_tile_id))
                     {
                         $result['navigator'][$player_id][] = $tile['type'];
                     }
@@ -1001,8 +1016,8 @@ class forbiddenisland extends Table
         {
             
             // These are the id's from the BGAtable I need to debug.
-            $id0 = '39141269';
-            $id1 = '84181184';	
+            $id0 = '84781334';
+            $id1 = '83876647';	
             // $id2 = '85278138';	
             // $id3 = '85278138';	
             

@@ -1,3 +1,9 @@
+Jul 07
+* fix pilot start tile
+* #20232: "GAME HUNG" - issue with possibleAction search
+* show remainging actions for other players 
+
+
 Jul 06
 * #20221: "GAME ENDED WHEN A TREASURE TILE JUST FLOODED"
 * thething - display scaling
