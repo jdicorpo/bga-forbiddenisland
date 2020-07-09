@@ -226,6 +226,10 @@ class forbiddenisland extends Table
     */
     protected function getAllDatas()
     {
+        // ********  FOR DEBUG ONLY -- REMOVE for PRODUCTION!!
+        self::debugLoadReport();
+        // ********
+
         $result = array();
     
         $current_player_id = self::getCurrentPlayerId();    // !! We must only return informations visible by this player !!
@@ -1016,40 +1020,40 @@ class forbiddenisland extends Table
         {
             
             // These are the id's from the BGAtable I need to debug.
-            $id0 = '84781334';
-            $id1 = '83876647';	
-            // $id2 = '85278138';	
-            // $id3 = '85278138';	
+            $id0 = '84181184';
+            $id1 = '84333964';	
+            $id2 = '84424888';	
+            $id3 = '39141269';	
             
             //player
             self::DbQuery("UPDATE player SET player_id=2320829 WHERE player_id = '" . $id0 . "'" );
             self::DbQuery("UPDATE player SET player_id=2320830 WHERE player_id = '" . $id1 . "'" );
-            // self::DbQuery("UPDATE player SET player_id=2320831 WHERE player_id = '" . $id2 . "'" );
-            // self::DbQuery("UPDATE player SET player_id=2320832 WHERE player_id = '" . $id3 . "'" );
+            self::DbQuery("UPDATE player SET player_id=2320831 WHERE player_id = '" . $id2 . "'" );
+            self::DbQuery("UPDATE player SET player_id=2320832 WHERE player_id = '" . $id3 . "'" );
             
             //global 
             self::DbQuery("UPDATE global SET global_value=2320829 WHERE global_value = '" . $id0 . "'" );
             self::DbQuery("UPDATE global SET global_value=2320830 WHERE global_value = '" . $id1 . "'" );
-            // self::DbQuery("UPDATE global SET global_value=2320831 WHERE global_value = '" . $id2 . "'" );
-            // self::DbQuery("UPDATE global SET global_value=2320832 WHERE global_value = '" . $id3 . "'" );
+            self::DbQuery("UPDATE global SET global_value=2320831 WHERE global_value = '" . $id2 . "'" );
+            self::DbQuery("UPDATE global SET global_value=2320832 WHERE global_value = '" . $id3 . "'" );
             
             //stats
             self::DbQuery("UPDATE stats SET stats_player_id=2320829 WHERE stats_player_id = '" . $id0 . "'" );
             self::DbQuery("UPDATE stats SET stats_player_id=2320830 WHERE stats_player_id = '" . $id1 . "'" );			
-            // self::DbQuery("UPDATE stats SET stats_player_id=2320831 WHERE stats_player_id = '" . $id2 . "'" );			
-            // self::DbQuery("UPDATE stats SET stats_player_id=2320832 WHERE stats_player_id = '" . $id3 . "'" );			
+            self::DbQuery("UPDATE stats SET stats_player_id=2320831 WHERE stats_player_id = '" . $id2 . "'" );			
+            self::DbQuery("UPDATE stats SET stats_player_id=2320832 WHERE stats_player_id = '" . $id3 . "'" );			
             
             // 'other' game specific tables. example:
             // tables specific to your schema that use player_ids
             self::DbQuery("UPDATE treasure_deck SET card_location_arg=2320829 WHERE card_location_arg = '" . $id0 . "'" );
             self::DbQuery("UPDATE treasure_deck SET card_location_arg=2320830 WHERE card_location_arg = '" . $id1 . "'" );
-            // self::DbQuery("UPDATE card SET card_location_arg=2320831 WHERE card_location_arg = '" . $id2 . "'" );
-            // self::DbQuery("UPDATE card SET card_location_arg=2320832 WHERE card_location_arg = '" . $id3 . "'" );
+            self::DbQuery("UPDATE treasure_deck SET card_location_arg=2320831 WHERE card_location_arg = '" . $id2 . "'" );
+            self::DbQuery("UPDATE treasure_deck SET card_location_arg=2320832 WHERE card_location_arg = '" . $id3 . "'" );
 
             self::DbQuery("UPDATE player_deck SET card_location_arg=2320829 WHERE card_location_arg = '" . $id0 . "'" );
             self::DbQuery("UPDATE player_deck SET card_location_arg=2320830 WHERE card_location_arg = '" . $id1 . "'" );
-            // self::DbQuery("UPDATE card SET card_location_arg=2320831 WHERE card_location_arg = '" . $id2 . "'" );
-            // self::DbQuery("UPDATE card SET card_location_arg=2320832 WHERE card_location_arg = '" . $id3 . "'" );
+            self::DbQuery("UPDATE player_deck SET card_location_arg=2320831 WHERE card_location_arg = '" . $id2 . "'" );
+            self::DbQuery("UPDATE player_deck SET card_location_arg=2320832 WHERE card_location_arg = '" . $id3 . "'" );
         
         }
 

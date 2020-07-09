@@ -1,3 +1,7 @@
+Jul 08
+* #20474: "GAME STUCKED"
+* #20345: "GAME DOSN'T LOAD"
+
 Jul 07
 * fix pilot start tile
 * #20232: "GAME HUNG" - issue with possibleAction search

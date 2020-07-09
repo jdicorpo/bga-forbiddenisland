@@ -133,7 +133,7 @@ html {
 
 .island_tile_sunk {
     /* background-image: url(img/tiles.jpg); */
-    border-radius: 10px;
+    border-radius: 15px;
     border-style: dashed;
     border-width: 2px;
     border-color: rgb(78, 78, 78);

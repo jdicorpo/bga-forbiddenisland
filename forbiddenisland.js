@@ -359,7 +359,7 @@ function (dojo, declare) {
                 break;
 
             case 'rescuePawn':
-                this.clearLastAction();
+                // this.clearLastAction();
                 break;
 
             case 'dummmy':
@@ -647,21 +647,17 @@ function (dojo, declare) {
                     y : this.tileheight * Math.trunc((img_id-1) / 8),
                     id : tile_id,
                 }), 'island_tile_' + board_id, 'first');
-
-                dojo.place(this.format_block('jstpl_pawn_area', {
-                    id : tile_id,
-                }), 'island_tile_' + board_id);
-
-                this.pawn_area[tile_id].create( this, 'pawn_area_' + tile_id, this.pawnwidth, this.pawnheight);
             } else {
                 dojo.place(this.format_block('jstpl_sunk_tile', {
                     id : tile_id,
                 }), 'island_tile_' + board_id, 'first');
-
-                dojo.place(this.format_block('jstpl_pawn_area', {
-                    id : tile_id,
-                }), 'island_tile_' + board_id);
             }
+            
+            dojo.place(this.format_block('jstpl_pawn_area', {
+                id : tile_id,
+            }), 'island_tile_' + board_id);
+            
+            this.pawn_area[tile_id].create( this, 'pawn_area_' + tile_id, this.pawnwidth, this.pawnheight);
 
         },
 
@@ -906,7 +902,7 @@ function (dojo, declare) {
             this.clearLastAction();
 
             console.log( 'updatePossibleMoves' );
-
+            
             if ((typeof possibleMoves !== 'undefined') && (possibleMoves.length > 0)) {
                 possibleMoves.forEach(
                     function (tile_id, index) {
@@ -1305,6 +1301,7 @@ function (dojo, declare) {
                                 lock: true,
                                 tile_id:tile_id,
                                 rescue: true,
+                                pilot: (this.adventurer == 'pilot') ? true : false,
                                 players: [ this.player_id ].join(';')
                             }, this, function( result ) {} );                        
                         }
