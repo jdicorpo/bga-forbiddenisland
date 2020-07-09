@@ -227,7 +227,7 @@ class forbiddenisland extends Table
     protected function getAllDatas()
     {
         // ********  FOR DEBUG ONLY -- REMOVE for PRODUCTION!!
-        self::debugLoadReport();
+        // self::debugLoadReport();
         // ********
 
         $result = array();
@@ -1020,10 +1020,10 @@ class forbiddenisland extends Table
         {
             
             // These are the id's from the BGAtable I need to debug.
-            $id0 = '84181184';
-            $id1 = '84333964';	
-            $id2 = '84424888';	
-            $id3 = '39141269';	
+            $id0 = '5815028';
+            $id1 = '84747897';	
+            $id2 = '86769394';	
+            $id3 = '84955348';	
             
             //player
             self::DbQuery("UPDATE player SET player_id=2320829 WHERE player_id = '" . $id0 . "'" );

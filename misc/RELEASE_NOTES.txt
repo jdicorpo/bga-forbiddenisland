@@ -1,6 +1,7 @@
 Jul 08
 * #20474: "GAME STUCKED"
 * #20345: "GAME DOSN'T LOAD"
+* #20411: "GAME LOCKED AND WE HAVE HAD TO ABBANDON"
 
 Jul 07
 * fix pilot start tile
