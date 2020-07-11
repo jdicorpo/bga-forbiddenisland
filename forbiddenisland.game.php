@@ -1042,13 +1042,13 @@ class forbiddenisland extends Table
         {
             
             // These are the id's from the BGAtable I need to debug.
-            $id0 = '85597081';
-            $id1 = '88349641';	
+            $id0 = '84496005';
+            $id1 = '84230789';	
 
             // $id0 = '5815028';
             // $id1 = '84747897';	
-            $id2 = '86769394';	
-            $id3 = '84955348';	
+            $id2 = '1718689';	
+            $id3 = '39141269';	
             
             //player
             self::DbQuery("UPDATE player SET player_id=2320829 WHERE player_id = '" . $id0 . "'" );
