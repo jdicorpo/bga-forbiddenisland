@@ -101,6 +101,9 @@ function (dojo, declare) {
             // this.interface_min_width = 740;
             // this.interface_max_width = 952;
             this.interface_max_width = gamedatas.interface_max_width;
+            this.interface_max_height = gamedatas.interface_max_height;
+            dojo.style('board','width', this.interface_max_width + 'px');
+            dojo.style('board','height', this.interface_max_height + 'px');
             dojo.connect(window, "onresize", this, dojo.hitch(this, "adaptViewportSize"));
 
             this.board.create( this, $('island_tile'), this.tilewidth, this.tileheight );
@@ -657,7 +660,7 @@ function (dojo, declare) {
                 id : tile_id,
             }), 'island_tile_' + board_id);
             
-            this.pawn_area[tile_id].create( this, 'pawn_area_' + tile_id, this.pawnwidth, this.pawnheight);
+            this.pawn_area[tile_id].create( this, 'pawn_area_' + tile_id, this.pawnwidth - 7, this.pawnheight);
 
         },
 

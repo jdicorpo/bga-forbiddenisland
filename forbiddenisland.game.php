@@ -251,7 +251,9 @@ class forbiddenisland extends Table
         $island_map_id = self::getGameStateValue("island_map");
         $island_map = $this->island_map[$island_map_id]['map'];
         $max_x = $this->island_map[$island_map_id]['max_x'];
+        $max_y = $this->island_map[$island_map_id]['max_y'];
         $result['interface_max_width'] = ($max_x + 1) * (128+8);
+        $result['interface_max_height'] = ($max_y + 1) * (128+8);
             
         $result['flood_card_area'] = $this->flood_deck->getCardsInLocation( 'flood_area' );
         $result['treasure_discards'] = $this->treasure_deck->getCardsInLocation( 'discard' );
@@ -479,13 +481,24 @@ class forbiddenisland extends Table
             }
         }
 
+        function overflow_check($checked) {
+            if (count($checked) > 40) {
+                self::error("OVERFLOW ERROR");
+                return true;
+            } else {
+                return false;
+            }
+        }
+
         function getDiverAdjacentTiles( $target_tile_id, $result, $player_id, $start_tile_id = null, $checked)
         {
+            if ($this->overflow_check($checked)) 
+                return array($result, $checked);
+
             foreach ($this->tiles->getCardsInLocation('unflooded') as $id => $tile ) {
                 if ( $this->isTileAdjacent($tile['type'], $target_tile_id, $player_id)) {
                     if (!$this->alreadyIncluded($tile['type'], $result, $start_tile_id) )
                     {
-                        self::warn("getDiverAdjacentTiles: ADDING ${tile['type']}");
                         $result['move'][] = $tile['type'];
                     }
                 }
@@ -496,7 +509,6 @@ class forbiddenisland extends Table
                     if (!$this->alreadyIncluded($tile['type'], $result, $start_tile_id)
                          and $this->tile_not_checked($tile['type'], $checked))
                     {
-                        self::warn("getDiverAdjacentTiles: ** ADDING ${tile['type']} **");
                         $result['move'][] = $tile['type'];
                         $checked[] = $tile['type'];
                         $tiles = $this->getDiverAdjacentTiles($tile['type'], $result, $player_id, $start_tile_id, $checked);
@@ -511,7 +523,6 @@ class forbiddenisland extends Table
                 if ( $this->isTileAdjacent($tile['type'], $target_tile_id, $player_id)) {
                     if ($this->tile_not_checked($tile['type'], $checked))
                     {
-                        self::warn("getDiverAdjacentTiles: checking ${tile['type']}");
                         $checked[] = $tile['type'];
                         $tiles = $this->getDiverAdjacentTiles($tile['type'], $result, $player_id, $start_tile_id, $checked);
                         $result['move'] = array_merge($result['move'], $tiles[0]['move']);
@@ -880,13 +891,6 @@ class forbiddenisland extends Table
             switch ($state['name']) {
                 case 'playerActions':
                 case 'bonusShoreup':
-                    // if ($this->getGameStateValue("remaining_actions") > 0) {
-                    //     $this->gamestate->nextState( 'action' );
-                    // } else {
-                    //     $this->gamestate->nextState( 'draw_treasure' );
-                    // }
-                    // break;
-
                 case 'discardTreasure':
                 case 'sandbags':
                 case 'heli_lift':
@@ -1041,14 +1045,11 @@ class forbiddenisland extends Table
         public function debugLoadReport()
         {
             
-            // These are the id's from the BGAtable I need to debug.
-            $id0 = '84496005';
-            $id1 = '84230789';	
-
-            // $id0 = '5815028';
-            // $id1 = '84747897';	
-            $id2 = '1718689';	
-            $id3 = '39141269';	
+            // bug #20491
+            $id0 = '86000751';
+            $id1 = '85829660';
+            $id2 = '86769394';	
+            $id3 = '5815028';	
             
             //player
             self::DbQuery("UPDATE player SET player_id=2320829 WHERE player_id = '" . $id0 . "'" );
@@ -1095,7 +1096,10 @@ class forbiddenisland extends Table
     {
         self::checkAction( 'move' );
 
-        $player_id = self::getActivePlayerId();
+        $player_id = self::getCurrentPlayerId();
+        $player_info = $this->loadPlayersBasicInfos();
+        $player_name = $player_info[$player_id]['player_name'];
+
         $target_player_id = $player_id;
 
         $player_tile_id = $this->getPlayerLocation($player_id);
@@ -1202,7 +1206,9 @@ class forbiddenisland extends Table
     {
         self::checkAction( 'shore_up' );
 
-        $player_id = self::getActivePlayerId();
+        $player_id = self::getCurrentPlayerId();
+        $player_info = $this->loadPlayersBasicInfos();
+        $player_name = $player_info[$player_id]['player_name'];
         $player_tile_id = $this->getPlayerLocation($player_id);
         $tile_name = $this->tile_list[$tile_id]['name'];
         
@@ -1247,7 +1253,7 @@ class forbiddenisland extends Table
                 self::notifyAllPlayers( "shoreUpAction", clienttranslate( '${player_name} shored up ${tile_name}' ), array(
                     'player_id' => $player_id,
                     'player_tile_id' => $player_tile_id,
-                    'player_name' => self::getActivePlayerName(),
+                    'player_name' => $player_name,
                     'tile_id' => $tile_id,
                     'tile_name' => $tile_name,
                     'sandbags' => $sandbags,
@@ -1287,34 +1293,6 @@ class forbiddenisland extends Table
         }
 
     }
-
-    // function skipAction( )
-    // {
-    //     self::checkAction( 'skip' );
-
-    //     $player_id = self::getActivePlayerId();
-
-    //     $player_tile_id = $this->getPlayerLocation($player_id);
-
-    //     if ($this->getGameStateValue("remaining_actions") > 0) {
-    //         $this->incGameStateValue("remaining_actions", -1);
-    //         self::incStat(1, "skip", $player_id);
-
-    //         // Notify
-    //         self::notifyAllPlayers( "skipAction", clienttranslate( '${player_name} skipped an action' ), array(
-    //             'player_id' => $player_id,
-    //             'player_name' => self::getActivePlayerName(),
-    //         ) );
-    //     } else {
-    //         $state = $this->gamestate->state();
-    //         if ($state['name'] != 'bonusShoreup') {
-    //             throw new feException( "No remaining actions" );
-    //         }
-    //     }
-
-    //     $this->setNextState( 'skip', $player_id ); 
-        
-    // }
 
     function skipAction( )
     {
@@ -1357,10 +1335,12 @@ class forbiddenisland extends Table
         $card_name = $this->treasure_list[$card['type']]['name'];
         $this->treasure_deck->moveCard($id, 'discard');
         self::incStat(1, "discard", $player_id);
+        $player_info = $this->loadPlayersBasicInfos();
+        $player_name = $player_info[$player_id]['player_name'];
 
         self::notifyAllPlayers( "discardTreasure", clienttranslate( '${player_name} discarded ${card_name}' ), array(
             'player_id' => $player_id,
-            'player_name' => self::getActivePlayerName(),
+            'player_name' => $player_name,
             'card' => $card,
             'card_name' => $card_name
         ) );
@@ -1791,7 +1771,16 @@ class forbiddenisland extends Table
 
             $players = array_map( function($p){ return $p['player_id']; }, $rescue_pawns );
 
-            $this->gamestate->setPlayersMultiactive( $players, 'draw_flood', $bExclusive = true );
+            foreach ( $players as $player_id => $player_info ) {
+                if (count($this->getPossibleMoves( $player_id )['move']) == 0) {
+                    // no possible move for this pawn
+                    $this->gamestate->nextState( 'final' );
+                    break;
+                } else {
+                    $this->gamestate->setPlayersMultiactive( $players, 'draw_flood', $bExclusive = true );
+                }
+            }
+
         }
     }
 
