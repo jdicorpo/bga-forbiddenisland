@@ -1097,8 +1097,6 @@ class forbiddenisland extends Table
         self::checkAction( 'move' );
 
         $player_id = self::getCurrentPlayerId();
-        $player_info = $this->loadPlayersBasicInfos();
-        $player_name = $player_info[$player_id]['player_name'];
 
         $target_player_id = $player_id;
 
@@ -1207,8 +1205,6 @@ class forbiddenisland extends Table
         self::checkAction( 'shore_up' );
 
         $player_id = self::getCurrentPlayerId();
-        $player_info = $this->loadPlayersBasicInfos();
-        $player_name = $player_info[$player_id]['player_name'];
         $player_tile_id = $this->getPlayerLocation($player_id);
         $tile_name = $this->tile_list[$tile_id]['name'];
         
@@ -1253,7 +1249,7 @@ class forbiddenisland extends Table
                 self::notifyAllPlayers( "shoreUpAction", clienttranslate( '${player_name} shored up ${tile_name}' ), array(
                     'player_id' => $player_id,
                     'player_tile_id' => $player_tile_id,
-                    'player_name' => $player_name,
+                    'player_name' => self::getPlayerName($player_id),
                     'tile_id' => $tile_id,
                     'tile_name' => $tile_name,
                     'sandbags' => $sandbags,
@@ -1328,19 +1324,16 @@ class forbiddenisland extends Table
     {
         $this->gamestate->checkPossibleAction( 'discard' );
 
-        // $player_id = self::getActivePlayerId();
         $player_id = $this->getGameStateValue("discard_treasure_player");
 
         $card = $this->treasure_deck->getCard($id);
         $card_name = $this->treasure_list[$card['type']]['name'];
         $this->treasure_deck->moveCard($id, 'discard');
         self::incStat(1, "discard", $player_id);
-        $player_info = $this->loadPlayersBasicInfos();
-        $player_name = $player_info[$player_id]['player_name'];
 
         self::notifyAllPlayers( "discardTreasure", clienttranslate( '${player_name} discarded ${card_name}' ), array(
             'player_id' => $player_id,
-            'player_name' => $player_name,
+            'player_name' => self::getPlayerName($player_id),
             'card' => $card,
             'card_name' => $card_name
         ) );
