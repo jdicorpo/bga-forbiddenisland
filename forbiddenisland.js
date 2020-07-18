@@ -416,6 +416,9 @@ function (dojo, declare) {
                         this.addActionButton( 'shore_up_btn', _('Shore Up'), 'onShoreUp' ); 
                         this.addActionButton( 'give_treasure_btn', _('Give Card'), 'onGiveCard' ); 
                         this.addActionButton( 'capture_treasure_btn', _('Capture Treasure'), 'onCapture' ); 
+                        if (args.undo) {
+                            this.addActionButton( 'undo_btn', _('Undo'), 'onUndo', null, false, 'gray' ); 
+                        }
                         this.addActionButton( 'skip_btn', _('End Turn'), 'onSkip', null, false, 'gray' ); 
                         break;
 
@@ -1171,6 +1174,21 @@ function (dojo, declare) {
 
             }
         }, 
+
+        onUndo: function()
+        {
+            console.log( 'onUndo' );
+
+            if( this.isCurrentPlayerActive() &&  this.checkAction( 'move' )) {
+
+                this.ajaxcall( "/forbiddenisland/forbiddenisland/moveAction.html", {
+                    lock: true,
+                    undo: true,
+                    tile_id: ''
+                }, this, function( result ) {} );
+
+            }
+        },
         
         onPlayDiscard: function()
         {

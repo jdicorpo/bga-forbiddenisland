@@ -48,6 +48,7 @@ class forbiddenisland extends Table
                "rescue_pawn_player" => 22,
                "rescue_pawn_tile" => 23,
                "special_card_id" => 24,
+               "undo_move_tile" => 25,
                "difficulty" => 100,
                "island_map" => 101,
         ) );        
@@ -156,6 +157,7 @@ class forbiddenisland extends Table
         self::setGameStateInitialValue( 'players_win', 0 );
         self::setGameStateInitialValue( 'pilot_action', 1 );
         self::setGameStateInitialValue( 'special_card_id', 0 );
+        self::setGameStateInitialValue( 'undo_move_tile', 0 );
         
         // Init game statistics
         self::initStat( 'table', 'turns_number', 0 );
@@ -1092,7 +1094,7 @@ class forbiddenisland extends Table
         (note: each method below must match an input method in forbiddenisland.action.php)
     */
 
-    function moveAction( $tile_id, $pilot = false, $navigator = false, $heli_lift = false, $card_id = 0, $players = NULL, $rescue = false )
+    function moveAction( $tile_id, $pilot = false, $navigator = false, $heli_lift = false, $card_id = 0, $players = NULL, $rescue = false, $undo = false )
     {
         self::checkAction( 'move' );
 
@@ -1101,14 +1103,14 @@ class forbiddenisland extends Table
         $target_player_id = $player_id;
 
         $player_tile_id = $this->getPlayerLocation($player_id);
-        $tile_name = $this->tile_list[$tile_id]['name'];
+        // $tile_name = $this->tile_list[$tile_id]['name'];
 
         if ($rescue) {
             $player_id = $players[0];
         }
 
         // check if legal move
-        if ( !$heli_lift and !$pilot and !$navigator) {
+        if ( !$heli_lift and !$pilot and !$navigator and !$undo) {
             $possibleMoves = $this->getPossibleMoves($player_id)['move'];
             if (!in_array($tile_id, $possibleMoves)) {
                 return;
@@ -1119,6 +1121,12 @@ class forbiddenisland extends Table
             if (!in_array($tile_id, $possibleMoves)) {
                 return;
             }
+        } elseif ( $undo ) {
+            if ($this->getGameStateValue("undo_move_tile") == 0) {
+                return;
+            } else {
+                $tile_id = $this->tiles->getCard($this->getGameStateValue("undo_move_tile"))['type'];
+            }
         } else {
             $possibleHeliLift = $this->getPossibleHeliLift($player_id)['heli_lift'];
             if (!in_array($tile_id, $possibleHeliLift)) {
@@ -1126,8 +1134,14 @@ class forbiddenisland extends Table
             }
         }
 
+        $tile_name = $this->tile_list[$tile_id]['name'];
+        $tiles = $this->tiles->getCardsOfType($tile_id);
+        $tile = array_shift($tiles);
+        $tiles = $this->tiles->getCardsOfType($player_tile_id);
+        $prev_tile = array_shift($tiles);
+
         // move if action available
-        if (($this->getGameStateValue("remaining_actions") > 0) or $heli_lift or $rescue ) {
+        if (($this->getGameStateValue("remaining_actions") > 0) or $heli_lift or $rescue or $undo) {
 
             // if (array_key_exists($tile_id, $possibleMoves)) {
             if (!$heli_lift && !$rescue) {
@@ -1140,7 +1154,11 @@ class forbiddenisland extends Table
                     $sql = "UPDATE player SET location='$tile_id'
                             WHERE player_id='$player_id'";
                     self::DbQuery( $sql );
-                    $message = clienttranslate('${player_name} moved to ${tile_name}');
+                    if ($undo) {
+                        $message = clienttranslate('${player_name} undid last move');
+                    } else {
+                        $message = clienttranslate('${player_name} moved to ${tile_name}');
+                    }
                 }
             } else {
                 foreach ($players as $x) {
@@ -1167,12 +1185,16 @@ class forbiddenisland extends Table
                 'heli_lift' => $heli_lift,
                 'navigator' => $navigator,
                 'rescue' => $rescue,
+                'undo' => $undo,
                 'card_id' => $card_id,
                 'players' => implode($players, ',')
             ) );
 
             if (!$heli_lift) {
-                if (!$rescue) {
+                if ($undo) {
+                    $this->incGameStateValue("remaining_actions", 1);
+                    self::incStat(-1, "move", $player_id);
+                } elseif (!$rescue) {
                     $this->incGameStateValue("remaining_actions", -1);
                     self::incStat(1, "move", $player_id);
                 }
@@ -1191,10 +1213,15 @@ class forbiddenisland extends Table
                 self::incStat(1, "navigator", $player_id);
             }
 
+            if (!$heli_lift and !$pilot and !$navigator and !$rescue and !$undo) {
+                $this->setGameStateValue("undo_move_tile", $prev_tile['id']);
+            } else {
+                $this->setGameStateValue("undo_move_tile", 0);
+            }
+
         } else {
             throw new feException( "No remaining actions" );
         }
-
 
         $this->setNextState( 'move', $player_id ); 
         
@@ -1273,6 +1300,8 @@ class forbiddenisland extends Table
         
             }
 
+            $this->setGameStateValue("undo_move_tile", 0);
+
         } else {
             throw new feException( "No remaining actions" );
         }
@@ -1315,6 +1344,8 @@ class forbiddenisland extends Table
                 throw new feException( "No remaining actions" );
             }
         }
+
+        $this->setGameStateValue("undo_move_tile", 0);
 
         $this->setNextState( 'skip', $player_id ); 
         
@@ -1376,7 +1407,8 @@ class forbiddenisland extends Table
                 $this->updateCardCount();
             }
 
-            // TODO: need to check if target player must discard
+            $this->setGameStateValue("undo_move_tile", 0);
+
         } else {
             throw new feException( "No remaining actions" );
         }
@@ -1440,7 +1472,11 @@ class forbiddenisland extends Table
                     self::notifyAllPlayers( "captureAllTreasure", clienttranslate( "Your team has <b>All Four Treasures</b>!!  Return to <b>Fool's Landing</b> and play <b>Helicopter Lift</b> to escape the island and win the game!!" ), array(
                         ) );
                 }
+
+                $this->setGameStateValue("undo_move_tile", 0);
+
             }
+
         } else {
             throw new feException( "No remaining actions" );
         }
@@ -1523,7 +1559,8 @@ class forbiddenisland extends Table
             'isWinCondition' => self::isWinCondition(),
             'adventurer' => $this->getAdventurer( self::getActivePlayerId() ),
             'pilot_action' => $this->getGameStateValue("pilot_action"),
-            'special_card_id' => $this->getGameStateValue("special_card_id")
+            'special_card_id' => $this->getGameStateValue("special_card_id"),
+            'undo' => ($this->getGameStateValue("undo_move_tile") == 0) ? false : true
         );
     }
 
@@ -1737,6 +1774,7 @@ class forbiddenisland extends Table
         $this->setGameStateValue("remaining_actions", 3);
         $this->setGameStateValue("drawn_treasure_cards", 0);
         $this->setGameStateValue("pilot_action", 1);
+        $this->setGameStateValue("undo_move_tile", 0);
 
         self::incStat(1, "turns_number");
         self::incStat(1, "turns_number", $player_id);
