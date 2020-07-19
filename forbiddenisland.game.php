@@ -282,6 +282,9 @@ class forbiddenisland extends Table
 
         $result['pilot_action'] = $this->getGameStateValue("pilot_action");
 
+        $result['flood_deck_count'] = $this->flood_deck->countCardInLocation('deck');
+        $result['treasure_deck_count'] = $this->treasure_deck->countCardInLocation('deck');
+
         return $result;
     }
 
@@ -882,7 +885,9 @@ class forbiddenisland extends Table
             }
 
             self::notifyAllPlayers( "updateCardCount", '', array(
-                'ncards' => $ncards
+                'ncards' => $ncards,
+                'flood_deck_count' => $this->flood_deck->countCardInLocation('deck'),
+                'treasure_deck_count' => $this->treasure_deck->countCardInLocation('deck')
             ) );
         }
 
@@ -1560,7 +1565,7 @@ class forbiddenisland extends Table
             'adventurer' => $this->getAdventurer( self::getActivePlayerId() ),
             'pilot_action' => $this->getGameStateValue("pilot_action"),
             'special_card_id' => $this->getGameStateValue("special_card_id"),
-            'undo' => ($this->getGameStateValue("undo_move_tile") == 0) ? false : true
+            'undo' => ($this->getGameStateValue("undo_move_tile") == 0) ? false : true,
         );
     }
 
@@ -1587,26 +1592,6 @@ class forbiddenisland extends Table
             'pilot_action' => $this->getGameStateValue("pilot_action")
         );
     }
-
-    // function argNavigatorAction()
-    // {
-    //     $player_treasure_cards = array();
-    //     $players = $this->loadPlayersBasicInfos();
-    //     foreach ( $players as $player_id => $player_info ) {
-    //         $player_treasure_cards[$player_id] = $this->getTreasureCards( $player_id );
-    //     }
-    //     return array(
-    //         'possibleActions' => self::getPossibleActions( self::getActivePlayerId() ),
-    //         'remaining_actions' => $this->getGameStateValue("remaining_actions"),
-    //         'player_treasure_cards' => self::getTreasureCards( self::getActivePlayerId() ),
-    //         'player_treasure_cards' => $player_treasure_cards,
-    //         'colocated_players' => self::getColocatedPlayers( self::getActivePlayerId() ),
-    //         'playerLocations' => self::getPlayerLocations(),
-    //         'isWinCondition' => self::isWinCondition(),
-    //         'adventurer' => $this->getAdventurer( self::getActivePlayerId() ),
-    //         'pilot_action' => $this->getGameStateValue("pilot_action")
-    //     );
-    // }
 
     function argDrawFloodCards()
     {
@@ -1711,6 +1696,8 @@ class forbiddenisland extends Table
         } else {
             throw new feException( "Error: Flood card drawn for sunk tile." );
         }
+
+        $this->updateCardCount();
 
         if ($this->isGameLost($current_tile)) {
             $this->gamestate->nextState( 'final' );

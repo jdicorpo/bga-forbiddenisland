@@ -209,6 +209,11 @@ function (dojo, declare) {
             // Setup game notifications to handle (see "setupNotifications" method below)
             this.setupNotifications();
 
+            $('cardcount_flood_deck').innerHTML = gamedatas['flood_deck_count'];
+            $('cardcount_treasure_deck').innerHTML = gamedatas['treasure_deck_count'];
+            this.addTooltip( 'cardcount_flood_deck', _('remaining cards in deck'), '' );
+            this.addTooltip( 'cardcount_treasure_deck', _('remaining cards in deck'), '' );
+
             console.log( "Ending game setup" );
         },
        
@@ -1671,6 +1676,9 @@ function (dojo, declare) {
             for (var player_id in notif.args.ncards) {
                 $('cardcount_' + player_id).innerHTML = notif.args.ncards[player_id];
             };
+            
+            $('cardcount_flood_deck').innerHTML = notif.args.flood_deck_count;
+            $('cardcount_treasure_deck').innerHTML = notif.args.treasure_deck_count;
        },
 
        notif_animate : function(notif) {

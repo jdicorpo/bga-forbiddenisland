@@ -70,11 +70,15 @@
     <!-- <div id="game_area_wrapper"> -->
         <!-- <div id="game_decks_wrapper" > -->
             <div id="flood_deck_area" class="flood_deck_area whiteblock" >
-                <div id="flood_deck" class="card flood_card"></div>
+                <div id="flood_deck" class="card flood_card">
+                    <span id="cardcount_flood_deck"  class="cardcount">0</span>
+                </div>
                 <div id="flood_card_area"></div>
             </div>
             <div id="treasure_deck_area" class="treasure_deck_area whiteblock" >
-                <div id="treasure_deck" class="card treasure_card"></div>
+                <div id="treasure_deck" class="card treasure_card">
+                    <span id="cardcount_treasure_deck"  class="cardcount">0</span>
+                </div>
                 <div id="treasure_card_area"></div>
             </div>
         <!-- </div> -->
