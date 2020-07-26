@@ -1,6 +1,8 @@
 Jul 26
 * mobility scaling
 * larger 147px width tiles and cards
+* #20705: "SUGGESTION TO ALLOW PLAYERS TO KNOW HOW MANY CARDS ARE LEFT IN THE DECK"
+* #21674: "UNABLE TO FLY TO SAFETY WHEN TILE SUNK"
 
 Jul 17
 * incorrect name posted in log for special action

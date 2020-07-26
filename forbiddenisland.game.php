@@ -1792,7 +1792,12 @@ class forbiddenisland extends Table
             $players = array_map( function($p){ return $p['player_id']; }, $rescue_pawns );
 
             foreach ( $players as $player_id => $player_info ) {
-                if (count($this->getPossibleMoves( $player_id )['move']) == 0) {
+                if ($this->getAdventurer( $player_id ) == 'pilot') {
+                    $move_count = $this->getPossibleHeliLift($player_id)['heli_lift'];
+                } else {
+                    $move_count = $this->getPossibleMoves( $player_id );
+                }
+                if ($move_count == 0) {
                     // no possible move for this pawn
                     $this->gamestate->nextState( 'final' );
                     break;
