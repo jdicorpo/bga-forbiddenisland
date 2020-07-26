@@ -23,31 +23,33 @@
     See your "view" PHP file to check how to set variables and control blocks
 -->
 <div id="thething" class="thething">
-<div id="outer_wrapper" class="anchor">
-        <div id="board">
-            <div id="island_tile" style="visibility: hidden;">
-                <div id="pawn_area_0_0" class="pawn_area" style="visibility: hidden;"></div>
-            </div>
-            <!-- BEGIN island_tile -->
-            <div id="island_tile_{X}_{Y}" class="island_tile_location" style="left: {LEFT}px; top: {TOP}px;">
-            </div>
-            <!-- END island_tile --> 
-
-            <!-- BEGIN water_level_meter -->
-            <div id="water_level_meter" style="left: {LEFT}px; top: {TOP}px;">
-
-                <!-- BEGIN water_level -->
-                    <div id="water_level_{LVL}" class="water_level" style="top:{TOP_LVL}px"></div>
-                <!-- END water_level --> 
-
-            </div>
-            <!-- END water_level_meter --> 
-
-            <!-- BEGIN treasure_starting_area -->
-            <div id="starting_area_{TREASURE}" class="treasure_starting_area" style="left: {LEFT}px; top: {TOP}px;"></div>
-            <!-- END treasure_starting_area -->
-            
+<!-- <div id="outer_wrapper" class="anchor"> -->
+    <div id="board">
+        <div id="island_tile" style="visibility: hidden;">
+            <div id="pawn_area_0_0" class="pawn_area" style="visibility: hidden;"></div>
         </div>
+        <!-- BEGIN island_tile -->
+        <div id="island_tile_{X}_{Y}" class="island_tile_location" style="left: {LEFT}px; top: {TOP}px;">
+        </div>
+        <!-- END island_tile --> 
+
+        <!-- BEGIN water_level_meter -->
+        <div id="water_level_meter" style="left: {LEFT}px; top: {TOP}px;">
+
+            <!-- BEGIN water_level -->
+                <div id="water_level_{LVL}" class="water_level" style="top:{TOP_LVL}px"></div>
+            <!-- END water_level --> 
+
+        </div>
+        <!-- END water_level_meter --> 
+
+        <!-- BEGIN treasure_starting_area -->
+        <div id="starting_area_{TREASURE}" class="treasure_starting_area" style="left: {LEFT}px; top: {TOP}px;"></div>
+        <!-- END treasure_starting_area -->
+        
+    </div>
+    
+    <!-- <div class="island_title whiteblock"><span id="island_name">&ltIsland Name&gt</span>&nbsp;<span id="difficulty_level">&ltDifficulty&gt</span></div> -->
 
     <div id="player_area_wrapper">
         <!-- BEGIN player -->
@@ -85,7 +87,7 @@
         <!-- <div id="water_level_meter"></div> -->
     <!-- </div> -->
 
-</div>
+<!-- </div> -->
 </div>
     
 

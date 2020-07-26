@@ -254,8 +254,11 @@ class forbiddenisland extends Table
         $island_map = $this->island_map[$island_map_id]['map'];
         $max_x = $this->island_map[$island_map_id]['max_x'];
         $max_y = $this->island_map[$island_map_id]['max_y'];
-        $result['interface_max_width'] = ($max_x + 1) * (128+8);
-        $result['interface_max_height'] = ($max_y + 1) * (128+8);
+        $result['interface_max_width'] = ($max_x + 1) * (147+8);
+        $result['interface_max_height'] = ($max_y) * (147+8);
+
+        $result['island_name'] = $this->island_map[$island_map_id]['name'];
+        $result['difficulty'] = $this->difficulty[self::getGameStateValue("difficulty")]['name'];
             
         $result['flood_card_area'] = $this->flood_deck->getCardsInLocation( 'flood_area' );
         $result['treasure_discards'] = $this->treasure_deck->getCardsInLocation( 'discard' );
@@ -269,7 +272,6 @@ class forbiddenisland extends Table
         $result['player_list'] = $this->player_list;
         $result['flood_list'] = $this->flood_list;
         $result['treasure_list'] = $this->treasure_list;
-        // $result['not_in_map'] = $this->not_in_map;
 
         $result['remaining_actions'] = $this->getGameStateValue("remaining_actions");
         $result['water_level'] = $this->getGameStateValue("water_level");
@@ -958,7 +960,7 @@ class forbiddenisland extends Table
             }
 
         }
-    
+
         function debugFlood($tile_id) {
 
             $tiles = $this->tiles->getCardsOfType($tile_id);

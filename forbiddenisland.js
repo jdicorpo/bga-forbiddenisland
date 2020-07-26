@@ -28,17 +28,19 @@ function (dojo, declare) {
 
             console.log('forbiddenisland constructor');
 
-            this.tilewidth = 128;
-            this.tileheight = 128;
+            // this.tilewidth = 128;
+            // this.tileheight = 128;
+            this.tilewidth = 147;
+            this.tileheight = 147;
 
-            this.cardwidth = 128;
-            this.cardheight = 177.75;
+            this.cardwidth = 147;
+            this.cardheight = 204.13;
 
             this.figurewidth = 88.5;
             this.figureheight = 120;
 
-            this.pawnwidth = 32;
-            this.pawnheight = 57;
+            this.pawnwidth = 36.75;
+            this.pawnheight = 65.4;
             this.pawn_area = [];
 
             this.flood_card_area = new ebg.zone();
@@ -78,6 +80,8 @@ function (dojo, declare) {
             this.adventurer = '';
 
             this.handles = [];
+
+            // this.display_tablet = false;
 
         },
         
@@ -205,6 +209,8 @@ function (dojo, declare) {
             }, this);
 
             this.placeWaterLevel(this.gamedatas.water_level);
+            // $('island_name').innerHTML = gamedatas['island_name'];
+            // $('difficulty_level').innerHTML = '[ ' + gamedatas['difficulty'] + ' ]';
 
             // Setup game notifications to handle (see "setupNotifications" method below)
             this.setupNotifications();
@@ -226,7 +232,10 @@ function (dojo, declare) {
     
             var browserZoomLevel = window.devicePixelRatio; 
             //console.log("zoom",browserZoomLevel);
-            if (contentWidth >= this.interface_max_width || browserZoomLevel >1  || this.control3dmode3d) {
+            // console.log("contentWidth",contentWidth);
+
+            // if (contentWidth >= this.interface_max_width || browserZoomLevel >1  || this.control3dmode3d) {
+            if (contentWidth >= this.interface_max_width || this.control3dmode3d) {
                 dojo.style(nodeid,'transform','');
                 return;
             }
@@ -235,6 +244,7 @@ function (dojo, declare) {
             // console.log("percentageOn1",percentageOn1);
 
             dojo.style(nodeid, "transform", "scale(" + percentageOn1 + ")");
+            dojo.style(nodeid, "-webkit-transform", "scale(" + percentageOn1 + ")");
         },
 
         ///////////////////////////////////////////////////
@@ -864,7 +874,7 @@ function (dojo, declare) {
 
             var parent_id = $(tile_id).parentNode.id;
             var pawn_area = dojo.query('#' + parent_id + ' .pawn_area')[0];
-            var x = 31.5 * (idx-1);
+            var x = 36.18 * (idx-1);
 
             dojo.place(this.format_block('jstpl_pawn', {
                 id : player_id,
@@ -883,7 +893,7 @@ function (dojo, declare) {
             var idx = this.gamedatas.player_list[player.adventurer].pawn_idx;
             // var parent_id = $(tile_id).parentNode.id;
             // var pawn_area = dojo.query('#' + parent_id + ' .pawn_area')[0];
-            var x = 31.5 * (idx-1);
+            var x = 36.18 * (idx-1);
 
             dojo.place(this.format_block('jstpl_pawn', {
                 id : 'pselect_' + player_id,
@@ -1676,7 +1686,7 @@ function (dojo, declare) {
             for (var player_id in notif.args.ncards) {
                 $('cardcount_' + player_id).innerHTML = notif.args.ncards[player_id];
             };
-            
+
             $('cardcount_flood_deck').innerHTML = notif.args.flood_deck_count;
             $('cardcount_treasure_deck').innerHTML = notif.args.treasure_deck_count;
        },

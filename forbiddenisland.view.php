@@ -91,8 +91,10 @@ class view_forbiddenisland_forbiddenisland extends game_view
 
         $this->page->begin_block($template, "island_tile" );
         
-        $hor_scale = 128+8;
-        $ver_scale = 128+8;
+        $hor_scale = 147+8;
+        $ver_scale = 147+8;
+        $ver_pos = array( 10 => 21, 9 => 63, 8 => 106, 7 => 142, 6 => 186, 5 => 228, 4 => 270, 
+            3 => 312, 2 => 356, 1 => 395 );
         
         for( $x=1; $x<=$max_x; $x++ )
         {
@@ -112,8 +114,6 @@ class view_forbiddenisland_forbiddenisland extends game_view
 
         $water_level_meter = $this->game->island_map[$island_map_id]['water_level_meter'];
 
-        $ver_pos = array( 10 => 16, 9 => 50, 8 => 83, 7 => 112, 6 => 144, 5 => 178, 4 => 210, 
-            3 => 244, 2 => 278, 1 => 311 );
         $this->page->begin_block($template, "water_level" );
         $this->page->begin_block($template, "water_level_meter" );
 

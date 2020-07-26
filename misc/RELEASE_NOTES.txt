@@ -1,3 +1,7 @@
+Jul 26
+* mobility scaling
+* larger 147px width tiles and cards
+
 Jul 17
 * incorrect name posted in log for special action
 * #20952: "GAME IS STUCK ON RESCUEING PAWN"

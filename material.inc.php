@@ -67,7 +67,7 @@ $this->island_map = array(
     3 => array(
         'name' => clienttranslate("Island of Shadows"),
         'max_x' => 6,
-        'max_y' => 4,
+        'max_y' => 5,
         'map' => array (
             "1_1", "2_1", "3_1", "4_1", "5_1", "6_1",
             "1_2", "2_2", "3_2", "4_2", "5_2", "6_2",
@@ -416,6 +416,13 @@ $this->flood_list = array(
         'name' => clienttranslate("Phantom Rock"),
         'img_id' => 18
     ),
+);
+
+$this->difficulty = array(
+    1 => array( 'name' => totranslate('Novice')),
+    2 => array( 'name' => totranslate('Normal')),
+    3 => array( 'name' => totranslate('Elite')),
+    4 => array( 'name' => totranslate('Legendary'))
 );
 
 
