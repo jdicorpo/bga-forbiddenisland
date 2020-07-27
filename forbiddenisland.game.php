@@ -1465,12 +1465,14 @@ class forbiddenisland extends Table
                 $this->incGameStateValue("remaining_actions", -1);
                 self::incStat(1, "treasures_captured");
                 self::incStat(1, "capture", $player_id);
+                $treasure_name = $this->treasure_list[$treasure]['name'];
 
-                self::notifyAllPlayers( "captureTreasure", clienttranslate( '${player_name} captured ${treasure}!!' ), array(
+                self::notifyAllPlayers( "captureTreasure", clienttranslate( '${player_name} captured ${treasure_name}!!' ), array(
                     'player_id' => $player_id,
                     'player_name' => self::getActivePlayerName(),
                     'cards' => $cards,
-                    'treasure' => $treasure
+                    'treasure' => $treasure,
+                    'treasure_name' => $treasure_name
                     ) );
 
                 $this->updateCardCount();
