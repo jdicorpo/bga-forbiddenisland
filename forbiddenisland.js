@@ -662,14 +662,20 @@ function (dojo, declare) {
             } else {
                 var img_id = this.gamedatas.tile_list[tile_id].img_id;
             }
-            if (!sunk) {
-                dojo.place(this.format_block('jstpl_tile', {
+            if (sunk) {
+                dojo.place(this.format_block('jstpl_sunk_tile', {
+                    id : tile_id,
+                }), 'island_tile_' + board_id, 'first');
+            } else if (flooded) {
+                dojo.place(this.format_block('jstpl_flooded_tile', {
                     x : this.tilewidth * ((img_id-1) % 8),
                     y : this.tileheight * Math.trunc((img_id-1) / 8),
                     id : tile_id,
                 }), 'island_tile_' + board_id, 'first');
             } else {
-                dojo.place(this.format_block('jstpl_sunk_tile', {
+                dojo.place(this.format_block('jstpl_tile', {
+                    x : this.tilewidth * ((img_id-1) % 8),
+                    y : this.tileheight * Math.trunc((img_id-1) / 8),
                     id : tile_id,
                 }), 'island_tile_' + board_id, 'first');
             }
@@ -687,7 +693,7 @@ function (dojo, declare) {
 
             var img_id = this.gamedatas.tile_list[tile_id].img_id + 24;
             
-            dojo.place(this.format_block('jstpl_tile', {
+            dojo.place(this.format_block('jstpl_flooded_tile', {
                 x : this.tilewidth * ((img_id-1) % 8),
                 y : this.tileheight * Math.trunc((img_id-1) / 8),
                 id : tile_id,
@@ -1668,7 +1674,7 @@ function (dojo, declare) {
 
        notif_captureAllTreasure: function( notif )
        {
-           this.showMessage( _("Your team has all four treasures!!  Return to Fool's Landing and play Helicopter Lift to escape the island and win the game!!"), 'info');
+           this.showMessage( _("Your team has all four treasures!!  Return to Fools' Landing and play Helicopter Lift to escape the island and win the game!!"), 'info');
        },
 
        notif_reshuffleTreasureDeck: function( notif )

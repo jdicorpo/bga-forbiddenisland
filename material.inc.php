@@ -222,7 +222,7 @@ $this->treasure_list = array(
 
 $this->tile_list = array(
     'fools_landing' => array(
-        'name' => clienttranslate("Fool's Landing"),
+        'name' => clienttranslate("Fools' Landing"),
         'img_id' => 10
     ),
     'bronze_gate' => array(
@@ -321,7 +321,7 @@ $this->tile_list = array(
 
 $this->flood_list = array(
     'fools_landing' => array(
-        'name' => clienttranslate("Fool's Landing"),
+        'name' => clienttranslate("Fools' Landing"),
         'img_id' => 11
     ),
     'bronze_gate' => array(

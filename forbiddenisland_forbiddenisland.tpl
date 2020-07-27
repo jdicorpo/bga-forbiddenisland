@@ -99,6 +99,7 @@
 // Templates
 
 var jstpl_tile='<div class="island_tile" id="${id}" style="background-position:-${x}px -${y}px"></div>';
+var jstpl_flooded_tile='<div class="island_tile flooded" id="${id}" style="background-position:-${x}px -${y}px"></div>';
 var jstpl_sunk_tile='<div class="island_tile_sunk" id="${id}"></div>';
 var jstpl_pawn_area='<div id="pawn_area_${id}" class="pawn_area"></div>';
 var jstpl_pawn='<div class="pawn" id="${id}" style="background-position:-${x}px"></div>';
