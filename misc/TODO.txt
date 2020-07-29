@@ -10,7 +10,6 @@ BUGS:
 EC Feedback
 
 * cards in hand should be sorted by weight so that cards of the same type are grouped
-* in the player panels, there is some space, so instead of just text, there could be the icon of the card for the player role with a tooltip.
 * currently clicking a tile you can move to triggers the move. I feel like there should be a confirmation, otherwise there will be a lot of "misclick" complaints. The flow I suggest is
    - You may take X actions [End turn]
    - Click on a tile
@@ -26,4 +25,5 @@ IMPLEMENTED:
 * the hands under the board should be ordered with the current player hand first, then other players in the play order
 * for discarding cards, there should also be a confirmation step to prevent misclicks. The player should select all the cards to discard, then click a "Discard" button.
 * skip is not a main action so it should use the 'gray' style for buttons. Also, rather than just skipping an action, I think it would actually be used only to end the player turn. So maybe it should be 'End turn' with a confirmation dialog.
+* in the player panels, there is some space, so instead of just text, there could be the icon of the card for the player role with a tooltip.
 
