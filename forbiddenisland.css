@@ -460,7 +460,7 @@ html {
     width: 80px;
     height: 114px;
     background-clip: content-box;
-    transform: rotate(-90deg) translateY(0px) translateX(0px);
+    transform: rotate(-90deg) scale(.9) translateY(0px) translateX(0px);
     transform-origin: 50% 50%;
     float: right;
     margin-right: 10px;
@@ -480,6 +480,7 @@ html {
     /* margin-left: 5px; */
     /* margin-top: 5px; */
     position: relative;
+    transform: none;
 }
 
 .cardcount {
@@ -496,9 +497,9 @@ html {
     width: 25px;
     height: 34px;
     background-clip: content-box;
-    margin-right: 5px;
-    margin-top: 5px;
+    margin: 5px;
     position: relative;
+    transform: scale(1.2);
 }
 
 .color_ED0023 {
