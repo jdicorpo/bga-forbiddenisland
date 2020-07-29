@@ -227,11 +227,6 @@ html {
     background-image: url(img/player.jpg);
 }
 
-.player_symbol {
-    background-image: url(img/player_symbols.png);
-    position: relative;
-}
-
 .player_area {
     display: inline-block;
 	position: relative;
@@ -457,6 +452,19 @@ html {
     /* font-weight: bold ; */
     margin-top: 5px;
     margin-left: 5px;
+}
+
+.player_symbol {
+    background-image: url(img/player_symbols.png);
+    position: relative;
+    width: 80px;
+    height: 114px;
+    background-clip: content-box;
+    transform: rotate(-90deg) translateY(0px) translateX(0px);
+    transform-origin: 50% 50%;
+    float: right;
+    margin-right: 10px;
+    margin-top: -20px;
 }
 
 .card_icon {

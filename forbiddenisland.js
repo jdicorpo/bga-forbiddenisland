@@ -165,7 +165,7 @@ function (dojo, declare) {
                 this.figure_area[player_id].create( this, 'player_figure_area_' + player_id, this.figurewidth, this.figureheight);
                 this.placeAllTreasureCards(player_id, gamedatas.player_card_area[player_id].treasure_cards);
                 var playerBoardDiv = dojo.byId('player_board_' + player_id);
-                var x = this.cardwidth * (gamedatas.player_list[player.adventurer].idx-1);
+                var x = 80 * (gamedatas.player_list[player.adventurer].idx-1);
                 dojo.place(this.format_block('jstpl_player_board', {
                     id: player_id,
                     adventurer: gamedatas.player_list[player.adventurer].name,
