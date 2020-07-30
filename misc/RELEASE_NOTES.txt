@@ -1,5 +1,6 @@
 Jul ??
 * add player symbols to boards
+* complete logic for Zombie turns
 
 Jul 26
 * mobility scaling
