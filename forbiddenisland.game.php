@@ -1104,17 +1104,15 @@ class forbiddenisland extends Table
     function moveAction( $tile_id, $pilot = false, $navigator = false, $heli_lift = false, $card_id = 0, $players = NULL, $rescue = false, $undo = false )
     {
         self::checkAction( 'move' );
-
-        $player_id = self::getCurrentPlayerId();
-
-        $target_player_id = $player_id;
-
-        $player_tile_id = $this->getPlayerLocation($player_id);
-        // $tile_name = $this->tile_list[$tile_id]['name'];
-
+ 
         if ($rescue) {
             $player_id = $players[0];
+        } else {
+            $player_id = self::getCurrentPlayerId();
         }
+
+        $target_player_id = $player_id;
+        $player_tile_id = $this->getPlayerLocation($player_id);
 
         // check if legal move
         if ( !$heli_lift and !$pilot and !$navigator and !$undo) {
@@ -1539,6 +1537,26 @@ class forbiddenisland extends Table
         }
     }
 
+    function rescueZombie( $player_id )
+    {
+        if ($this->isGameLost()) {
+            $this->gamestate->nextState( 'final' );
+        } else {
+            if ($this->getAdventurer( $player_id ) == 'pilot') {
+                $result = $this->getPossibleHeliLift( $player_id );
+                if (count($result['heli_lift']) > 0) {
+                    $tile_id = array_shift($result['heli_lift']);
+                    $this->moveAction($tile_id, $pilot = true, $navigator = false, $heli_lift = false, $card_id = 0, $players = array($player_id), $rescue = true, $undo = false );
+                }
+            } else {
+                $result = $this->getPossibleMoves( $player_id );
+                if (count($result['move']) > 0) {
+                    $tile_id = array_shift($result['move']);
+                    $this->moveAction($tile_id, $pilot = false, $navigator = false, $heli_lift = false, $card_id = 0, $players = array($player_id), $rescue = true, $undo = false );
+                }
+            }
+        }
+    }
 
     
 //////////////////////////////////////////////////////////////////////////////
@@ -1923,23 +1941,35 @@ class forbiddenisland extends Table
     	$statename = $state['name'];
     	
         if ($state['type'] === "activeplayer") {
+
             switch ($statename) {
                 case 'playerActions':
-                case 'bonusShoreup':
-                case 'discardTreasure':
                 default:
-                    $this->gamestate->nextState( "zombiePass" );
+                    $this->skipAction();
                 	break;
             }
 
             return;
-        }
 
-        if ($state['type'] === "multipleactiveplayer") {
-            // Make sure player is in a non blocking status for role turn
-            $this->gamestate->setPlayerNonMultiactive( $active_player, '' );
-            
+        } elseif ($state['type'] === "multipleactiveplayer") {
+
+            switch ($statename) {
+                case 'discardTreasure':
+                    $cards = $this->getTreasureCards( $active_player );
+                    $card = array_shift( $cards );
+                    $this->discardTreasure( $card['id'] );
+                    break;
+
+                case 'rescuePawn';
+                // Make sure player is in a non blocking status for role turn
+                $this->rescueZombie( $active_player );
+                break;
+            default:
+                break;
+            }
+
             return;
+
         }
 
         throw new feException( "Zombie mode not supported at this game state: ".$statename );
