@@ -1,6 +1,8 @@
 Jul ??
 * add player symbols to boards
 * complete logic for Zombie turns
+* #20295: "NO HOVERING TEXT FOR SECOND DISCARD PILE"
+* tooltip for possible moves vs shore_up
 
 Jul 26
 * mobility scaling
