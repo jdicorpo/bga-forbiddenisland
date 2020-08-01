@@ -893,16 +893,32 @@ class forbiddenisland extends Table
             ) );
         }
 
-        function setNextState( $action = null, $player_id = null ) {
+        function setNextState( $action = null, $player_id = null, $end_turn = false ) {
 
             // determine next state
             $state = $this->gamestate->state();
             switch ($state['name']) {
                 case 'playerActions':
+                // case 'discardTreasure':
+                    if ($player_id != null) {
+                        $count = $this->treasure_deck->countCardsInLocation('hand', $player_id );
+                    } else $count = 0;
+                    if ($count > 5) {
+                        $this->setGameStateValue("discard_treasure_player", $player_id);
+                        $this->gamestate->nextState( 'discard' );
+                    } elseif (($this->getGameStateValue("remaining_actions") >= 0) and (!$end_turn)) {
+                        $this->gamestate->nextState( 'action' );
+                    } elseif ($this->getGameStateValue("drawn_treasure_cards") < 2) {
+                        $this->gamestate->nextState( 'draw_treasure' );
+                    } else {
+                        $this->gamestate->nextState( 'set_flood' );
+                    }
+                    break;
+
                 case 'bonusShoreup':
-                case 'discardTreasure':
                 case 'sandbags':
                 case 'heli_lift':
+                case 'discardTreasure':
                     if ($player_id != null) {
                         $count = $this->treasure_deck->countCardsInLocation('hand', $player_id );
                     } else $count = 0;
@@ -1344,15 +1360,11 @@ class forbiddenisland extends Table
                 'player_id' => $player_id,
                 'player_name' => self::getActivePlayerName(),
             ) );
-        } else {
-            if ($state['name'] != 'bonusShoreup') {
-                throw new feException( "No remaining actions" );
-            }
-        }
+        } 
 
         $this->setGameStateValue("undo_move_tile", 0);
 
-        $this->setNextState( 'skip', $player_id ); 
+        $this->setNextState( 'skip', $player_id, $end_turn = true); 
         
     }
 

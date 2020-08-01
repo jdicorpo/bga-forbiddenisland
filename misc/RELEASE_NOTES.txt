@@ -3,6 +3,7 @@ Jul ??
 * completed logic for Zombie turns
 * #20295: "NO HOVERING TEXT FOR SECOND DISCARD PILE"
 * tooltip for possible moves vs shore_up
+* logic of undo or special after 3rd action
 
 Jul 26
 * mobility scaling

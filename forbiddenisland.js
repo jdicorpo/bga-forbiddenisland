@@ -272,7 +272,9 @@ function (dojo, declare) {
                     });
                 }
                 // $('cardcount_' + this.player_id).innerHTML = this.player_treasure_cards.length;
-                this.updatePossibleMoves( this.possibleActions.move );
+                if (args.args.remaining_actions > 0) {
+                    this.updatePossibleMoves( this.possibleActions.move );
+                }
                 var obj = args.args.colocated_players;
                 this.colocated_players = Object.keys(obj).map(function(key) {
                     return obj[key];
@@ -283,6 +285,7 @@ function (dojo, declare) {
                 this.special_action = false;
                 this.selectedCard = 'treasure_card_' + args.args.special_card_id;
                 this.playerLocations = args.args.playerLocations;
+                this.remaining_actions = args.args.remaining_actions;
                 break;
 
             case 'bonusShoreup':
@@ -421,21 +424,28 @@ function (dojo, declare) {
                 {
                     case 'playerActions':
                         var main = $('pagemaintitletext');
-                        main.innerHTML += '<span id="remaining_actions_value" style="font-weight:bold;color:#ED0023;">' 
-                            + args.remaining_actions + '</span>' + _(' action(s): ') + '<span style="font-weight:bold;color:#4871b6;">' 
-                            + _('Move') + '</span>' + _(' or ');
-                        if ((args.adventurer == 'pilot') && (args.pilot_action == 1)) {
-                            this.addActionButton( 'pilot_btn', _('Pilot'), 'onPilot' ); 
-                        } else if (args.adventurer == 'navigator') {
-                            this.addActionButton( 'navigator_btn', _('Navigator'), 'onNavigator' ); 
+                        if (args.remaining_actions > 0) {
+                            main.innerHTML += _('you may take ') + '<span id="remaining_actions_value" style="font-weight:bold;color:#ED0023;">' 
+                                + args.remaining_actions + '</span>' + _(' action(s): ') + '<span style="font-weight:bold;color:#4871b6;">' 
+                                + _('Move') + '</span>' + _(' or ');
+                            if ((args.adventurer == 'pilot') && (args.pilot_action == 1)) {
+                                this.addActionButton( 'pilot_btn', _('Pilot'), 'onPilot' ); 
+                            } else if (args.adventurer == 'navigator') {
+                                this.addActionButton( 'navigator_btn', _('Navigator'), 'onNavigator' ); 
+                            }
+                            this.addActionButton( 'shore_up_btn', _('Shore Up'), 'onShoreUp' ); 
+                            this.addActionButton( 'give_treasure_btn', _('Give Card'), 'onGiveCard' ); 
+                            this.addActionButton( 'capture_treasure_btn', _('Capture Treasure'), 'onCapture' ); 
+                            this.addActionButton( 'skip_btn', _('End Turn'), 'onSkip', null, false, 'gray' ); 
+                        } else {
+                            main.innerHTML += _(' have ') + '<span id="remaining_actions_value" style="font-weight:bold;color:#ED0023;">' 
+                            + args.remaining_actions + '</span>' + _(' remaining actions: ');
+
+                            this.addActionButton( 'skip_btn', _('End Turn'), 'onSkip', null, false, 'red' ); 
                         }
-                        this.addActionButton( 'shore_up_btn', _('Shore Up'), 'onShoreUp' ); 
-                        this.addActionButton( 'give_treasure_btn', _('Give Card'), 'onGiveCard' ); 
-                        this.addActionButton( 'capture_treasure_btn', _('Capture Treasure'), 'onCapture' ); 
                         if (args.undo) {
                             this.addActionButton( 'undo_btn', _('Undo'), 'onUndo', null, false, 'gray' ); 
                         }
-                        this.addActionButton( 'skip_btn', _('End Turn'), 'onSkip', null, false, 'gray' ); 
                         break;
 
                     case 'bonusShoreup':
@@ -537,8 +547,13 @@ function (dojo, declare) {
                 case 'playerActions':
                     if (!this.isCurrentPlayerActive() ) {
                         var main = $('pagemaintitletext');
-                            main.innerHTML += '<span id="remaining_actions_value" style="font-weight:bold;color:#ED0023;">' 
+                        if (args.remaining_actions > 0) {
+                            main.innerHTML += _(' is taking ') + '<span id="remaining_actions_value" style="font-weight:bold;color:#ED0023;">' 
                                 + args.remaining_actions + '</span>' + _(' remaining action(s).');
+                        } else {
+                            main.innerHTML += _(' has ') + '<span id="remaining_actions_value" style="font-weight:bold;color:#ED0023;">' 
+                                + args.remaining_actions + '</span>' + _(' remaining actions.');
+                        }
                     }
                     if (!this.isSpectator && this.hasSpecialCard(args.player_treasure_cards[this.player_id])) {
                         this.addActionButton( 'player_special_btn', _('Play Special'), 'onPlaySpecial', null, false, 'red' ); 
@@ -1201,7 +1216,7 @@ function (dojo, declare) {
             if( this.isCurrentPlayerActive() )
             {       
                 console.log( 'onSkip' );
-                if (this.selectedAction == 'bonus_shoreup') {
+                if ((this.selectedAction == 'bonus_shoreup') || (this.remaining_actions == 0)) {
                     this.ajaxcall( "/forbiddenisland/forbiddenisland/skipAction.html", {
                         lock: true
                     }, this, function( result ) {} );

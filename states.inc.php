@@ -45,8 +45,8 @@ $machinestates = array(
 
     STATE_PLAYER_ACTIONS => array(
         "name" => "playerActions",
-        "description" => clienttranslate('${actplayer} is taking '),
-        "descriptionmyturn" => clienttranslate('${you} may take '),
+        "description" => clienttranslate('${actplayer} '),
+        "descriptionmyturn" => clienttranslate('${you} '),
         "type" => "activeplayer",
         "args" => "argPlayerActions",
         "possibleactions" => array( "move", "shore_up", "skip", "give_card", "capture", "special_action" ),
