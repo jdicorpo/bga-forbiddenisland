@@ -27,6 +27,7 @@ if (!defined('STATE_END_GAME')) { // ensure this block is only invoked once, sin
     define("STATE_SPECIAL_SANDBAGS", 10);
     define("STATE_SPECIAL_HELI_LIFT", 11);
     define("STATE_FINAL", 12);
+    define("STATE_CONTINUE", 13);
     define("STATE_END_GAME", 99);
  }
 
@@ -68,7 +69,7 @@ $machinestates = array(
         "type" => "game",
         "action" => "stDrawTreasureCards",
         "transitions" => array( 
-            "set_flood" => STATE_SET_FLOOD_CARDS,
+            "continue" => STATE_CONTINUE,
             "discard" => STATE_DISCARD_TREASURE_CARDS
         )
     ),
@@ -84,10 +85,24 @@ $machinestates = array(
         "transitions" => array( 
             "action" => STATE_PLAYER_ACTIONS, 
             "discard" => STATE_DISCARD_TREASURE_CARDS, 
-            "set_flood" => STATE_SET_FLOOD_CARDS,
+            "continue" => STATE_CONTINUE,
             "sandbags" => STATE_SPECIAL_SANDBAGS,
             "heli_lift" => STATE_SPECIAL_HELI_LIFT,
             "draw_treasure" => STATE_DRAW_TREASURE_CARDS
+        )
+    ),
+
+    STATE_CONTINUE => array(
+        "name" => "continue",
+        "description" => clienttranslate('Waiting for ${actplayer} to draw flood cards'),
+        "descriptionmyturn" => clienttranslate('${you} must play Special Cards or '),
+        "type" => "activeplayer",
+        "args" => "argPlayerActions",
+        "possibleactions" => array( "continue", "special_action" ),
+        "transitions" => array( 
+            "set_flood" => STATE_SET_FLOOD_CARDS, 
+            "sandbags" => STATE_SPECIAL_SANDBAGS,
+            "heli_lift" => STATE_SPECIAL_HELI_LIFT
         )
     ),
 
@@ -158,7 +173,7 @@ $machinestates = array(
             "cancel" => STATE_PLAYER_ACTIONS, 
             "draw_treasure" => STATE_DRAW_TREASURE_CARDS,
             "discard" => STATE_DISCARD_TREASURE_CARDS,
-            "set_flood" => STATE_SET_FLOOD_CARDS
+            "continue" => STATE_CONTINUE
         )
     ),
 
@@ -175,7 +190,7 @@ $machinestates = array(
             "cancel" => STATE_PLAYER_ACTIONS, 
             "draw_treasure" => STATE_DRAW_TREASURE_CARDS,
             "discard" => STATE_DISCARD_TREASURE_CARDS,
-            "set_flood" => STATE_SET_FLOOD_CARDS,
+            "continue" => STATE_CONTINUE,
             "final" => STATE_FINAL
         )
     ),

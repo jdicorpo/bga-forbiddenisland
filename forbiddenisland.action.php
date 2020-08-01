@@ -81,6 +81,13 @@ class action_forbiddenisland extends APP_GameAction
         self::ajaxResponse( );
     }
 
+    public function continue()
+    {
+        self::setAjaxMode();
+        $result = $this->game->continue();
+        self::ajaxResponse( );
+    }
+
     public function captureTreasure()
     {
         self::setAjaxMode();     

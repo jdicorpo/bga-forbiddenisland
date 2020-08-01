@@ -911,7 +911,7 @@ class forbiddenisland extends Table
                     } elseif ($this->getGameStateValue("drawn_treasure_cards") < 2) {
                         $this->gamestate->nextState( 'draw_treasure' );
                     } else {
-                        $this->gamestate->nextState( 'set_flood' );
+                        $this->gamestate->nextState( 'continue' );
                     }
                     break;
 
@@ -930,8 +930,12 @@ class forbiddenisland extends Table
                     } elseif ($this->getGameStateValue("drawn_treasure_cards") < 2) {
                         $this->gamestate->nextState( 'draw_treasure' );
                     } else {
-                        $this->gamestate->nextState( 'set_flood' );
+                        $this->gamestate->nextState( 'continue' );
                     }
+                    break;
+
+                case 'continue':
+                    $this->gamestate->nextState( 'set_flood' );
                     break;
 
                 case 'setFlood':
@@ -962,7 +966,7 @@ class forbiddenisland extends Table
                         $this->setGameStateValue("discard_treasure_player", $player_id);
                         $this->gamestate->nextState( 'discard' );
                     } else {
-                        $this->gamestate->nextState( 'set_flood' );
+                        $this->gamestate->nextState( 'continue' );
                     }
                     break;
 
@@ -1337,6 +1341,15 @@ class forbiddenisland extends Table
         } else {
             $this->setNextState( 'shore_up', $player_id );
         }
+
+    }
+
+    function continue( )
+    {
+        self::checkAction( 'continue' );
+        $player_id = self::getActivePlayerId();
+
+        $this->setNextState( 'continue', $player_id); 
 
     }
 

@@ -261,6 +261,7 @@ function (dojo, declare) {
             switch( stateName )
             {
             
+            case 'continue':
             case 'playerActions':
                 this.selectedAction = 'move';
                 this.possibleActions = args.args.possibleActions;
@@ -399,15 +400,10 @@ function (dojo, declare) {
             switch( stateName )
             {
             
-            case 'playerActions':
+            case 'dummmy':
+            default:
                 break;
 
-            case 'discardTreasure':
-                break;
-          
-           
-            case 'dummmy':
-                break;
             }               
         }, 
 
@@ -441,7 +437,7 @@ function (dojo, declare) {
                             main.innerHTML += _(' have ') + '<span id="remaining_actions_value" style="font-weight:bold;color:#ED0023;">' 
                             + args.remaining_actions + '</span>' + _(' remaining actions: ');
 
-                            this.addActionButton( 'skip_btn', _('End Turn'), 'onSkip', null, false, 'red' ); 
+                            this.addActionButton( 'skip_btn', _('End Turn'), 'onSkip', null, false, 'blue' ); 
                         }
                         if (args.undo) {
                             this.addActionButton( 'undo_btn', _('Undo'), 'onUndo', null, false, 'gray' ); 
@@ -499,6 +495,10 @@ function (dojo, declare) {
                         this.addActionButton( 'cancel_btn', _('Cancel'), 'onCancel', null, false, 'red' );
                         break;
 
+                    case 'continue':
+                        this.addActionButton( 'continue_btn', _('Continue'), 'onContinue', null, false, 'blue' );
+                        break;
+
                     case 'client_selectHeliLiftPlayers':
                         
                         this.addActionButton( 'done_btn', _('Done'), 'onDone', null, false, 'blue' );
@@ -549,12 +549,13 @@ function (dojo, declare) {
                         var main = $('pagemaintitletext');
                         if (args.remaining_actions > 0) {
                             main.innerHTML += _(' is taking ') + '<span id="remaining_actions_value" style="font-weight:bold;color:#ED0023;">' 
-                                + args.remaining_actions + '</span>' + _(' remaining action(s).');
+                            + args.remaining_actions + '</span>' + _(' remaining action(s).');
                         } else {
                             main.innerHTML += _(' has ') + '<span id="remaining_actions_value" style="font-weight:bold;color:#ED0023;">' 
-                                + args.remaining_actions + '</span>' + _(' remaining actions.');
+                            + args.remaining_actions + '</span>' + _(' remaining actions.');
                         }
                     }
+                case 'continue':
                     if (!this.isSpectator && this.hasSpecialCard(args.player_treasure_cards[this.player_id])) {
                         this.addActionButton( 'player_special_btn', _('Play Special'), 'onPlaySpecial', null, false, 'red' ); 
                     }
@@ -1207,6 +1208,20 @@ function (dojo, declare) {
                 this.restoreServerGameState();
             }
         },  
+
+        onContinue: function()
+        {
+            if (! this.checkAction('continue'))
+                return;
+
+            if( this.isCurrentPlayerActive() )
+            {       
+                console.log( 'onContinue' );
+                this.ajaxcall( "/forbiddenisland/forbiddenisland/continue.html", {
+                    lock: true
+                }, this, function( result ) {} );
+            }
+        },
 
         onSkip: function()
         {
