@@ -83,7 +83,7 @@ $this->island_map = array(
     4 => array(
         'name' => clienttranslate("Volcano Island"),
         'max_x' => 5,
-        'max_y' => 5,
+        'max_y' => 6,
         'map' => array (
             "1_1", "2_1", "3_1", "4_1", "5_1",
             "1_2", "2_2", "3_2", "4_2", "5_2", 

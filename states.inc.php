@@ -64,8 +64,8 @@ $machinestates = array(
 
     STATE_DRAW_TREASURE_CARDS => array(
         "name" => "drawTreasure",
-        "description" => clienttranslate('${actplayer} is drawing treasure cards'),
-        "descriptionmyturn" => clienttranslate('${you} are drawing treasure cards'),
+        "description" => clienttranslate('Drawing treasure cards'),
+        "descriptionmyturn" => clienttranslate('Drawing treasure cards'),
         "type" => "game",
         "action" => "stDrawTreasureCards",
         "transitions" => array( 
