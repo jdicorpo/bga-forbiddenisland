@@ -153,8 +153,7 @@ function (dojo, declare) {
             for( var player_id in gamedatas.players )
             {
                 var player = gamedatas.players[player_id];
-                // this.placePawn( player_id, gamedatas.player_list[player.adventurer].pawn_idx, player.location, gamedatas.player_list[player.adventurer].tooltip);
-                this.placePawn( player_id, gamedatas.player_list[player.adventurer].pawn_idx, player.location, gamedatas.player_list[player.adventurer].name);
+                this.placePawn( player_id, gamedatas.player_list[player.adventurer].pawn_idx, player.location);
                 this.player_adventurer[player_id] = new ebg.zone();
                 this.player_card_area[player_id] = new ebg.zone();
                 this.player_adventurer[player_id].create( this, 'player_adventurer_' + player_id, this.cardwidth, this.cardheight);
@@ -897,7 +896,7 @@ function (dojo, declare) {
 
         },
 
-        placePawn : function(player_id, idx, tile_id, tooltip) {
+        placePawn : function(player_id, idx, tile_id) {
 
             console.log( 'placePawn' );
 
@@ -911,13 +910,13 @@ function (dojo, declare) {
             }), pawn_area, 'last');
             this.pawn_area[tile_id].placeInZone(player_id);
 
-            this.addTooltip( player_id, tooltip, '' );
+            this.addTooltipHtml( player_id, this.pawnTooltip(player_id), '');
 
         },
 
         placePawnSelect : function(player_id) {
 
-            console.log( 'placePawn' );
+            console.log( 'placePawnSelect' );
 
             var main = $('pagemaintitletext');
             var player = this.gamedatas.players[player_id];
@@ -943,9 +942,20 @@ function (dojo, declare) {
 
             this.pawn_area[tile_id].placeInZone(player_id);
 
+            this.addTooltipHtml( player_id, this.pawnTooltip(player_id), '');
+
             // setTimeout(() => { $('location_' + player_id).innerHTML = this.gamedatas.tile_list[tile_id].name; }, 1000);
             $('location_' + player_id).innerHTML = this.gamedatas.tile_list[tile_id].name;
                         
+        },
+
+        pawnTooltip : function(player_id) {
+
+            var player = this.gamedatas.players[player_id];
+            var adventurer_name = this.gamedatas.player_list[player.adventurer].name;
+
+            return '<b>' + adventurer_name + '</b> ( ' + player.name + ' )';
+
         },
 
 
