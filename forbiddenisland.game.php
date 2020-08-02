@@ -1813,6 +1813,8 @@ class forbiddenisland extends Table
         self::incStat(1, "turns_number");
         self::incStat(1, "turns_number", $player_id);
 
+        $this->giveExtraTime($player_id);
+
         $this->setNextState( 'next_turn', $player_id );
 
     }
