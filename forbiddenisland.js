@@ -1726,7 +1726,7 @@ function (dojo, declare) {
                 x: x
             }), 'p_board_icon_' + player_id, 'last');
 
-            this.slideToObject('figureicon_' + treasure, 'p_board_icon_' + player_id);
+            this.slideToObject('figureicon_' + treasure, 'p_board_icon_' + player_id).play();
 
        },
 

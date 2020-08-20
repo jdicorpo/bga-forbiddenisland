@@ -1,4 +1,4 @@
-Jul ??
+Aug 01
 * add player symbols to boards
 * completed logic for Zombie turns
 * #20295: "NO HOVERING TEXT FOR SECOND DISCARD PILE"
