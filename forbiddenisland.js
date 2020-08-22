@@ -643,11 +643,12 @@ function (dojo, declare) {
                             var node = $('player_card_area_' + p.player_id);
                             dojo.addClass(node, 'possiblePlayer');
                             this.handles.push(dojo.connect(node,'onclick', this, 'onPlayer'));
-
+                            var node = $('player_card_' + p.player_id);
+                            dojo.addClass(node, 'possiblePlayer');
+                            this.handles.push(dojo.connect(node,'onclick', this, 'onPlayer'));
                         }
                     }, this);
                 }
-                // this.connectClass('possiblePlayer', 'onclick', 'onPlayer');
         },
 
         updateAllPlayers: function() {
@@ -660,9 +661,11 @@ function (dojo, declare) {
                     var node = $('player_card_area_' + player_id);
                     dojo.addClass(node, 'possiblePlayer');
                     this.handles.push(dojo.connect(node,'onclick', this, 'onPlayer'));
+                    var node = $('player_card_' + player_id);
+                    dojo.addClass(node, 'possiblePlayer');
+                    this.handles.push(dojo.connect(node,'onclick', this, 'onPlayer'));
                 }
             }
-            // this.connectClass('possiblePlayer', 'onclick', 'onPlayer');
         },
 
         placeWaterLevel: function(level) {
@@ -1515,7 +1518,11 @@ function (dojo, declare) {
                     if( this.checkAction( 'give_card' ) && dojo.hasClass(dojo.byId(target_player_area), 'possiblePlayer'))
                     {  
                         var card_id = this.selectedCard;
-                        var target_player_id = target_player_area.split('_')[3];
+                        if (dojo.hasClass(dojo.byId(target_player_area), 'player_card')){
+                            var target_player_id = target_player_area.split('_')[2];
+                        } else {
+                            var target_player_id = target_player_area.split('_')[3];
+                        }
                         var id = card_id.split('_')[5];
                         this.ajaxcall( "/forbiddenisland/forbiddenisland/giveTreasure.html", { 
                             lock: true,

@@ -262,8 +262,10 @@ html {
 .player_card_area {
     /* margin-left: 50px; */
     display: inline-block;
+    vertical-align: top;
     width: 50%;
     margin-left: 197px;
+    min-height: 204.13px;
 }
 
 .player_figure_area {

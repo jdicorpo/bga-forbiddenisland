@@ -1,3 +1,10 @@
+Aug 22
+* #21997: "DISCARD PILE DIDN'T REFRESH AFTER SHUFFLE"
+* changed to use stock in place of zone for card displays
+* #20258: "HAND CARDS DISPLAY BUGS"
+* #20300: "F5 TO REFRESH CARDS IN HAND"
+* #22436: "CAN'T GIVE A CARD TO A PLAYER THAT HAS ZERO CARDS"
+
 Aug 01
 * add player symbols to boards
 * completed logic for Zombie turns
