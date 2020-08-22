@@ -1297,8 +1297,16 @@ class forbiddenisland extends Table
 
                 $this->tiles->moveCard($tile['id'], 'unflooded', $tile['location_arg']);
                 self::incStat(1, "tiles_shored_up");
+
+                if ($sandbags) {
+                    $message = clienttranslate( '${player_name} shored up ${tile_name} with Sandbags' );
+                } elseif ($bonus) {
+                    $message = clienttranslate( '${player_name} shored up ${tile_name} using Engineer bonus' );
+                } else {
+                    $message = clienttranslate( '${player_name} shored up ${tile_name}' );
+                }
     
-                self::notifyAllPlayers( "shoreUpAction", clienttranslate( '${player_name} shored up ${tile_name}' ), array(
+                self::notifyAllPlayers( "shoreUpAction", $message, array(
                     'player_id' => $player_id,
                     'player_tile_id' => $player_tile_id,
                     'player_name' => self::getPlayerName($player_id),
