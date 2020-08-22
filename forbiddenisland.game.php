@@ -1759,6 +1759,7 @@ class forbiddenisland extends Table
         $player_id = self::getActivePlayerId();
 
         $this->treasure_deck->autoreshuffle = true;
+        $this->treasure_deck->autoreshuffle_trigger = array('obj' => $this, 'method' => 'treasureDeckReshuffle');
         $treasure_cards = $this->treasure_deck->pickCardsForLocation( 2, 'deck', 'hand', $player_id, false );
 
         $card_1 = array_shift($treasure_cards);

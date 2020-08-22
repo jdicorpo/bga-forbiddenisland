@@ -103,8 +103,6 @@ var jstpl_flooded_tile='<div class="island_tile flooded" id="${id}" style="backg
 var jstpl_sunk_tile='<div class="island_tile_sunk" id="${id}"></div>';
 var jstpl_pawn_area='<div id="pawn_area_${id}" class="pawn_area"></div>';
 var jstpl_pawn='<div class="pawn" id="${id}" style="background-position:-${x}px"></div>';
-var jstpl_flood='<div class="card flood_card" id="flood_card_${id}" style="background-position:-${x}px -${y}px"></div>';
-var jstpl_treasure='<div class="card treasure_card" id="treasure_card_${id}" style="background-position:-${x}px 0"></div>';
 var jstpl_player='<div class="card player_card" id="player_card_${id}" style="background-position:-${x}px 0"></div>';
 var jstpl_slider='<div id="water_slider"></div>';
 var jstpl_figure='<div id="figure_${treasure}" class="treasure_figure" style="background-position:-${x}px 0"></div>';

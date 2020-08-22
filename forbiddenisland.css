@@ -208,6 +208,21 @@ html {
     
 }
 
+.stockitem {
+	border-radius: 10px;
+    box-shadow: 1px 1px 1px 0px #222;
+    border-color: white;
+    border-width: thin;
+    border-style: solid;
+	/* z-index: 20; */
+	width: 147px;
+	/* height: 177.75px; */
+	height: 204.13px;
+	background-clip: content-box;
+    position: absolute;
+    display: inline-block;
+}
+
 .card {
 	border-radius: 10px;
     box-shadow: 1px 1px 1px 0px #222;
