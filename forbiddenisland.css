@@ -332,7 +332,7 @@ html {
 }
 
 #flood_card_area {
-    display: inline-flex;
+    display: inline-block;
     width: 80%;
     /* margin-left: 157px; */
     position: relative;
@@ -367,7 +367,7 @@ html {
 
 #treasure_card_area {
     /* display: inline-block; */
-    display: inline-flex;
+    display: inline-block;
     width: 80%;
     /* margin-left: 157px; */
     position: relative;
