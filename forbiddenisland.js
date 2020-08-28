@@ -78,6 +78,8 @@ function (dojo, declare) {
 
             this.handles = [];
 
+            this.large_screen = false;
+
         },
         
         /*
@@ -227,7 +229,26 @@ function (dojo, declare) {
             this.addTooltip( 'cardcount_flood_deck', _('remaining cards in deck'), '' );
             this.addTooltip( 'cardcount_treasure_deck', _('remaining cards in deck'), '' );
 
+            // this.adjustLargeScreenLayout();
+
             console.log( "Ending game setup" );
+        },
+
+        adjustLargeScreenLayout : function() {
+            var pageid = "page-content";
+            var bodycoords = dojo.marginBox(pageid);
+            var contentWidth = bodycoords.w;
+            if (contentWidth >= 1920) {
+                // $('#flood_deck_area').insertBefore('#board');
+                dojo.addClass('flood_deck_area','flood_deck_area_lg_screen');
+                dojo.place('flood_deck_area','board', 'before');
+                this.large_screen = true;
+            }
+            // } else if (this.large_screen) {
+            //     dojo.removeClass('flood_deck_area','flood_deck_area_lg_screen');
+            //     dojo.place('flood_deck_area','treasure_deck_area', 'before');
+            //     this.large_screen = false;
+            // }
         },
        
         adaptViewportSize : function() {
@@ -252,6 +273,8 @@ function (dojo, declare) {
 
             dojo.style(nodeid, "transform", "scale(" + percentageOn1 + ")");
             dojo.style(nodeid, "-webkit-transform", "scale(" + percentageOn1 + ")");
+
+            // this.adjustLargeScreenLayout();
         },
 
         ///////////////////////////////////////////////////

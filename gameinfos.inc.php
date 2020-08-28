@@ -96,7 +96,7 @@ $gameinfos = array(
     //  default: null (ie: no limit, the game interface is as big as the player's screen allows it).
     //  maximum possible value: unlimited
     //  minimum possible value: 760
-    'max' => 1000
+    'max' => null
 ),
 
 
