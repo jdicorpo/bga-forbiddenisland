@@ -333,7 +333,8 @@ html {
 
 #flood_card_area {
     display: inline-block;
-    width: 80%;
+    width: 70%;
+    /* width: 900px; */
     /* margin-left: 157px; */
     position: relative;
 }
@@ -368,7 +369,7 @@ html {
 #treasure_card_area {
     /* display: inline-block; */
     display: inline-block;
-    width: 80%;
+    width: 70%;
     /* margin-left: 157px; */
     position: relative;
 }
@@ -596,7 +597,7 @@ html {
 
     .player_area {
         display: inline-block;
-        max-width: 48%;
+        width: 48%;
     }
 }
 
