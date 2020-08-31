@@ -1760,7 +1760,7 @@ function (dojo, declare) {
             this.clearLastAction();
             notif.args.cards.forEach(
                 function (c, index) {
-                    this.discardTreasure(c.id, player_id, type = null, place = false);
+                    this.discardTreasure(c.id, player_id, type = treasure, place = false);
             }, this);
 
             this.moveFigure(treasure, player_id);
