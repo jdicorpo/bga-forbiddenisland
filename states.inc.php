@@ -70,7 +70,8 @@ $machinestates = array(
         "action" => "stDrawTreasureCards",
         "transitions" => array( 
             "continue" => STATE_CONTINUE,
-            "discard" => STATE_DISCARD_TREASURE_CARDS
+            "discard" => STATE_DISCARD_TREASURE_CARDS,
+            "final" => STATE_FINAL 
         )
     ),
 

@@ -1873,7 +1873,11 @@ class forbiddenisland extends Table
 
         $this->updateCardCount();
 
-        $this->setNextState( 'draw_treasure', $player_id );
+        if ($this->isGameLost()) {
+            $this->gamestate->nextState( 'final' );
+        } else {
+            $this->setNextState( 'draw_treasure', $player_id );
+        }
 
     }
 
@@ -2001,7 +2005,12 @@ class forbiddenisland extends Table
                 break;
         }
 
-        $table[] = array(clienttranslate("<b>Fool's Landing<b>"), $status);
+        $table[] = array(clienttranslate("<b>Fools' Landing<b>"), $status);
+
+        $water_level = $this->getGameStateValue('water_level');
+        $water_level_text = ($water_level >= 10) ? '<p style="color:red; font-weight:bold">10</p>' : $water_level;
+        $table[] = array(clienttranslate("<b>Water Level<b>"), $water_level_text);
+
         $table[] = array(clienttranslate("Island Tiles Sunk"),  
             $this->tiles->countCardsInLocation("sunk")
         );
