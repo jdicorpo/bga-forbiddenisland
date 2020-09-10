@@ -254,8 +254,8 @@ class forbiddenisland extends Table
         $island_map = $this->island_map[$island_map_id]['map'];
         $max_x = $this->island_map[$island_map_id]['max_x'];
         $max_y = $this->island_map[$island_map_id]['max_y'];
-        $result['interface_max_width'] = ($max_x + 1) * (147+8);
-        $result['interface_max_height'] = ($max_y) * (147+8);
+        $result['interface_max_width'] = ($max_x + 1) * (147+13);
+        $result['interface_max_height'] = ($max_y) * (147+13);
 
         $result['island_name'] = $this->island_map[$island_map_id]['name'];
         $result['difficulty'] = $this->difficulty[self::getGameStateValue("difficulty")]['name'];
@@ -1045,6 +1045,14 @@ class forbiddenisland extends Table
 
         }
 
+        function getFloodDiscards() {
+            $discards = array();
+            return array_merge( 
+                $discards, 
+                array_map( function($p){ return $p['type']; }, $this->flood_deck->getCardsInLocation( 'flood_area' ))
+            );
+        }
+
         function debugFlood($tile_id) {
 
             $tiles = $this->tiles->getCardsOfType($tile_id);
@@ -1689,6 +1697,7 @@ class forbiddenisland extends Table
             'pilot_action' => $this->getGameStateValue("pilot_action"),
             'special_card_id' => $this->getGameStateValue("special_card_id"),
             'undo' => ($this->getGameStateValue("undo_move_tile") == 0) ? false : true,
+            'flood_discards'=> $this->getFloodDiscards(),
         );
     }
 
@@ -1712,14 +1721,16 @@ class forbiddenisland extends Table
             'playerLocations' => self::getPlayerLocations(),
             'isWinCondition' => self::isWinCondition(),
             'adventurer' => $adventurer,
-            'pilot_action' => $this->getGameStateValue("pilot_action")
+            'pilot_action' => $this->getGameStateValue("pilot_action"),
+            'flood_discards'=> $this->getFloodDiscards(),
         );
     }
 
     function argDrawFloodCards()
     {
         return array(
-            'remaining_flood_cards' => $this->getGameStateValue("remaining_flood_cards")
+            'remaining_flood_cards' => $this->getGameStateValue("remaining_flood_cards"),
+            'flood_discards'=> $this->getFloodDiscards(),
         );
     }
 
@@ -1732,7 +1743,8 @@ class forbiddenisland extends Table
         }
         return array(
             'player_treasure_cards' => $player_treasure_cards,
-            'discard_treasure_player' => $this->getGameStateValue("discard_treasure_player")
+            'discard_treasure_player' => $this->getGameStateValue("discard_treasure_player"),
+            'flood_discards'=> $this->getFloodDiscards(),
         );
     }
 

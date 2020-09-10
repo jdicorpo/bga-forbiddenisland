@@ -91,8 +91,8 @@ class view_forbiddenisland_forbiddenisland extends game_view
 
         $this->page->begin_block($template, "island_tile" );
         
-        $hor_scale = 147+8;
-        $ver_scale = 147+8;
+        $hor_scale = 147+13;
+        $ver_scale = 147+13;
         $ver_pos = array( 10 => 21, 9 => 63, 8 => 106, 7 => 142, 6 => 186, 5 => 228, 4 => 270, 
             3 => 312, 2 => 356, 1 => 395 );
         
