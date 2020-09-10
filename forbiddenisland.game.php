@@ -325,7 +325,7 @@ class forbiddenisland extends Table
         {
             $result = array('move' => array(), 'shore_up' => array());
             // $result = array_merge($result, $this->getPossibleMoves( $player_id ));
-            $result = array_merge($result, $this->getPossibleMoves2( $player_id ));
+            $result = array_merge($result, $this->getPossibleMoves( $player_id ));
             $result = array_merge($result, $this->getPossibleShoreUp( $player_id ));
             $result = array_merge($result, $this->getPossibleSandbags());
             $result = array_merge($result, $this->getPossibleHeliLift( $player_id ));
@@ -343,7 +343,7 @@ class forbiddenisland extends Table
 
         }
 
-        function getPossibleMoves2( $player_id )
+        function getPossibleMoves( $player_id )
         {
             $player_tile_id = $this->getPlayerLocation($player_id);
             $result = array( 'move' => array(), 'navigator' => array());
@@ -405,52 +405,6 @@ class forbiddenisland extends Table
             return $result;
 
         }
-
-        // function getPossibleMoves( $player_id )
-        // {
-        //     $player_tile_id = $this->getPlayerLocation($player_id);
-        //     $result = array( 'move' => array(), 'navigator' => array());
-        //     $checked = array();
-
-        //     foreach ($this->tiles->getCardsInLocation('unflooded') as $id => $tile ) {
-        //             if ( $this->isTileAdjacent($tile['type'], $player_tile_id, $player_id) )
-        //             {
-        //                 $result['move'][] = $tile['type'];
-        //             }
-        //     }
-
-        //     foreach ($this->tiles->getCardsInLocation('flooded') as $id => $tile ) {
-        //         if ( $this->isTileAdjacent($tile['type'], $player_tile_id, $player_id) )
-        //         {
-        //             $tile_id = $tile['type'];
-        //             $result['move'][] = $tile['type'];
-        //             if ($this->getAdventurer( $player_id ) == 'diver') {
-
-        //                 $checked[] = $tile['type'];
-        //                 $tiles = $this->getDiverAdjacentTiles($tile['type'], $result, $player_id, $player_tile_id, $checked);
-
-        //                 $result['move'] = array_merge($result['move'], $tiles[0]['move']);
-        //                 $checked = $tiles[1];
-        //             }
-
-        //         }
-        //     }
-
-        //     if ($this->getAdventurer( $player_id ) == 'diver') {
-        //         foreach ($this->tiles->getCardsInLocation('sunk') as $id => $tile ) {
-        //             if ( $this->isTileAdjacent($tile['type'], $player_tile_id, $player_id) )
-        //             {
-        //                 $tile_id = $tile['type'];
-        //                 $tiles = $this->getDiverAdjacentTiles($tile['type'], $result, $player_id, $player_tile_id, $checked);
-        //                 $checked[] = $tile['type'];
-        //                 $result['move'] = array_merge($result['move'], $tiles[0]['move']);
-        //                 $checked = $tiles[1];
-        //             }
-        //         }
-        //     }
-                    
-        //     return $result;
-        // }
 
         function nextLevelCheck($player_id, $player_tile_id, $result, $tile_id) {
 
@@ -535,82 +489,6 @@ class forbiddenisland extends Table
             return $result;
 
         }
-
-        // function alreadyIncluded($target_tile_id, $result, $start_tile_id = null) {
-        //     if (($target_tile_id == $start_tile_id) or (in_array($target_tile_id, $result['move']))) {
-        //         return true;
-        //     } else {
-        //         return false;
-        //     }
-        // }
-
-        // function tile_not_checked($tile_id, $checked) {
-        //     if (!in_array($tile_id, $checked)) {
-        //         return true;
-        //     } else {
-        //         return false;
-        //     }
-        // }
-
-        // function overflow_check($checked) {
-        //     if (count($checked) > 40) {
-        //         self::error("OVERFLOW ERROR");
-        //         return true;
-        //     } else {
-        //         return false;
-        //     }
-        // }
-
-        // function getDiverAdjacentTiles( $target_tile_id, $result, $player_id, $start_tile_id = null, $checked)
-        // {
-        //     if ($this->overflow_check($checked)) 
-        //         return array($result, $checked);
-
-        //     foreach ($this->tiles->getCardsInLocation('unflooded') as $id => $tile ) {
-        //         if ( $this->isTileAdjacent($tile['type'], $target_tile_id, $player_id)) {
-        //             if (!$this->alreadyIncluded($tile['type'], $result, $start_tile_id) )
-        //             {
-        //                 $result['move'][] = $tile['type'];
-        //             }
-        //         }
-        //     }
-                
-        //     foreach ($this->tiles->getCardsInLocation('flooded') as $id => $tile ) {
-        //         if ( $this->isTileAdjacent($tile['type'], $target_tile_id, $player_id)) {
-        //             if (!$this->alreadyIncluded($tile['type'], $result, $start_tile_id)
-        //                  and $this->tile_not_checked($tile['type'], $checked))
-        //             {
-        //                 $result['move'][] = $tile['type'];
-        //                 $checked[] = $tile['type'];
-        //                 $tiles = $this->getDiverAdjacentTiles($tile['type'], $result, $player_id, $start_tile_id, $checked);
-        //                 $result['move'] = array_merge($result['move'], $tiles[0]['move']);
-        //                 $checked = $tiles[1];
-
-        //             }
-        //         }
-        //     }
-                
-        //     foreach ($this->tiles->getCardsInLocation('sunk') as $id => $tile ) {
-        //         if ( $this->isTileAdjacent($tile['type'], $target_tile_id, $player_id)) {
-        //             if ($this->tile_not_checked($tile['type'], $checked))
-        //             {
-        //                 $checked[] = $tile['type'];
-        //                 $tiles = $this->getDiverAdjacentTiles($tile['type'], $result, $player_id, $start_tile_id, $checked);
-        //                 $result['move'] = array_merge($result['move'], $tiles[0]['move']);
-        //                 $checked = $tiles[1];
-        //             }
-        //         }
-        //     }
-
-            // self::notifyAllPlayers( "log", "getPossibleActions", array(
-            //     'player_id' => $player_id,
-            //     'target_tile_id' => $target_tile_id,
-            //     'checked' => $checked,
-            //     'result' => $result,
-            // ) );
-                    
-        //     return array($result, $checked);
-        // }
 
         function getPossibleShoreUp( $player_id )
         {
@@ -925,9 +803,6 @@ class forbiddenisland extends Table
                     $tile_id_1 = $this->treasure_list[$treasure]['tiles'][1];
                     $tiles = $this->tiles->getCardsOfType($tile_id_1);
                     $tile_1 = array_shift($tiles);
-                    // if (($current_tile == 'temple_moon') and ($treasure == 'earth') ) { 
-                    //     var_dump($treasure); var_dump($tile_id_0); var_dump($tile_0); var_dump($tile_1); die('ok'); 
-                    // }
                     if (($tile_0['location'] == 'sunk') and ($tile_1['location'] == 'sunk'))  {
                         return true;
                     }
@@ -1678,14 +1553,11 @@ class forbiddenisland extends Table
 
     function argPlayerActions()
     {
-        // TODO: refactor this...
         $player_treasure_cards = array();
         $players = $this->loadPlayersBasicInfos();
         foreach ( $players as $player_id => $player_info ) {
             $player_treasure_cards[$player_id] = $this->getTreasureCards( $player_id );
         }
-        // $possibleActions = self::getPossibleActions( self::getActivePlayerId() );
-        // var_dump($possibleActions);
         return array(
             'possibleActions' => self::getPossibleActions( self::getActivePlayerId() ),
             'remaining_actions' => $this->getGameStateValue("remaining_actions"),
@@ -1703,7 +1575,6 @@ class forbiddenisland extends Table
 
     function argMultiPlayerActions()
     {
-        // TODO: refactor this...
         $player_treasure_cards = array();
         $possibleActions = array();
         $adventurer = array();
@@ -1717,7 +1588,6 @@ class forbiddenisland extends Table
             'possibleActions' => $possibleActions,
             'remaining_actions' => $this->getGameStateValue("remaining_actions"),
             'player_treasure_cards' => $player_treasure_cards,
-            // 'colocated_players' => self::getColocatedPlayers( $this->getCurrentPlayerId() ),
             'playerLocations' => self::getPlayerLocations(),
             'isWinCondition' => self::isWinCondition(),
             'adventurer' => $adventurer,
@@ -1799,11 +1669,6 @@ class forbiddenisland extends Table
 
             $this->setGameStateValue("rescue_pawn_tile", 0);
 
-            // if ($remain_flood_cards > 0) {
-            //     $this->gamestate->nextState( 'draw_flood' );
-            // } else {
-            //     $this->gamestate->nextState( 'next_player' );
-            // }
             $current_tile = null;
 
         } elseif ($tile['location'] == 'flooded') {
