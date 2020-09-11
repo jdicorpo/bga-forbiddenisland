@@ -1852,7 +1852,7 @@ class forbiddenisland extends Table
 
             $table[] = array( 
                 array(
-                    'str' => '     '.clienttranslate('Treasure <b>${treasure}</b>'), 
+                    'str' => '     '.clienttranslate('<b>${treasure}</b>'), 
                     'args' => array('treasure' => $treasureName)
                 ), 
                 $captured_text
