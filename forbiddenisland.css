@@ -663,3 +663,21 @@ html {
     }
 
 }
+
+@media screen and (max-width: 1680px) {
+    .dijitTooltipContainer {
+        transform: scale(0.8);
+    }
+}
+
+@media screen and (max-width: 1300px) {
+    .dijitTooltipContainer {
+        transform: scale(0.7);
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .dijitTooltipContainer {
+        transform: scale(0.6);
+    }
+}
