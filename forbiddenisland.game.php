@@ -1084,7 +1084,7 @@ class forbiddenisland extends Table
         // check if legal move
         if ( !$heli_lift and !$pilot and !$navigator and !$undo) {
             // $possibleMoves = $this->getPossibleMoves($player_id)['move'];
-            $possibleMoves = $this->getPossibleMoves2($player_id)['move'];
+            $possibleMoves = $this->getPossibleMoves($player_id)['move'];
             if (!in_array($tile_id, $possibleMoves)) {
                 return;
             }
@@ -1531,7 +1531,7 @@ class forbiddenisland extends Table
                 }
             } else {
                 // $result = $this->getPossibleMoves( $player_id );
-                $result = $this->getPossibleMoves2( $player_id );
+                $result = $this->getPossibleMoves( $player_id );
                 if (count($result['move']) > 0) {
                     $tile_id = array_shift($result['move']);
                     $this->moveAction($tile_id, $pilot = false, $navigator = false, $heli_lift = false, $card_id = 0, $players = array($player_id), $rescue = true, $undo = false );
@@ -1801,7 +1801,7 @@ class forbiddenisland extends Table
                     $move_count = $this->getPossibleHeliLift($player_id)['heli_lift'];
                 } else {
                     // $move_count = $this->getPossibleMoves( $player_id );
-                    $move_count = $this->getPossibleMoves2( $player_id );
+                    $move_count = $this->getPossibleMoves( $player_id );
                 }
                 if ($move_count == 0) {
                     // no possible move for this pawn

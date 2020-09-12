@@ -221,7 +221,7 @@ html {
     /* width: 95%; */
     width: 100%;
 	/* max-width: 128px; */
-    height: 80px;
+    height: 105px;
     margin-top: 45px;
     /* margin-right: 10px; */
 	/* background-size: calc(400px * 4);  */
@@ -238,11 +238,14 @@ html {
 .pawn {
     background-image: url(img/pawns.png);
     border-radius: 10px;
-    background-size: auto 65.4px;
+    /* background-size: auto 65.4px; */
+    background-size: auto 81.75px;
 	/* box-shadow: 1px 1px 1px 0px #222; */
 	z-index: 10;
-	width: 36.18px;
-	height: 65.4px;
+	/* width: 36.18px; */
+    /* height: 65.4px; */
+    width: 45.22px;
+	height: 81.75px;
 	/* background-size: calc(400px * 4);  */
     /* margin-left: 10px; */
     /* margin-right: -10px; */

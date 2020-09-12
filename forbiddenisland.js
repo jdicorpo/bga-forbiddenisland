@@ -121,6 +121,17 @@ function (dojo, declare) {
                 var img_id = gamedatas.tile_list[tile].img_id;
                 this.board.addItemType(tile, tile, g_gamethemeurl + 'img/tiles.jpg', img_id);
                 this.pawn_area[tile] = new ebg.zone();
+                this.pawn_area[tile].setPattern( 'custom' );
+                this.pawn_area[tile].itemIdToCoords = function( i, control_width ) {
+                    if( i%4==0 )
+                    {   return {  x:10, y:-30, w:45, h:80 }; }
+                    else if( i%4==1 )
+                    {   return {  x:40, y:0, w:45, h:80 }; }
+                    else if( i%4==2 )
+                    {   return {  x:70, y:-30, w:45, h:80 }; }
+                    else if( i%4==3 )
+                    {   return {  x:100, y:0, w:45, h:80 }; }
+                };
             }
 
             for( var i in gamedatas.unflooded )
@@ -1051,7 +1062,8 @@ function (dojo, declare) {
 
             var parent_id = $(tile_id).parentNode.id;
             var pawn_area = dojo.query('#' + parent_id + ' .pawn_area')[0];
-            var x = 36.18 * (idx-1);
+            // var x = 36.18 * (idx-1);
+            var x = 45.22 * (idx-1);
 
             dojo.place(this.format_block('jstpl_pawn', {
                 id : player_id,
