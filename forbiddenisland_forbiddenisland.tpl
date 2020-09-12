@@ -99,9 +99,18 @@
  
 // Templates
 
-var jstpl_tile='<div id="${id}_bg" class="sand_tile_background"></div><div id="${id}" class="island_tile" style="background-position:-${x}px -${y}px"></div>';
-var jstpl_tile_tooltip='<div class="tooltip_container"><div class="tile_tooltip" style="background-position:-${x}px -${y}px"></div><p>${flooded_text}</p></div>';
-var jstpl_flooded_tile='<div class="island_tile flooded" id="${id}" style="background-position:-${x}px -${y}px"><div class="tile_warning" style="display: ${warning}">!</div></div>';
+var jstpl_tile='<div id="${id}_bg" class="sand_tile_background"></div>\
+    <div id="${id}" class="island_tile" style="background-position:-${x}px -${y}px">\
+    <div class="tile_warning" style="display: ${warning}"></div>\
+    </div>';
+var jstpl_tile_tooltip='<div class="tooltip_container">\
+    <p style="font-weight: bold; font-size: large">${tile_title}</p><hr>\
+    <div class="tile_tooltip" style="background-position:-${x}px -${y}px"></div>\
+    <hr><p style="${text_style}">${flooded_text}</p>\
+    </div>';
+var jstpl_flooded_tile='<div class="island_tile flooded" id="${id}" style="background-position:-${x}px -${y}px">\
+    <div class="tile_warning" style="display: ${warning}"></div>\
+    </div>';
 var jstpl_sunk_tile='<div class="island_tile_sunk" id="${id}"></div>';
 var jstpl_pawn_area='<div id="pawn_area_${id}" class="pawn_area"></div>';
 var jstpl_pawn='<div class="pawn" id="${id}" style="background-position:-${x}px"></div>';

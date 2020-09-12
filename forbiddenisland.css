@@ -205,9 +205,13 @@ html {
 }
 
 .tile_warning {
-    background-image: url(img/error.png);
-    width: 24px;
-    height: 24px;
+    /* background-image: url(img/error.png); */
+    background-color: whitesmoke;
+    border-radius: 9px;
+    width: 18px;
+    height: 18px;
+    /* width: 24px; */
+    /* height: 24px; */
     float: right;
     margin: 6px;
 }

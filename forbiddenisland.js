@@ -246,6 +246,7 @@ function (dojo, declare) {
             $('cardcount_treasure_deck').innerHTML = gamedatas['treasure_deck_count'];
             this.addTooltip( 'cardcount_flood_deck', _('remaining cards in deck'), '' );
             this.addTooltip( 'cardcount_treasure_deck', _('remaining cards in deck'), '' );
+            this.addTooltipToClass( 'tile_warning', _('this flood card is in discard pile'), '');
 
             // this.adjustLargeScreenLayout();
 
@@ -737,40 +738,41 @@ function (dojo, declare) {
 
         },
 
+        isTileInDiscard : function(tile_id) {
+            if (this.flood_discards.includes(tile_id)) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+
         placeTile : function(a, b, tile_id, flooded, sunk) {
             console.log( 'placeTile' );
 
             var board_id = a + '_' + b;
-            if (this.flood_discards.includes(tile_id)) {
-                var warning = 'inline';
-            } else {
-                var warning = 'none';
-            }
-            if (flooded) {
-                var img_id = this.gamedatas.tile_list[tile_id].img_id + 24;
-            } else {
-                var img_id = this.gamedatas.tile_list[tile_id].img_id;
-            }
+            var warning = (this.isTileInDiscard(tile_id) ? 'inline' : 'none');
+            var img_id = this.gamedatas.tile_list[tile_id].img_id;
+
             if (sunk) {
+                img_id += 24;
                 dojo.place(this.format_block('jstpl_sunk_tile', {
                     id : tile_id,
                 }), 'island_tile_' + board_id, 'first');
-                var flooded_text = _('SUNK');
             } else if (flooded) {
+                img_id += 24;
                 dojo.place(this.format_block('jstpl_flooded_tile', {
                     x : this.tilewidth * ((img_id-1) % 8),
                     y : this.tileheight * Math.trunc((img_id-1) / 8),
                     id : tile_id,
                     warning: warning
                 }), 'island_tile_' + board_id, 'first');
-                var flooded_text = _('FLOODED');
             } else {
                 dojo.place(this.format_block('jstpl_tile', {
                     x : this.tilewidth * ((img_id-1) % 8),
                     y : this.tileheight * Math.trunc((img_id-1) / 8),
                     id : tile_id,
+                    warning: warning
                 }), 'island_tile_' + board_id, 'first');
-                var flooded_text = _('UNFLOODED');
             }
             
             dojo.place(this.format_block('jstpl_pawn_area', {
@@ -779,17 +781,7 @@ function (dojo, declare) {
             
             this.pawn_area[tile_id].create( this, 'pawn_area_' + tile_id, this.pawnwidth - 7, this.pawnheight);
 
-            this.addTooltipHtml('island_tile_' + board_id, this.format_block('jstpl_tile_tooltip', {
-                x : this.tilewidth_lg * ((img_id-1) % 8),
-                y : this.tileheight_lg * Math.trunc((img_id-1) / 8),
-                flooded_text : flooded_text,
-            }), );
-
-            this.addTooltipHtml('pawn_area_' + board_id, this.format_block('jstpl_tile_tooltip', {
-                x : this.tilewidth_lg * ((img_id-1) % 8),
-                y : this.tileheight_lg * Math.trunc((img_id-1) / 8),
-                flooded_text : flooded_text,
-            }), );
+            this.addTileTooltip(tile_id, flooded, sunk);
 
         },
 
@@ -797,11 +789,7 @@ function (dojo, declare) {
             console.log( 'floodTile' );
 
             var img_id = this.gamedatas.tile_list[tile_id].img_id + 24;
-            if (this.flood_discards.includes(tile_id)) {
-                var warning = 'inline';
-            } else {
-                var warning = 'none';
-            }
+            var warning = (this.isTileInDiscard(tile_id) ? 'inline' : 'none');
             
             dojo.place(this.format_block('jstpl_flooded_tile', {
                 x : this.tilewidth * ((img_id-1) % 8),
@@ -813,23 +801,7 @@ function (dojo, declare) {
             dojo.style( tile_id + '_bg', 'display', 'none' );
             dojo.query('#'+tile_id + ' .tile_warning', 'display', 'inline');
 
-            var parent_id = $(tile_id).parentNode.id;
-            var flooded_text = _('FLOODED');
-
-            this.removeTooltip(parent_id);
-            this.addTooltipHtml(parent_id, this.format_block('jstpl_tile_tooltip', {
-                x : this.tilewidth_lg * ((img_id-1) % 8),
-                y : this.tileheight_lg * Math.trunc((img_id-1) / 8),
-                flooded_text : flooded_text,
-            }), );
-
-            var pawn_area_id = dojo.query('#'+parent_id + ' .pawn_area').id;
-            this.removeTooltip(pawn_area_id);
-            this.addTooltipHtml(pawn_area_id, this.format_block('jstpl_tile_tooltip', {
-                x : this.tilewidth_lg * ((img_id-1) % 8),
-                y : this.tileheight_lg * Math.trunc((img_id-1) / 8),
-                flooded_text : flooded_text,
-            }), );
+            this.addTileTooltip(tile_id, true, false);
 
         },
 
@@ -837,32 +809,18 @@ function (dojo, declare) {
             console.log( 'unfloodTile' );
 
             var img_id = this.gamedatas.tile_list[tile_id].img_id;
+            var warning = (this.isTileInDiscard(tile_id) ? 'inline' : 'none');
             
             dojo.place(this.format_block('jstpl_tile', {
                 x : this.tilewidth * ((img_id-1) % 8),
                 y : this.tileheight * Math.trunc((img_id-1) / 8),
                 id : tile_id,
+                warning: warning
             }), tile_id, 'replace');
 
             dojo.style( tile_id + '_bg', 'display', 'inline' );
 
-            var parent_id = $(tile_id).parentNode.id;
-            var flooded_text = _('UNFLOODED');
-
-            this.removeTooltip(parent_id);
-            this.addTooltipHtml(parent_id, this.format_block('jstpl_tile_tooltip', {
-                x : this.tilewidth_lg * ((img_id-1) % 8),
-                y : this.tileheight_lg * Math.trunc((img_id-1) / 8),
-                flooded_text : flooded_text,
-            }), );
-
-            var pawn_area_id = dojo.query('#'+parent_id + ' .pawn_area').id;
-            this.removeTooltip(pawn_area_id);
-            this.addTooltipHtml(pawn_area_id, this.format_block('jstpl_tile_tooltip', {
-                x : this.tilewidth_lg * ((img_id-1) % 8),
-                y : this.tileheight_lg * Math.trunc((img_id-1) / 8),
-                flooded_text : flooded_text,
-            }), );
+            this.addTileTooltip(tile_id, false, false);
 
         },
 
@@ -878,13 +836,37 @@ function (dojo, declare) {
                 id : tile_id,
             }), parent_id, 'first');
 
-            var flooded_text = _('SUNK');
+            this.addTileTooltip(tile_id, false, true);
+
+        },
+
+        addTileTooltip : function(tile_id, flooded, sunk) {
+
+            var img_id = this.gamedatas.tile_list[tile_id].img_id;
+            var text_style = "";
+            if (sunk) {
+                var flooded_text = _('SUNK');
+                img_id += 24;
+                text_style = "color: black";
+            } else if (flooded) {
+                var flooded_text = _('FLOODED');
+                img_id += 24;
+                text_style = "color: blue";
+            } else {
+                var flooded_text = _('UNFLOODED');
+                text_style = "color: green";
+            }
+
+            var parent_id = $(tile_id).parentNode.id;
+            var tile_title = this.gamedatas.tile_list[tile_id].name;
 
             this.removeTooltip(parent_id);
             this.addTooltipHtml(parent_id, this.format_block('jstpl_tile_tooltip', {
                 x : this.tilewidth_lg * ((img_id-1) % 8),
                 y : this.tileheight_lg * Math.trunc((img_id-1) / 8),
                 flooded_text : flooded_text,
+                tile_title: tile_title,
+                text_style: text_style
             }), );
 
             var pawn_area_id = dojo.query('#'+parent_id + ' .pawn_area').id;
@@ -893,7 +875,10 @@ function (dojo, declare) {
                 x : this.tilewidth_lg * ((img_id-1) % 8),
                 y : this.tileheight_lg * Math.trunc((img_id-1) / 8),
                 flooded_text : flooded_text,
+                tile_title: tile_title,
+                text_style: text_style
             }), );
+
         },
 
         placePlayer : function(player_id, idx) {
