@@ -60,13 +60,13 @@ html {
 	transform: translateZ(0px);
 }
 
-.anchor {
-	position: relative;
-	width: 100%; 
-	/* overflow-x: auto; */
-	/* overflow-y: hidden; */
-	margin: auto;
-	/* text-align: center; */
+.board_wrapper {
+    /* position: static; */
+    position: relative;
+    /* display: block; */
+	width: fit-content; 
+    margin: auto;
+    vertical-align: middle;
 }
 
 #board {
@@ -76,7 +76,8 @@ html {
     /* background-image: url('img/tiles.jpg'); */
     /* background-color: palegoldenrod; */
     position: relative;
-    margin: auto;
+    /* margin-right: 0px; */
+    /* margin: auto; */
     /* display: inline; */
 }
 
@@ -204,7 +205,7 @@ html {
     opacity: 0.6;
 }
 
-.tile_warning {
+.tile_mark {
     /* background-image: url(img/error.png); */
     background-color: whitesmoke;
     border-radius: 9px;
@@ -332,6 +333,7 @@ html {
     /* background-color: red; */
     /* opacity: 70%; */
 	height: 204.13px;
+	min-height: 204.13px;
 
 }
 
@@ -387,10 +389,11 @@ html {
 
 #flood_card_area {
     display: inline-block;
-    width: 70%;
+    width: 82%;
     /* width: 900px; */
     /* margin-left: 157px; */
     position: relative;
+    height: 204.32px;
 }
 
 .flood_deck_area {
@@ -403,10 +406,20 @@ html {
 }
 
 .flood_deck_area_lg_screen {
-    transform: rotate(90deg) translateY(0px) translateX(50px);
-    transform-origin: bottom left;
+    transform-origin: left top;
+    transform: rotate(90deg) translateY(-234px) translateX(0px);
+    /* ---------------------- */
+    /* transform-origin: left center; */
+    /* transform: rotate(90deg) translate(-234px,-0px); */
+    /* ---------------------- */
+    /* transform: rotate(90deg) translateY(0px) translateX(50px); */
+    /* transform: rotate(90deg) translateY(-20px) translateX(300px); */
+    /* transform-origin: 120px 102px; */
     width: 920px;
-    margin-top: -260px;
+    /* margin-top: -260px; */
+    /* margin: 0px 10px 20px 147px; */
+    /* float: left; */
+    position: absolute;
 }
 
 .treasure_card {

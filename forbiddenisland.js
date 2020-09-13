@@ -81,7 +81,7 @@ function (dojo, declare) {
 
             this.handles = [];
 
-            this.large_screen = false;
+            this.large_screen = true;
 
         },
         
@@ -246,9 +246,8 @@ function (dojo, declare) {
             $('cardcount_treasure_deck').innerHTML = gamedatas['treasure_deck_count'];
             this.addTooltip( 'cardcount_flood_deck', _('remaining cards in deck'), '' );
             this.addTooltip( 'cardcount_treasure_deck', _('remaining cards in deck'), '' );
-            this.addTooltipToClass( 'tile_warning', _('this flood card is in discard pile'), '');
 
-            // this.adjustLargeScreenLayout();
+            this.adjustLargeScreenLayout();
 
             console.log( "Ending game setup" );
         },
@@ -257,17 +256,27 @@ function (dojo, declare) {
             var pageid = "page-content";
             var bodycoords = dojo.marginBox(pageid);
             var contentWidth = bodycoords.w;
-            if (contentWidth >= 1920) {
-                // $('#flood_deck_area').insertBefore('#board');
+            if (contentWidth >= 1300) {
                 dojo.addClass('flood_deck_area','flood_deck_area_lg_screen');
                 dojo.place('flood_deck_area','board', 'before');
+                dojo.style('board', 'margin-left','300px');
+                dojo.style('cardcount_flood_deck', 'transform','rotate(-90deg)');
+                // dojo.place('flood_deck_area','board', 'after');
+                this.interface_max_width = this.gamedatas.interface_max_width + 300;
                 this.large_screen = true;
-            }
-            // } else if (this.large_screen) {
-            //     dojo.removeClass('flood_deck_area','flood_deck_area_lg_screen');
-            //     dojo.place('flood_deck_area','treasure_deck_area', 'before');
-            //     this.large_screen = false;
+                // this.flood_card_area.updateDisplay();
+                // console.log("large_screen = ", this.large_screen);
             // }
+            } else if (this.large_screen) {
+                dojo.removeClass('flood_deck_area','flood_deck_area_lg_screen');
+                dojo.place('flood_deck_area','treasure_deck_area', 'before');
+                // dojo.style('board', 'margin','auto');
+                dojo.style('board', 'margin-left','10px');
+                dojo.style('cardcount_flood_deck', 'transform','rotate(0deg)');
+                this.interface_max_width = this.gamedatas.interface_max_width;
+                this.large_screen = false;
+                // console.log("large_screen = ", this.large_screen);
+            }
         },
        
         adaptViewportSize : function() {
@@ -279,11 +288,14 @@ function (dojo, declare) {
     
             var browserZoomLevel = window.devicePixelRatio; 
             // console.log("zoom",browserZoomLevel);
-            // console.log("contentWidth",contentWidth);
+            // console.log("contentWidth", contentWidth);
+
+            this.adjustLargeScreenLayout();
 
             // if (contentWidth >= this.interface_max_width || browserZoomLevel >1  || this.control3dmode3d) {
             if (contentWidth >= this.interface_max_width || this.control3dmode3d) {
                 dojo.style(nodeid,'transform','');
+                console.log("contentWidth", contentWidth, '>', this.interface_max_width);
                 return;
             }
     
@@ -293,7 +305,6 @@ function (dojo, declare) {
             dojo.style(nodeid, "transform", "scale(" + percentageOn1 + ")");
             dojo.style(nodeid, "-webkit-transform", "scale(" + percentageOn1 + ")");
 
-            // this.adjustLargeScreenLayout();
         },
 
         ///////////////////////////////////////////////////
@@ -879,6 +890,9 @@ function (dojo, declare) {
                 text_style: text_style
             }), );
 
+            // this.addTooltipToClass( 'tile_mark', _('this flood card is in discard pile'), '');
+            this.addTooltip( tile_id + '_mark', _('this flood card is in discard pile'), '');
+
         },
 
         placePlayer : function(player_id, idx) {
@@ -904,6 +918,12 @@ function (dojo, declare) {
 
             var idx = this.gamedatas.flood_list[id].img_id
             var tooltip = this.gamedatas.flood_list[id].name;
+
+            if (this.flood_card_area.count() >= 10) {
+                this.flood_card_area.setOverlap(20,0);
+            } else {
+                this.flood_card_area.setOverlap(40,0);
+            }
 
             this.flood_card_area.addToStockWithId(id, id, 'flood_deck');
 
@@ -1069,7 +1089,8 @@ function (dojo, declare) {
             var idx = this.gamedatas.player_list[player.adventurer].pawn_idx;
             // var parent_id = $(tile_id).parentNode.id;
             // var pawn_area = dojo.query('#' + parent_id + ' .pawn_area')[0];
-            var x = 36.18 * (idx-1);
+            // var x = 36.18 * (idx-1);
+            var x = 45.22 * (idx-1);
 
             dojo.place(this.format_block('jstpl_pawn', {
                 id : 'pselect_' + player_id,

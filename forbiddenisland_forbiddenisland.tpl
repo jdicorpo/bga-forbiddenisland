@@ -24,6 +24,7 @@
 -->
 <div id="thething" class="thething">
 <!-- <div id="outer_wrapper" class="anchor"> -->
+<div class="board_wrapper">
     <div id="board">
         <div id="island_tile" style="visibility: hidden;">
             <div id="pawn_area_0_0" class="pawn_area" style="visibility: hidden;"></div>
@@ -49,6 +50,7 @@
         <!-- END treasure_starting_area -->
         
     </div>
+</div>
     
     <!-- <div class="island_title whiteblock"><span id="island_name">&ltIsland Name&gt</span>&nbsp;<span id="difficulty_level">&ltDifficulty&gt</span></div> -->
 
@@ -101,7 +103,7 @@
 
 var jstpl_tile='<div id="${id}_bg" class="sand_tile_background"></div>\
     <div id="${id}" class="island_tile" style="background-position:-${x}px -${y}px">\
-    <div class="tile_warning" style="display: ${warning}"></div>\
+    <div id="${id}_mark" class="tile_mark" style="display: ${warning}"></div>\
     </div>';
 var jstpl_tile_tooltip='<div class="tooltip_container">\
     <p style="font-weight: bold; font-size: large">${tile_title}</p><hr>\
@@ -109,7 +111,7 @@ var jstpl_tile_tooltip='<div class="tooltip_container">\
     <hr><p style="${text_style}">${flooded_text}</p>\
     </div>';
 var jstpl_flooded_tile='<div class="island_tile flooded" id="${id}" style="background-position:-${x}px -${y}px">\
-    <div class="tile_warning" style="display: ${warning}"></div>\
+    <div id="${id}_mark" class="tile_mark" style="display: ${warning}"></div>\
     </div>';
 var jstpl_sunk_tile='<div class="island_tile_sunk" id="${id}"></div>';
 var jstpl_pawn_area='<div id="pawn_area_${id}" class="pawn_area"></div>';
