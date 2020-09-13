@@ -179,7 +179,8 @@ function (dojo, declare) {
                 }
                 this.placePlayer(player_id, gamedatas.player_list[player.adventurer].idx);
                 this.figure_area[player_id] = new ebg.zone();
-                this.figure_area[player_id].create( this, 'player_figure_area_' + player_id, this.figurewidth, this.figureheight);
+                this.figure_area[player_id].create( this, 'player_figure_area_' + player_id, this.figurewidth * 0.8, this.figureheight * 0.8);
+                this.figure_area[player_id].tiem_margin = 5;
                 this.placeAllTreasureCards(player_id, gamedatas.player_card_area[player_id].treasure_cards);
                 var playerBoardDiv = dojo.byId('player_board_' + player_id);
                 var x = 80 * (gamedatas.player_list[player.adventurer].idx-1);
@@ -256,7 +257,7 @@ function (dojo, declare) {
             var pageid = "page-content";
             var bodycoords = dojo.marginBox(pageid);
             var contentWidth = bodycoords.w;
-            if (contentWidth >= 1300) {
+            if (contentWidth >= 1600) {
                 dojo.addClass('flood_deck_area','flood_deck_area_lg_screen');
                 dojo.place('flood_deck_area','board', 'before');
                 dojo.style('board', 'margin-left','300px');
