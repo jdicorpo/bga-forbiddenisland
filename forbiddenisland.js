@@ -248,63 +248,89 @@ function (dojo, declare) {
             this.addTooltip( 'cardcount_flood_deck', _('remaining cards in deck'), '' );
             this.addTooltip( 'cardcount_treasure_deck', _('remaining cards in deck'), '' );
 
-            this.adjustLargeScreenLayout();
+            this.adjustScreenLayout();
 
             console.log( "Ending game setup" );
         },
 
-        adjustLargeScreenLayout : function() {
+        board_width : function(isLarge) {
+            if ( this.large_screen || isLarge ) {
+                // return width + 147 + 13;
+                return this.interface_max_width + 147 + 13 + 240 + 200;
+            } else {
+                return this.interface_max_width + 147 + 13 + 150;
+            }
+        },
+
+        adjustScreenLayout : function() {
             var pageid = "page-content";
             var bodycoords = dojo.marginBox(pageid);
             var contentWidth = bodycoords.w;
-            if (contentWidth >= 1600) {
+
+            // if (contentWidth >= 1600) {
+            if (contentWidth >= this.board_width(true)) {
                 dojo.addClass('flood_deck_area','flood_deck_area_lg_screen');
                 dojo.place('flood_deck_area','board', 'before');
                 dojo.style('board', 'margin-left','300px');
                 dojo.style('cardcount_flood_deck', 'transform','rotate(-90deg)');
                 // dojo.place('flood_deck_area','board', 'after');
-                this.interface_max_width = this.gamedatas.interface_max_width + 300;
+                // this.interface_max_width = this.gamedatas.interface_max_width;
+                // this.interface_max_width = this.gamedatas.interface_max_width + 300;
                 this.large_screen = true;
                 // this.flood_card_area.updateDisplay();
                 // console.log("large_screen = ", this.large_screen);
             // }
+                dojo.place('water_level_meter','board_wrapper', 'last');
+                dojo.removeClass('water_level_meter', 'water_level_meter_sm_screen');
+                dojo.style('water_level_meter', 'left','50px');
             } else if (this.large_screen) {
+                
                 dojo.removeClass('flood_deck_area','flood_deck_area_lg_screen');
                 dojo.place('flood_deck_area','treasure_deck_area', 'before');
                 // dojo.style('board', 'margin','auto');
-                dojo.style('board', 'margin-left','10px');
+                dojo.style('board', 'margin-left','0px');
                 dojo.style('cardcount_flood_deck', 'transform','rotate(0deg)');
-                this.interface_max_width = this.gamedatas.interface_max_width;
+                // this.interface_max_width = this.gamedatas.interface_max_width;
                 this.large_screen = false;
                 // console.log("large_screen = ", this.large_screen);
+
+                dojo.place('water_level_meter','board', 'last');
+                dojo.addClass('water_level_meter', 'water_level_meter_sm_screen');
+                dojo.style('water_level_meter', 'left',this.interface_max_width + 30 + 'px');
             }
+
+            // console.log(this.large_screen + ':' + this.board_width() + '<->' + contentWidth);
+            
         },
        
         adaptViewportSize : function() {
+            // var pageid = "game_play_area";
             var pageid = "page-content";
             var nodeid = "thething";
     
             var bodycoords = dojo.marginBox(pageid);
             var contentWidth = bodycoords.w;
+            // var board_width = this.board_width(this.interface_max_width);
     
             var browserZoomLevel = window.devicePixelRatio; 
             // console.log("zoom",browserZoomLevel);
             // console.log("contentWidth", contentWidth);
 
-            this.adjustLargeScreenLayout();
+            this.adjustScreenLayout();
 
             // if (contentWidth >= this.interface_max_width || browserZoomLevel >1  || this.control3dmode3d) {
-            if (contentWidth >= this.interface_max_width || this.control3dmode3d) {
+            if (contentWidth >= this.board_width() || this.control3dmode3d) {
+            // if (this.large_screen || this.control3dmode3d) {
                 dojo.style(nodeid,'transform','');
-                console.log("contentWidth", contentWidth, '>', this.interface_max_width);
+                // console.log("contentWidth", contentWidth, '>', board_width);
                 return;
             }
     
-            var percentageOn1 = contentWidth / this.interface_max_width;
-            // console.log("percentageOn1",percentageOn1);
+            var scale_percent = contentWidth / this.board_width();
+            // console.log("scale = ", scale_percent);
 
-            dojo.style(nodeid, "transform", "scale(" + percentageOn1 + ")");
-            dojo.style(nodeid, "-webkit-transform", "scale(" + percentageOn1 + ")");
+            dojo.style(nodeid, "transform", "scale(" + scale_percent + ")");
+            dojo.style(nodeid, "-webkit-transform", "scale(" + scale_percent + ")");
 
         },
 
@@ -736,17 +762,38 @@ function (dojo, declare) {
             }
         },
 
+        setBackground: function(level) {
+            var bg = "";
+
+            if (level > 7) {
+                bg  = "bg_5";
+            } else if (level > 5) {
+                bg  = "bg_4";
+            } else if (level > 2) {
+                bg  = "bg_3";
+            } else {
+                bg  = "bg_2";
+            }
+            dojo.query('.dj_contentbox').addClass(bg);
+            // dojo.query('#game_play_area').addClass(bg);
+
+        },
+
         placeWaterLevel: function(level) {
 
             dojo.place(this.format_block('jstpl_slider', {
                 level : level
             }), 'water_level_' + level, 'only');
 
+            this.setBackground(level);
+
         },
 
         moveWaterLevel: function(level) {
 
             this.slideToObject( 'water_slider', 'water_level_'+level).play();
+
+            this.setBackground(level);
 
         },
 

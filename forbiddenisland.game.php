@@ -254,7 +254,8 @@ class forbiddenisland extends Table
         $island_map = $this->island_map[$island_map_id]['map'];
         $max_x = $this->island_map[$island_map_id]['max_x'];
         $max_y = $this->island_map[$island_map_id]['max_y'];
-        $result['interface_max_width'] = ($max_x + 1) * (147+13);
+        $result['interface_max_width'] = ($max_x) * (147+13);
+        // $result['interface_max_width'] = ($max_x + 1) * (147+13);
         $result['interface_max_height'] = ($max_y) * (147+13);
 
         $result['island_name'] = $this->island_map[$island_map_id]['name'];

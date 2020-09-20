@@ -23,20 +23,26 @@
     See your "view" PHP file to check how to set variables and control blocks
 -->
 <div id="thething" class="thething">
-<!-- <div id="outer_wrapper" class="anchor"> -->
-<div class="board_wrapper">
-    <div id="board">
-        <div id="island_tile" style="visibility: hidden;">
-            <div id="pawn_area_0_0" class="pawn_area" style="visibility: hidden;"></div>
+    <div id="board_wrapper" class="board_wrapper">
+        <div id="board">
+            <div id="island_tile" style="visibility: hidden;">
+                <div id="pawn_area_0_0" class="pawn_area" style="visibility: hidden;"></div>
+            </div>
+            <!-- BEGIN island_tile -->
+            <!-- <div id="tile_background_{X}_{Y}" class="sand_tile_background" style="left: {LEFT}px; top: {TOP}px;"></div> -->
+            <div id="island_tile_{X}_{Y}" class="island_tile_location" style="left: {LEFT}px; top: {TOP}px;">
+            </div>
+            <!-- END island_tile --> 
+
+            <!-- BEGIN treasure_starting_area -->
+            <div id="starting_area_{TREASURE}" class="treasure_starting_area" style="left: {LEFT}px; top: {TOP}px;"></div>
+            <!-- END treasure_starting_area -->
+
         </div>
-        <!-- BEGIN island_tile -->
-        <!-- <div id="tile_background_{X}_{Y}" class="sand_tile_background" style="left: {LEFT}px; top: {TOP}px;"></div> -->
-        <div id="island_tile_{X}_{Y}" class="island_tile_location" style="left: {LEFT}px; top: {TOP}px;">
-        </div>
-        <!-- END island_tile --> 
 
         <!-- BEGIN water_level_meter -->
-        <div id="water_level_meter" style="left: {LEFT}px; top: {TOP}px;">
+        <!-- <div id="water_level_meter" style="left: {LEFT}px; top: {TOP}px;"> -->
+        <div id="water_level_meter" class="water_level_meter">
 
             <!-- BEGIN water_level -->
                 <div id="water_level_{LVL}" class="water_level" style="top:{TOP_LVL}px"></div>
@@ -45,14 +51,7 @@
         </div>
         <!-- END water_level_meter --> 
 
-        <!-- BEGIN treasure_starting_area -->
-        <div id="starting_area_{TREASURE}" class="treasure_starting_area" style="left: {LEFT}px; top: {TOP}px;"></div>
-        <!-- END treasure_starting_area -->
-        
     </div>
-</div>
-    
-    <!-- <div class="island_title whiteblock"><span id="island_name">&ltIsland Name&gt</span>&nbsp;<span id="difficulty_level">&ltDifficulty&gt</span></div> -->
 
     <div id="player_area_wrapper">
         <!-- BEGIN player -->
@@ -61,10 +60,6 @@
                 <div id="player_area_{PLAYER_COLOR}" class="side_title color_{PLAYER_COLOR}">{PLAYER_NAME}</div>
             </div>
             <div id="title_sep_{PLAYER_COLOR}"></div>
-            <!-- <div id="hand_icon" class="hand_icon"></div> -->
-            <!-- <div id="hand_{PCOLOR}" class="hand hand_{PCOLOR}"> -->
-                <!-- <div class="card"></div> -->
-                <!-- </div> -->
             <div id="player_adventurer_{PLAYER_ID}" class="player_adventurer"></div>
             <div id="player_card_area_{PLAYER_ID}" class="player_card_area"></div>
             <div id="player_figure_area_{PLAYER_ID}" class="player_figure_area"></div>
@@ -72,31 +67,22 @@
         <!-- END player -->    
     </div>
 
-    <!-- <div id="game_area_wrapper"> -->
-        <!-- <div id="game_decks_wrapper" > -->
-            <div id="flood_deck_area" class="flood_deck_area whiteblock" >
-                <div id="flood_deck" class="card flood_card">
-                    <span id="cardcount_flood_deck"  class="cardcount">0</span>
-                </div>
-                <div id="flood_card_area"></div>
-            </div>
-            <div id="treasure_deck_area" class="treasure_deck_area whiteblock" >
-                <div id="treasure_deck" class="card treasure_card">
-                    <span id="cardcount_treasure_deck"  class="cardcount">0</span>
-                </div>
-                <div id="treasure_card_area"></div>
-            </div>
-        <!-- </div> -->
-        <!-- <div id="water_level_meter"></div> -->
-    <!-- </div> -->
+    <div id="flood_deck_area" class="flood_deck_area whiteblock" >
+        <div id="flood_deck" class="card flood_card">
+            <span id="cardcount_flood_deck"  class="cardcount">0</span>
+        </div>
+        <div id="flood_card_area"></div>
+    </div>
 
-<!-- </div> -->
+    <div id="treasure_deck_area" class="treasure_deck_area whiteblock" >
+        <div id="treasure_deck" class="card treasure_card">
+            <span id="cardcount_treasure_deck"  class="cardcount">0</span>
+        </div>
+        <div id="treasure_card_area"></div>
+    </div>
+
 </div>
     
-
-
-<!-- <a href="#" id="my_button_id" class="bgabutton bgabutton_blue"><span>My blue button</span></a> -->
-
 <script type="text/javascript">
  
 // Templates

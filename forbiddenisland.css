@@ -47,9 +47,23 @@
 @import url(../../../css/csslayer.css);
 
 html {
-    /* background: url(img/ocean-back-2.jpg) */
-    background: url(img/ocean-back-4.jpg);
-    /* background: url(img/water_background.jpg); */
+/* #game_play_area { */
+    /* background: url(img/ocean-back-4.jpg); */
+    /* background: url(img/forbidden_bg_2.jpg); */
+    transition: background 2s;
+}
+
+.bg_2 {
+    background: url(img/forbidden_bg_2.jpg);
+}
+.bg_3 {
+    background: url(img/forbidden_bg_3.jpg);
+}
+.bg_4 {
+    background: url(img/forbidden_bg_4.jpg);
+}
+.bg_5 {
+    background: url(img/forbidden_bg_5.jpg);
 }
 
 #thething {
@@ -63,10 +77,13 @@ html {
 .board_wrapper {
     /* position: static; */
     position: relative;
-    /* display: block; */
-	width: fit-content; 
+    display: inline-block;
+	/* width: fit-content;  */
+	width: 100%; 
     margin: auto;
     vertical-align: middle;
+    text-align: justify;
+    text-align-last: center;
 }
 
 #board {
@@ -78,18 +95,34 @@ html {
     position: relative;
     /* margin-right: 0px; */
     /* margin: auto; */
-    /* display: inline; */
+    display: inline-block;
 }
 
-#water_level_meter {
+.water_level_meter {
     width: 147px;
     height: 443.72px;
     background-image: url(img/flood_meter.jpg);
 	border-radius: 10px;
 	box-shadow: 1px 1px 1px 0px #222;
     background-clip: content-box;
+    position: relative;
+    /* margin: 6.5px 6.5px; */
+    /* display: inline-block; */
+    vertical-align: top;
+    top: 240px;
+    /* left: 50px; */
+    /* right: 10px; */
+    /* margin-right: 10px; */
+    margin-right: 90px;
+    /* margin-left: auto; */
+    float: right;
+    text-align: right;
+}
+
+.water_level_meter_sm_screen {
     position: absolute;
-    margin: 6.5px 6.5px;
+    /* top: 45px; */
+    /* opacity: 0.5; */
 }
 
 #water_slider {
@@ -173,7 +206,8 @@ html {
     border-radius: 15px;
     border-style: dashed;
     border-width: 2px;
-    border-color: rgb(78, 78, 78);
+    /* border-color: rgb(78, 78, 78); */
+    border-color: rgb(198, 197, 197);
 	/* box-shadow: 1px 1px 1px 0px #222; */
     width: 147px;
 	height: 147px;
@@ -421,6 +455,7 @@ html {
     /* margin-top: -260px; */
     /* margin: 0px 10px 20px 147px; */
     /* float: left; */
+    margin-left: 0px;
     position: absolute;
 }
 
@@ -460,6 +495,7 @@ html {
     width: 108px;
 	height: 147px;
     padding-left: 20px;
+    margin: 18px;
 }
 
 .treasure_figure {
