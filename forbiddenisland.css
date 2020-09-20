@@ -155,7 +155,7 @@ html {
     width: 160px;
     height: 160px;
     /* border-radius:15px; */
-    border-radius:8px;
+    /* border-radius:5px; */
     border-style: none;
     background-clip: content-box;
     position: absolute;

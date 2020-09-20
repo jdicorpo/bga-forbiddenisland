@@ -97,6 +97,24 @@ $this->island_map = array(
         'fire' => "4_6",
         'ocean' => "5_6",
     ),
+    5 => array(
+        'name' => clienttranslate("Island of Death"),
+        'max_x' => 7,
+        'max_y' => 6,
+        'map' => array (
+                          "3_1", "4_1", "5_1",
+            "1_2", "2_2", "3_2", "4_2", "5_2", "6_2", "7_2",
+                   "2_3", "3_3", "4_3", "5_3", "6_3",
+                          "3_4", "4_4", "5_4",
+                          "3_5", "4_5", "5_5",
+                          "3_6", "4_6", "5_6",
+        ),
+        'water_level_meter' => "7_3",
+        'earth' => "1_1",
+        'air' => "7_1",
+        'fire' => "2_6",
+        'ocean' => "6_6",
+    ),
 );
 
 $this->player_list = array(
