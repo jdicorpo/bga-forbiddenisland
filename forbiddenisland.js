@@ -997,6 +997,9 @@ function (dojo, declare) {
             }
             this.flood_card_area.updateDisplay();
 
+            dojo.query('.tile_mark').style('display', 'none');
+            this.flood_discards = [];
+
         },
  
         placeTreasureCard : function(id, type, player_id) {
@@ -1879,7 +1882,7 @@ function (dojo, declare) {
 
             this.moveWaterLevel(notif.args.water_level);
 
-            dojo.query('.tile_warning').style('display', 'none');
+            dojo.query('.tile_mark').style('display', 'none');
 
        },
 
@@ -1962,7 +1965,7 @@ function (dojo, declare) {
        notif_reshuffleFloodDeck: function( notif )
        {
             this.removeAllFlood();
-            this.flood_discards = [];
+            // this.flood_discards = [];
        },
 
        notif_updateCardCount: function( notif )
