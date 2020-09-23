@@ -548,7 +548,7 @@ function (dojo, declare) {
                             if (args.possibleActions.shore_up.length > 0) {
                                 this.addActionButton( 'shore_up_btn', _('Shore Up'), 'onShoreUp' );
                             } 
-                            if (Object.keys(args.colocated_players).length > 1) {
+                            if ((Object.keys(args.colocated_players).length > 1) || (args.adventurer == 'messenger'))  {
                                 this.addActionButton( 'give_treasure_btn', _('Give Card'), 'onGiveCard' ); 
                             }
                             if (args.captureTreasurePossible) {
@@ -759,6 +759,9 @@ function (dojo, declare) {
                             var node = $('player_card_' + p.player_id);
                             dojo.addClass(node, 'possiblePlayer');
                             this.handles.push(dojo.connect(node,'onclick', this, 'onPlayer'));
+                            var node = $('player_symbol_' + p.player_id);
+                            dojo.addClass(node, 'possiblePlayer');
+                            this.handles.push(dojo.connect(node,'onclick', this, 'onPlayer'));
                         }
                     }, this);
                 }
@@ -775,6 +778,9 @@ function (dojo, declare) {
                     dojo.addClass(node, 'possiblePlayer');
                     this.handles.push(dojo.connect(node,'onclick', this, 'onPlayer'));
                     var node = $('player_card_' + player_id);
+                    dojo.addClass(node, 'possiblePlayer');
+                    this.handles.push(dojo.connect(node,'onclick', this, 'onPlayer'));
+                    var node = $('player_symbol_' + player_id);
                     dojo.addClass(node, 'possiblePlayer');
                     this.handles.push(dojo.connect(node,'onclick', this, 'onPlayer'));
                 }
@@ -1738,6 +1744,8 @@ function (dojo, declare) {
                     {  
                         var card_id = this.selectedCard;
                         if (dojo.hasClass(dojo.byId(target_player_area), 'player_card')){
+                            var target_player_id = target_player_area.split('_')[2];
+                        } else if (dojo.hasClass(dojo.byId(target_player_area), 'player_symbol')){
                             var target_player_id = target_player_area.split('_')[2];
                         } else {
                             var target_player_id = target_player_area.split('_')[3];
