@@ -1914,6 +1914,10 @@ class forbiddenisland extends Table
         $water_level_text = ($water_level >= 10) ? '<p style="color:red; font-weight:bold">10</p>' : $water_level;
         $table[] = array(clienttranslate("<b>Water Level<b>"), $water_level_text);
 
+        $difficulty = $this->difficulty[self::getGameStateValue("difficulty")]['name'];
+        $difficulty_text = '<b>'.$difficulty.'</b>';
+        $table[] = array(clienttranslate("<b>Difficulty<b>"), $difficulty_text);
+
         $table[] = array(clienttranslate("Island Tiles Sunk"),  
             $this->tiles->countCardsInLocation("sunk")
         );
