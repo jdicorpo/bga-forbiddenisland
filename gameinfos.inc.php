@@ -36,7 +36,6 @@ $gameinfos = array(
 'not_recommend_player_number' => array( ),
 
 
-
 // Estimated game duration, in minutes (used only for the launch, afterward the real duration is computed)
 'estimated_duration' => 30,           
 
@@ -103,6 +102,11 @@ $gameinfos = array(
 // Games categories
 //  You can attribute any number of "tags" to your game.
 //  Each tag has a specific ID (ex: 22 for the category "Prototype", 101 for the tag "Science-fiction theme game")
-'tags' => array( 2, 11, 20, 103, 210 )
+'tags' => array( 2, 11, 20, 103, 210 ),
+
+'presentation' => array(
+    totranslate("Dare to discover Forbidden Island! Join a team of fearless adventurers on a do-or-die mission to capture four sacred treasures from the ruins of this perilous paradise."),
+    totranslate("Your team will have to work together and make some pulse-pounding maneuvers, as the island will sink beneath every step! Race to collect the treasures and make a triumphant escape before you are swallowed into the watery abyss!"),
+),
 
 );
