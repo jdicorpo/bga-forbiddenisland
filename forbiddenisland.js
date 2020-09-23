@@ -545,9 +545,15 @@ function (dojo, declare) {
                             } else if (args.adventurer == 'navigator') {
                                 this.addActionButton( 'navigator_btn', _('Navigator'), 'onNavigator' ); 
                             }
-                            this.addActionButton( 'shore_up_btn', _('Shore Up'), 'onShoreUp' ); 
-                            this.addActionButton( 'give_treasure_btn', _('Give Card'), 'onGiveCard' ); 
-                            this.addActionButton( 'capture_treasure_btn', _('Capture Treasure'), 'onCapture' ); 
+                            if (args.possibleActions.shore_up.length > 0) {
+                                this.addActionButton( 'shore_up_btn', _('Shore Up'), 'onShoreUp' );
+                            } 
+                            if (Object.keys(args.colocated_players).length > 1) {
+                                this.addActionButton( 'give_treasure_btn', _('Give Card'), 'onGiveCard' ); 
+                            }
+                            if (args.captureTreasurePossible) {
+                                this.addActionButton( 'capture_treasure_btn', _('Capture Treasure'), 'onCapture' ); 
+                            }
                             this.addActionButton( 'skip_btn', _('End Turn'), 'onSkip', null, false, 'gray' ); 
                         } else {
                             main.innerHTML += _(' have ') + '<span id="remaining_actions_value" style="font-weight:bold;color:#ED0023;">' 

@@ -407,6 +407,29 @@ class forbiddenisland extends Table
 
         }
 
+        function isCaptureTreasurePossible()
+        {
+            $player_id = self::getActivePlayerId();
+            $player_tile_id = $this->getPlayerLocation($player_id);
+    
+            // find treasure location & matching cards
+            $treasure = $this->getLocationTreasure($player_tile_id);
+            $cards = $this->getMatchingCards($player_id, $treasure);
+            $tiles = $this->tiles->getCardsOfType($player_tile_id);
+            $tile = array_shift($tiles);
+
+            if ($treasure == 'none') {
+                return False;
+            } elseif ($this->getGameStateValue($treasure) != 0) {
+                return False;
+            } elseif (count($cards) < 4) {
+                return False;
+            } elseif ($tile['location'] == 'sunk') {
+                return False;
+            }
+            return True;
+        }
+
         function nextLevelCheck($player_id, $player_tile_id, $result, $tile_id) {
 
             foreach ($this->tiles->getCardsInLocation('unflooded') as $id => $tile ) {
@@ -1561,6 +1584,7 @@ class forbiddenisland extends Table
         }
         return array(
             'possibleActions' => self::getPossibleActions( self::getActivePlayerId() ),
+            'captureTreasurePossible' => self::isCaptureTreasurePossible(),
             'remaining_actions' => $this->getGameStateValue("remaining_actions"),
             'player_treasure_cards' => $player_treasure_cards,
             'colocated_players' => self::getColocatedPlayers( self::getActivePlayerId() ),
@@ -1587,6 +1611,7 @@ class forbiddenisland extends Table
         }
         return array(
             'possibleActions' => $possibleActions,
+            'capturePossibleTreasure' => self::isCaptureTreasurePossible(),
             'remaining_actions' => $this->getGameStateValue("remaining_actions"),
             'player_treasure_cards' => $player_treasure_cards,
             'playerLocations' => self::getPlayerLocations(),
