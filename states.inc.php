@@ -221,7 +221,7 @@ $machinestates = array(
 
     // Please do not modify (and do not overload action/args methods).
     STATE_END_GAME => array(
-        "name" => "endGame",
+        "name" => "gameEnd",
         "description" => clienttranslate("End of game"),
         "type" => "manager",
         "action" => "stGameEnd",
