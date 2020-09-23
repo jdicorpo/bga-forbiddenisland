@@ -71,6 +71,7 @@ html {
 	margin: auto;
     transform-origin: top left;
 	transition: transform 1000ms ease;
+	-webkit-transform: translateZ(0px);
 	transform: translateZ(0px);
 }
 
@@ -151,7 +152,8 @@ html {
 }
 
 .sand_tile_background {
-    background-image: url(img/sand_tile_background.png);
+    /* background-image: url(img/sand_tile_background.png); */
+    background-image: url(img/sand_tile_background.jpg);
     width: 160px;
     height: 160px;
     /* border-radius:15px; */
@@ -444,6 +446,7 @@ html {
 .flood_deck_area_lg_screen {
     transform-origin: left top;
     transform: rotate(90deg) translateY(-234px) translateX(0px);
+    -webkit-transform: rotate(90deg) translateY(-234px) translateX(0px);
     /* ---------------------- */
     /* transform-origin: left center; */
     /* transform: rotate(90deg) translate(-234px,-0px); */
@@ -515,6 +518,7 @@ html {
 .player_figure_area .treasure_figure {
     margin-left: 0px;
     transform: scale(0.75);
+    -webkit-transform: scale(0.75);
     transform-origin: left top;
 }
 

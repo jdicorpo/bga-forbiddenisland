@@ -322,6 +322,7 @@ function (dojo, declare) {
             if (contentWidth >= this.board_width() || this.control3dmode3d) {
             // if (this.large_screen || this.control3dmode3d) {
                 dojo.style(nodeid,'transform','');
+                dojo.style(nodeid,'-webkit-transform','');
                 // console.log("contentWidth", contentWidth, '>', board_width);
                 return;
             }
@@ -850,15 +851,18 @@ function (dojo, declare) {
             var img_id = this.gamedatas.tile_list[tile_id].img_id + 24;
             var warning = (this.isTileInDiscard(tile_id) ? 'inline' : 'none');
             
-            dojo.place(this.format_block('jstpl_flooded_tile', {
-                x : this.tilewidth * ((img_id-1) % 8),
-                y : this.tileheight * Math.trunc((img_id-1) / 8),
-                id : tile_id,
-                warning: warning
-            }), tile_id, 'replace');
+            this.fadeOutAndDestroy( tile_id + '_bg', 2000, 0);
 
-            dojo.style( tile_id + '_bg', 'display', 'none' );
-            dojo.query('#'+tile_id + ' .tile_warning', 'display', 'inline');
+            setTimeout(() => { 
+                dojo.place(this.format_block('jstpl_flooded_tile', {
+                    x : this.tilewidth * ((img_id-1) % 8),
+                    y : this.tileheight * Math.trunc((img_id-1) / 8),
+                    id : tile_id,
+                    warning: warning
+                }), tile_id, 'replace');
+            }, 2000);
+
+            dojo.query('#'+tile_id + ' .tile_mark', 'display', 'inline');
 
             this.addTileTooltip(tile_id, true, false);
 
@@ -877,7 +881,7 @@ function (dojo, declare) {
                 warning: warning
             }), tile_id, 'replace');
 
-            dojo.style( tile_id + '_bg', 'display', 'inline' );
+            // dojo.style( tile_id + '_bg', 'display', 'inline' );
 
             this.addTileTooltip(tile_id, false, false);
 
@@ -889,7 +893,7 @@ function (dojo, declare) {
             var parent_id = $(tile_id).parentNode.id;
             var img_id = this.gamedatas.tile_list[tile_id].img_id + 24;
 
-            this.fadeOutAndDestroy( tile_id, 2000, 1000 );
+            this.fadeOutAndDestroy( tile_id, 2000, 1000);
 
             dojo.place(this.format_block('jstpl_sunk_tile', {
                 id : tile_id,
