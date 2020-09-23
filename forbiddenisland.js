@@ -192,6 +192,7 @@ function (dojo, declare) {
                     x: x
                 }), playerBoardDiv);
                 $('cardcount_' + player_id).innerHTML = Object.keys(gamedatas.player_card_area[player_id].treasure_cards).length;
+                this.addTooltip( 'cardcount_' + player_id, _('number of cards in hand'), '' );
                 treasures.forEach( function(treasure, index) {
                     if (gamedatas[treasure] == player_id) {
                         var x = this.gamedatas.treasure_list[treasure].fig * 25;
@@ -201,6 +202,9 @@ function (dojo, declare) {
                         }), 'p_board_icon_' + player_id, 'last');
                     }
                 }, this);
+                var tooltip = this.gamedatas.player_list[player.adventurer].tooltip;
+                this.addTooltip( 'player_symbol_' + player_id, tooltip, '' );
+
             }
             // setup the flood deck area
             this.flood_card_area.create( this, $('flood_card_area'), this.cardwidth, this.cardheight);
@@ -216,7 +220,9 @@ function (dojo, declare) {
                 this.placeFloodCard(card.type);
             }
 
-            // setup the flood deck area
+            this.addTooltip( 'flood_deck', _('Flood Card Deck'), '' );
+
+            // setup the treasure deck area
             this.treasure_card_area.create( this, $('treasure_card_area'), this.cardwidth, this.cardheight);
             this.treasure_card_area.image_items_per_row = 8;
             this.treasure_card_area.setOverlap(40,0);
@@ -236,7 +242,13 @@ function (dojo, declare) {
                 this.placeFigure(treasure, this.gamedatas[treasure]);
             }, this);
 
+            this.addTooltip( 'treasure_deck', _('Treasure Card Deck'), '' );
+
             this.placeWaterLevel(this.gamedatas.water_level);
+            var t1 = _('Water Level Meter: If the water level reaches the top of the meter, you lose!');
+            var t2 = _('Difficulty Level: ');
+            this.addTooltipHtml( 'water_level_meter', '<div>'+t1+'</div><hr><div>'+t2+'<b>'+gamedatas['difficulty']+'</b></div>', '' );
+
             // $('island_name').innerHTML = gamedatas['island_name'];
             // $('difficulty_level').innerHTML = '[ ' + gamedatas['difficulty'] + ' ]';
 
@@ -600,7 +612,7 @@ function (dojo, declare) {
                         break;
 
                     case 'continue':
-                        this.addActionButton( 'continue_btn', _('Continue'), 'onContinue', null, false, 'blue' );
+                        this.addActionButton( 'continue_btn', _('Draw Flood Cards'), 'onContinue', null, false, 'blue' );
                         break;
 
                     case 'client_selectHeliLiftPlayers':
@@ -942,7 +954,6 @@ function (dojo, declare) {
                 text_style: text_style
             }), );
 
-            // this.addTooltipToClass( 'tile_mark', _('this flood card is in discard pile'), '');
             this.addTooltip( tile_id + '_mark', _('this flood card is in discard pile'), '');
 
         },

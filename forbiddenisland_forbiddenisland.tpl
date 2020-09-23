@@ -107,7 +107,7 @@ var jstpl_slider='<div id="water_slider"></div>';
 var jstpl_figure='<div id="figure_${treasure}" class="treasure_figure" style="background-position:-${x}px 0"></div>';
 var jstpl_figureicon='<div id="figureicon_${treasure}" class="figure_icon" style="background-position:-${x}px 0"></div>';
 var jstpl_player_board = '\<div id="p_board_${id}" class="p_board">\
-    <div class="player_symbol" style="background-position:-${x}px 0"></div>\
+    <div id="player_symbol_${id}" class="player_symbol" style="background-position:-${x}px 0"></div>\
     <div class="adventurer_name" style="color:${color};">${adventurer}</div>\
     <div id="location_${id}" class="location">${location}</div>\
     <div id="p_board_icon_${id}" class="p_board_icons">\
