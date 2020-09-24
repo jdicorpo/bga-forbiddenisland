@@ -671,10 +671,10 @@ function (dojo, declare) {
                         var main = $('pagemaintitletext');
                         if (args.remaining_actions > 0) {
                             main.innerHTML += _(' is taking ') + '<span id="remaining_actions_value" style="font-weight:bold;color:#ED0023;">' 
-                            + args.remaining_actions + '</span>' + _(' remaining action(s).');
+                            + args.remaining_actions + '</span>' + _(' remaining action(s)');
                         } else {
                             main.innerHTML += _(' has ') + '<span id="remaining_actions_value" style="font-weight:bold;color:#ED0023;">' 
-                            + args.remaining_actions + '</span>' + _(' remaining actions.');
+                            + args.remaining_actions + '</span>' + _(' remaining actions');
                         }
                     }
                 case 'continue':
