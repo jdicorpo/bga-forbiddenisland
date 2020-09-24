@@ -32,6 +32,7 @@ $game_options = array(
             3 => array( 'name' => totranslate('Elite'), 'nobeginner' => false ),
             4 => array( 'name' => totranslate('Legendary'), 'nobeginner' => false ),
         ),
+        'default' => 2,
     ),
     101 => array(
         'name' => totranslate('Island Map'),
@@ -43,6 +44,7 @@ $game_options = array(
             5 => array( 'name' => totranslate('Island of Death'), 'nobeginner' => false ),
             6 => array( 'name' => totranslate('Bay of Gulls'), 'nobeginner' => false ),
         ),
+        'default' => 1,
     ),
 );
 
