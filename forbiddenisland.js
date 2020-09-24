@@ -60,6 +60,7 @@ function (dojo, declare) {
             this.player_card_area = [];
 
             this.board = new ebg.stock();
+            this.water_meter = [];
 
             this.selectedAction = 'move';
             this.selectedCard = null;
@@ -244,7 +245,13 @@ function (dojo, declare) {
 
             this.addTooltip( 'treasure_deck', _('Treasure Card Deck'), '' );
 
+            
+            for (var i = 1; i <= 10; i++) {
+                this.water_meter[i] = new ebg.zone();
+                this.water_meter[i].create( this, 'water_level_' + i, 67.75, 28.71);
+            }
             this.placeWaterLevel(this.gamedatas.water_level);
+            
             var t1 = _('Water Level Meter: If the water level reaches the top of the meter, you lose!');
             var t2 = _('Difficulty Level: ');
             this.addTooltipHtml( 'water_level_meter', '<div>'+t1+'</div><hr><div>'+t2+'<b>'+gamedatas['difficulty']+'</b></div>', '' );
@@ -810,13 +817,18 @@ function (dojo, declare) {
                 level : level
             }), 'water_level_' + level, 'only');
 
+            this.water_meter[level].placeInZone('water_slider');
+
             this.setBackground(level);
 
         },
 
         moveWaterLevel: function(level) {
 
-            this.slideToObject( 'water_slider', 'water_level_'+level).play();
+            // this.slideToObject( 'water_slider', 'water_level_'+level).play();
+
+            this.water_meter[level].removeFromZone('water_slider', false);
+            this.water_meter[level].placeInZone('water_slider');
 
             this.setBackground(level);
 

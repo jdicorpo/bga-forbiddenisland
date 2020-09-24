@@ -4,6 +4,7 @@ Sep 24
 
 Sep 23
 * final usability feedback for beta release
+* remove non-actionable buttons from status bar
 
 Sep 20
 * water background w/ changing color
