@@ -387,7 +387,7 @@ class forbiddenisland extends Table
                             if ($this->isTileAdjacent($tile['type'], $move_tile, $player_id) ) {
 
                                 # if not sunk and not added already, add to possible tiles
-                                if (($tile['location'] != 'sunk') and (! in_array($tile['type'], $result['move'] ))) {
+                                if (($tile['location'] != 'sunk') and (! in_array($tile['type'], $result['move'] )) and ($tile['type'] != $player_tile_id)) {
                                     $result['move'][] = $tile['type'];
                                     $new_tile_added = true;
                                 }
