@@ -1,6 +1,7 @@
 Sep 24
 * #25264: "DIVER CAN MOVE TO THE TILE WHERE HE IS STANDING"
 * minor usability tweaks
+* #25240: "WATER LEVEL MARKER IS WRONG ON TABLET"
 
 Sep 23
 * final usability feedback for beta release
