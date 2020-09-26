@@ -1824,10 +1824,10 @@ class forbiddenisland extends Table
 
             foreach ( $players as $player_id => $player_info ) {
                 if ($this->getAdventurer( $player_id ) == 'pilot') {
-                    $move_count = $this->getPossibleHeliLift($player_id)['heli_lift'];
+                    $move_count = count($this->getPossibleHeliLift($player_id)['heli_lift']);
                 } else {
                     // $move_count = $this->getPossibleMoves( $player_id );
-                    $move_count = $this->getPossibleMoves( $player_id );
+                    $move_count = count($this->getPossibleMoves( $player_id )['move']);
                 }
                 if ($move_count == 0) {
                     // no possible move for this pawn
@@ -1915,8 +1915,7 @@ class forbiddenisland extends Table
         $table[] = array(clienttranslate("<b>Water Level<b>"), $water_level_text);
 
         $difficulty = $this->difficulty[self::getGameStateValue("difficulty")]['name'];
-        $difficulty_text = '<b>'.$difficulty.'</b>';
-        $table[] = array(clienttranslate("<b>Difficulty<b>"), $difficulty_text);
+        $table[] = array(clienttranslate("Difficulty"), $difficulty);
         $table[] = array(" ", " ");
 
 
