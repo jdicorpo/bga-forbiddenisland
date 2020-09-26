@@ -1,3 +1,7 @@
+Sep 26
+* flood card rotated display animation
+* player color adjustments
+
 Sep 24
 * #25264: "DIVER CAN MOVE TO THE TILE WHERE HE IS STANDING"
 * minor usability tweaks

@@ -20,7 +20,8 @@ define([
     "ebg/core/gamegui",
     "ebg/counter",
     "ebg/stock",
-    "ebg/zone"
+    "ebg/zone",
+    g_gamethemeurl + "modules/stock_r.js"
 ],
 function (dojo, declare) {
     return declare("bgagame.forbiddenisland", ebg.core.gamegui, {
@@ -46,7 +47,10 @@ function (dojo, declare) {
             this.pawnheight = 65.4;
             this.pawn_area = [];
 
-            this.flood_card_area = new ebg.stock();
+            this.flood_card_area = null;
+            this.flood_card_area_n = new ebg.stock();
+            this.flood_card_area_r = new ebg.stock_r();
+            this.flood_deck = "";
 
             this.treasure_card_area = new ebg.stock();
 
@@ -82,7 +86,7 @@ function (dojo, declare) {
 
             this.handles = [];
 
-            this.large_screen = true;
+            this.large_screen = false;
 
         },
         
@@ -107,6 +111,7 @@ function (dojo, declare) {
             this.interface_max_height = gamedatas.interface_max_height;
             dojo.style('board','width', this.interface_max_width + 'px');
             dojo.style('board','height', this.interface_max_height + 'px');
+            dojo.style('flood_deck_area_r','height', (this.interface_max_height - 10) + 'px');
             dojo.connect(window, "onresize", this, dojo.hitch(this, "adaptViewportSize"));
 
             this.board.create( this, $('island_tile'), this.tilewidth, this.tileheight );
@@ -193,7 +198,7 @@ function (dojo, declare) {
                     x: x
                 }), playerBoardDiv);
                 $('cardcount_' + player_id).innerHTML = Object.keys(gamedatas.player_card_area[player_id].treasure_cards).length;
-                this.addTooltip( 'cardcount_' + player_id, _('number of cards in hand'), '' );
+                this.addTooltip( 'cards_' + player_id, _('number of cards in hand'), '' );
                 treasures.forEach( function(treasure, index) {
                     if (gamedatas[treasure] == player_id) {
                         var x = this.gamedatas.treasure_list[treasure].fig * 25;
@@ -208,13 +213,17 @@ function (dojo, declare) {
 
             }
             // setup the flood deck area
-            this.flood_card_area.create( this, $('flood_card_area'), this.cardwidth, this.cardheight);
-            this.flood_card_area.image_items_per_row = 5;
-            this.flood_card_area.setOverlap(40,0);
+            this.flood_card_area_n.create( this, $('flood_card_area'), this.cardwidth, this.cardheight);
+            this.flood_card_area_n.image_items_per_row = 5;
+            this.flood_card_area_n.setOverlap(40,0);
             for (var card in gamedatas.flood_list) {
                 var idx = gamedatas.flood_list[card].img_id - 1;
-                this.flood_card_area.addItemType(card, 1, g_gamethemeurl + 'img/flood.jpg', idx);
+                this.flood_card_area_n.addItemType(card, 1, g_gamethemeurl + 'img/flood.jpg', idx);
             }
+
+            this.flood_card_area = this.flood_card_area_n;
+            this.flood_deck = 'flood_deck';
+
             for( var card_id in gamedatas.flood_card_area )
             {
                 var card = gamedatas.flood_card_area[card_id]
@@ -222,6 +231,17 @@ function (dojo, declare) {
             }
 
             this.addTooltip( 'flood_deck', _('Flood Card Deck'), '' );
+
+            // setup the flood deck area rotated for large screens
+            this.flood_card_area_r.create( this, $('flood_card_area_r'), this.cardheight, this.cardwidth);
+            this.flood_card_area_r.image_items_per_row = 5;
+            this.flood_card_area_r.setOverlap(0,40);
+            for (var card in gamedatas.flood_list) {
+                var idx = gamedatas.flood_list[card].img_id - 1;
+                this.flood_card_area_r.addItemType(card, 1, g_gamethemeurl + 'img/flood_r.jpg', idx);
+            }
+
+            this.addTooltip( 'flood_deck_r', _('Flood Card Deck'), '' );
 
             // setup the treasure deck area
             this.treasure_card_area.create( this, $('treasure_card_area'), this.cardwidth, this.cardheight);
@@ -275,7 +295,7 @@ function (dojo, declare) {
         board_width : function(isLarge) {
             if ( this.large_screen || isLarge ) {
                 // return width + 147 + 13;
-                return this.interface_max_width + 147 + 13 + 240 + 200;
+                return this.interface_max_width + 147 + 13 + 240 + 100;
             } else {
                 return this.interface_max_width + 147 + 13 + 150;
             }
@@ -287,38 +307,56 @@ function (dojo, declare) {
             var contentWidth = bodycoords.w;
 
             // if (contentWidth >= 1600) {
-            if (contentWidth >= this.board_width(true)) {
-                dojo.addClass('flood_deck_area','flood_deck_area_lg_screen');
-                dojo.place('flood_deck_area','board', 'before');
-                dojo.style('board', 'margin-left','300px');
-                dojo.style('cardcount_flood_deck', 'transform','rotate(-90deg)');
+            if ((contentWidth >= this.board_width(true)) && (!this.large_screen)) {
+                // dojo.addClass('flood_deck_area','flood_deck_area_lg_screen');
+                dojo.style('flood_deck_area', 'display','none');
+                // dojo.place('flood_deck_area','board', 'before');
+                dojo.style('flood_deck_area_r', 'display','inline-block');
+                this.flood_card_area = this.flood_card_area_r;
+                this.flood_deck = 'flood_deck_r';
+
+                // dojo.style('board', 'margin-left','300px');
+                // dojo.style('cardcount_flood_deck', 'transform','rotate(-90deg)');
+
                 // dojo.place('flood_deck_area','board', 'after');
                 // this.interface_max_width = this.gamedatas.interface_max_width;
                 // this.interface_max_width = this.gamedatas.interface_max_width + 300;
                 this.large_screen = true;
                 // this.flood_card_area.updateDisplay();
-                // console.log("large_screen = ", this.large_screen);
+                console.log("large_screen = ", this.large_screen);
             // }
                 dojo.place('water_level_meter','board_wrapper', 'last');
                 dojo.removeClass('water_level_meter', 'water_level_meter_sm_screen');
                 dojo.style('water_level_meter', 'left','50px');
-            } else if (this.large_screen) {
+
+                this.updateFloodCardDisplay();
+                this.setFloodCardOverlap();
+
+            } else if ((contentWidth < this.board_width(true)) && (this.large_screen)) {
                 
-                dojo.removeClass('flood_deck_area','flood_deck_area_lg_screen');
-                dojo.place('flood_deck_area','treasure_deck_area', 'before');
+                // dojo.removeClass('flood_deck_area','flood_deck_area_lg_screen');
+                dojo.style('flood_deck_area', 'display','block');
+                // dojo.place('flood_deck_area','treasure_deck_area', 'before');
+                dojo.style('flood_deck_area_r', 'display','none');
+                this.flood_card_area = this.flood_card_area_n;
+                this.flood_deck = 'flood_deck';
+
                 // dojo.style('board', 'margin','auto');
                 dojo.style('board', 'margin-left','0px');
-                dojo.style('cardcount_flood_deck', 'transform','rotate(0deg)');
+                // dojo.style('cardcount_flood_deck', 'transform','rotate(0deg)');
                 // this.interface_max_width = this.gamedatas.interface_max_width;
                 this.large_screen = false;
-                // console.log("large_screen = ", this.large_screen);
+                console.log("large_screen = ", this.large_screen);
 
                 dojo.place('water_level_meter','board', 'last');
                 dojo.addClass('water_level_meter', 'water_level_meter_sm_screen');
-                dojo.style('water_level_meter', 'left',this.interface_max_width + 30 + 'px');
+                dojo.style('water_level_meter', 'left', this.interface_max_width + 30 + 'px');
+
+                this.updateFloodCardDisplay();
+                this.setFloodCardOverlap();
             }
 
-            // console.log(this.large_screen + ':' + this.board_width() + '<->' + contentWidth);
+            console.log('## ' + this.large_screen + ' : ' + this.board_width() + '/' + this.board_width(true) + ' <-> ' + contentWidth);
             
         },
        
@@ -1000,19 +1038,39 @@ function (dojo, declare) {
 
         },
 
+        setFloodCardOverlap : function() {
+            if (this.large_screen) {
+                if (this.flood_card_area.count() >= 10) {
+                    this.flood_card_area.setOverlap(0,80);
+                } else {
+                    this.flood_card_area.setOverlap(0,60);
+                }
+            } else {
+                if (this.flood_card_area.count() >= 10) {
+                    this.flood_card_area.setOverlap(20,0);
+                } else {
+                    this.flood_card_area.setOverlap(40,0);
+                }
+            }
+        },
+
+        updateFloodCardDisplay : function() {
+            for( var card_id in this.gamedatas.flood_card_area )
+            {
+                var card = this.gamedatas.flood_card_area[card_id]
+                this.placeFloodCard(card.type);
+            }
+        },
+
         placeFloodCard : function(id) {
             console.log( 'placeFloodCard' );
 
             var idx = this.gamedatas.flood_list[id].img_id
             var tooltip = this.gamedatas.flood_list[id].name;
 
-            if (this.flood_card_area.count() >= 10) {
-                this.flood_card_area.setOverlap(20,0);
-            } else {
-                this.flood_card_area.setOverlap(40,0);
-            }
+            this.setFloodCardOverlap();
 
-            this.flood_card_area.addToStockWithId(id, id, 'flood_deck');
+            this.flood_card_area.addToStockWithId(id, id, this.flood_deck);
 
             this.addTooltip( this.flood_card_area.getItemDivId(id), tooltip, '' );
 

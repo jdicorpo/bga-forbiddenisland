@@ -72,10 +72,10 @@ $gameinfos = array(
 'player_colors' => array( 
     "ED0023",  // red
     "006EB2",  // blue
-    "FFEC35",  // yellow
+    "CFB100",  // yellow
     "109D4C",  // green
-    "1F1D1D", // grey
-    "BEC1C4", // silver
+    "000000", // grey
+    "727272", // silver
 ),
 
 // Favorite colors support : if set to "true", support attribution of favorite colors based on player's preferences (see reattributeColorsBasedOnPreferences PHP method)

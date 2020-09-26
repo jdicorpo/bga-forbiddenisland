@@ -83,7 +83,7 @@ html {
 	width: 100%; 
     margin: auto;
     vertical-align: middle;
-    text-align: justify;
+    /* text-align: justify; */
     text-align-last: center;
 }
 
@@ -329,6 +329,21 @@ html {
     display: inline-block;
 }
 
+.card_r {
+	border-radius: 10px;
+    box-shadow: 1px 1px 1px 0px #222;
+    border-color: white;
+    border-width: thin;
+    border-style: solid;
+	/* z-index: 20; */
+	height: 147px;
+	/* height: 177.75px; */
+	width: 204.13px;
+	background-clip: content-box;
+    position: absolute;
+    display: inline-block;
+}
+
 .player_card {
     background-image: url(img/player.jpg);
 }
@@ -381,13 +396,16 @@ html {
 /* } */
 
 .side_title_wrapper {
-    min-height: 200px;
-    height: 100%;
-    max-width: 60px;
+    height: 200px;
+    width: 25px;
     position: absolute;
     /* top: 5px; */
     overflow-wrap: break-word;
     display: inline-block;
+    /* background-color: rgb(0,136,143); */
+    background-color: rgb(223,223,223,0.5);
+    padding: 5px;
+	border-radius: 10px;
 }
 
 .side_title {
@@ -397,15 +415,13 @@ html {
     font-size: 20px;
     /* text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px gray, 0 0 30px grey, 0 0 40px grey, 0 0 55px black, 0 0 75px black; */
     text-transform: uppercase;
-    transform: rotate(90deg) translateY(-1.5em);
-    transform-origin: top left;
-    /* float: left; */
-    max-width: 210px; 
-    /* margin-right: -160px; */
+    /* transform: rotate(90deg) tr÷anslateY(-1.5em); */
+    transform: rotate(90deg);
+    /* transform-origin: top left; */
+    transform-origin: bottom left;
     overflow-wrap: break-word;
-    /* height: 80px; */
-    /* z-index: 100; */
 }
+
 .side_title_wrapper + div {
 	margin-left: 20px;
 }
@@ -460,6 +476,45 @@ html {
     /* float: left; */
     margin-left: 0px;
     position: absolute;
+}
+
+.flood_card_r {
+    background-image: url(img/flood_r.jpg);
+    display: inline-block;
+}
+
+#flood_deck_r {
+    display: inline-block;
+    position: relative;
+    vertical-align: top;
+}
+
+#flood_card_area_r {
+    display: inline-block;
+    /* height: 82%; */
+    /* width: 900px; */
+    /* margin-top: 157px; */
+    /* margin-left: 0px; */
+    margin-top: 6.5px;
+    position: relative;
+    width: 204.32px;
+    height: 920px;
+}
+
+.flood_deck_area_r {
+    /* display: inline-block; */
+    /* width: 100%; */
+    /* width: 95%; */
+    width: 204.13px;
+    position: relative;
+    margin-top: 10px;
+    margin-left: 10px;
+    height: 920px;
+    vertical-align: top;
+    background-image: url(../img/layout/rounded_b.png);
+    float: left;
+    background-color: rgb(255, 255, 255, 0.5);
+    padding: 10px;
 }
 
 .treasure_card {
@@ -670,20 +725,20 @@ html {
 	color: #006EB2;
 }
 
-.color_FFEC35 {
-	color: #FFEC35;
+.color_CFB100 {
+	color: #CFB100;
 }
 
 .color_109D4C {
 	color: #109D4C
 }
 
-.color_1F1D1D {
-	color: #1F1D1D;
+.color_000000 {
+	color: #000000;
 }
 
-.color_BEC1C4 {
-	color: #BEC1C4;
+.color_727272 {
+	color: #727272;
 }
 
 .tableWindow {

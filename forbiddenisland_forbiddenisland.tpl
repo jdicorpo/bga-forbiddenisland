@@ -24,6 +24,13 @@
 -->
 <div id="thething" class="thething">
     <div id="board_wrapper" class="board_wrapper">
+        <div id="flood_deck_area_r" class="flood_deck_area_r" style="display: none;" >
+            <div id="flood_deck_r" class="card_r flood_card_r">
+                <span id="cardcount_flood_deck"  class="cardcount">0</span>
+            </div>
+            <div id="flood_card_area_r"></div>
+        </div>
+    
         <div id="board">
             <div id="island_tile" style="visibility: hidden;">
                 <div id="pawn_area_0_0" class="pawn_area" style="visibility: hidden;"></div>

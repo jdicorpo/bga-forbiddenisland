@@ -1917,6 +1917,8 @@ class forbiddenisland extends Table
         $difficulty = $this->difficulty[self::getGameStateValue("difficulty")]['name'];
         $difficulty_text = '<b>'.$difficulty.'</b>';
         $table[] = array(clienttranslate("<b>Difficulty<b>"), $difficulty_text);
+        $table[] = array(" ", " ");
+
 
         $table[] = array(clienttranslate("Island Tiles Sunk"),  
             $this->tiles->countCardsInLocation("sunk")
