@@ -1853,7 +1853,7 @@ class forbiddenisland extends Table
     {
         $players = $this->loadPlayersBasicInfos();
         if ($this->getGameStateValue("players_win") != 0) {
-            $score = pow(2, getGameStateValue("difficulty"));
+            $score = pow(2, $this->getGameStateValue("difficulty"));
             foreach ( $players as $player_id => $player_info ) {
                 self::DbQuery( "UPDATE player SET player_score=$score WHERE player_id=$player_id" );
             }
