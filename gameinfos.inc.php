@@ -54,6 +54,44 @@ $gameinfos = array(
 
 // Is this game cooperative (all players wins together or loose together)
 'is_coop' => 1, 
+'coop_elo_mode' => array(
+	'type' => 'points_references',
+	'references' => array(
+		array(
+			'players_nbr' => 2,
+			// 'options' => array( 100 => 1 ),
+			'elo' => array(
+				0 => 1000,
+				2 => 1200,
+				4 => 1400,
+				8 => 1800,
+				16 => 2600
+			)
+		),
+		array(
+			'players_nbr' => 3,
+			// 'options' => array( 100 => 1 ),
+			'elo' => array(
+				0 => 1000,
+				2 => 2200,
+				4 => 2400,
+				8 => 2800,
+				16 => 3600
+			)
+		),
+		array(
+			'players_nbr' => 4,
+			// 'options' => array( 100 => 1 ),
+			'elo' => array(
+				0 => 1000,
+				2 => 3200,
+				4 => 3400,
+				8 => 3800,
+				16 => 4600
+			)
+		)
+	)
+),
 
 
 // Complexity of the game, from 0 (extremely simple) to 5 (extremely complex)
