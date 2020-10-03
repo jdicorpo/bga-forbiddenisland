@@ -57,39 +57,25 @@ $gameinfos = array(
 'coop_elo_mode' => array(
 	'type' => 'points_references',
 	'references' => array(
-		array(
-			'players_nbr' => 2,
-			// 'options' => array( 100 => 1 ),
-			'elo' => array(
-				0 => 1000,
-				2 => 1200,
-				4 => 1400,
-				8 => 1800,
-				16 => 2600
-			)
-		),
-		array(
-			'players_nbr' => 3,
-			// 'options' => array( 100 => 1 ),
-			'elo' => array(
-				0 => 1000,
-				2 => 2200,
-				4 => 2400,
-				8 => 2800,
-				16 => 3600
-			)
-		),
-		array(
-			'players_nbr' => 4,
-			// 'options' => array( 100 => 1 ),
-			'elo' => array(
-				0 => 1000,
-				2 => 3200,
-				4 => 3400,
-				8 => 3800,
-				16 => 4600
-			)
-		)
+		// novice
+		array( 'players_nbr' => 2, 'options' => array( 100 => 1 ), 'elo' => array( 0 => 1000, 1 => 1300 ) ),
+		array( 'players_nbr' => 3, 'options' => array( 100 => 1 ), 'elo' => array( 0 => 1000, 1 => 1350 ) ),
+		array( 'players_nbr' => 4, 'options' => array( 100 => 1 ), 'elo' => array( 0 => 1000, 1 => 1400 ) ),
+
+		// normal
+		array( 'players_nbr' => 2, 'options' => array( 100 => 2 ), 'elo' => array( 0 => 1000, 1 => 1500 ) ),
+		array( 'players_nbr' => 3, 'options' => array( 100 => 2 ), 'elo' => array( 0 => 1000, 1 => 1600 ) ),
+		array( 'players_nbr' => 4, 'options' => array( 100 => 2 ), 'elo' => array( 0 => 1000, 1 => 1700 ) ),
+
+		// elite
+		array( 'players_nbr' => 2, 'options' => array( 100 => 3 ), 'elo' => array( 0 => 1000, 1 => 1600 ) ),
+		array( 'players_nbr' => 3, 'options' => array( 100 => 3 ), 'elo' => array( 0 => 1000, 1 => 1700 ) ),
+		array( 'players_nbr' => 4, 'options' => array( 100 => 3 ), 'elo' => array( 0 => 1000, 1 => 1800 ) ),
+
+		// legendary
+		array( 'players_nbr' => 2, 'options' => array( 100 => 4 ), 'elo' => array( 0 => 1000, 1 => 1800 ) ),
+		array( 'players_nbr' => 3, 'options' => array( 100 => 4 ), 'elo' => array( 0 => 1000, 1 => 2100 ) ),
+		array( 'players_nbr' => 4, 'options' => array( 100 => 4 ), 'elo' => array( 0 => 1000, 1 => 2500 ) ),
 	)
 ),
 

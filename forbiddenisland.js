@@ -21,7 +21,7 @@ define([
     "ebg/counter",
     "ebg/stock",
     "ebg/zone",
-    g_gamethemeurl + "modules/stock_r.js"
+    // g_gamethemeurl + "modules/stock_r.js"
 ],
 function (dojo, declare) {
     return declare("bgagame.forbiddenisland", ebg.core.gamegui, {
@@ -49,7 +49,7 @@ function (dojo, declare) {
 
             this.flood_card_area = null;
             this.flood_card_area_n = new ebg.stock();
-            this.flood_card_area_r = new ebg.stock_r();
+            this.flood_card_area_r = new ebg.stock();
             this.flood_deck = "";
 
             this.treasure_card_area = new ebg.stock();
@@ -234,6 +234,7 @@ function (dojo, declare) {
 
             // setup the flood deck area rotated for large screens
             this.flood_card_area_r.create( this, $('flood_card_area_r'), this.cardheight, this.cardwidth);
+            this.flood_card_area_r.use_vertical_overlap_as_offset = false;
             this.flood_card_area_r.image_items_per_row = 5;
             this.flood_card_area_r.setOverlap(0,40);
             for (var card in gamedatas.flood_list) {
