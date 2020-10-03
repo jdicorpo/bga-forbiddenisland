@@ -1,6 +1,7 @@
 Oct 03
 * stock for rotated display
 * ELO adjustments
+* steamline give card for 2-players
 
 Sep 28
 * flood card rotated display animation

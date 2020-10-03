@@ -653,7 +653,7 @@ function (dojo, declare) {
 
                     case 'client_selectShoreUp':
                     case 'client_selectGiveCard':
-                    case 'client_selectGiveCardPlayers':
+                    case 'client_selectGiveCardPlayer':
                     case 'client_selectPilotDest':
                         this.addActionButton( 'cancel_btn', _('Cancel'), 'onCancel', null, false, 'red' );
                         break;
@@ -1765,15 +1765,44 @@ function (dojo, declare) {
                         if ( this.checkAction( 'give_card' ) && dojo.hasClass(dojo.byId(card_id), 'possibleCard')) {  
                             var node = $(card_id);
                             dojo.addClass(node, 'selected');
+                            var target_player_id = 0;
     
                             if (this.adventurer == 'messenger') {
-                                this.updateAllPlayers();
+                                var target_players = this.gamedatas.players;
+                                var n_players = Object.keys(target_players).length;
+                                if (n_players > 2) {
+                                    this.updateAllPlayers();
+                                } else {
+                                    for (var player_id in target_players) {
+                                        if (player_id != this.player_id) {
+                                            target_player_id = player_id;
+                                        }
+                                    }
+                                }
                             } else {
-                                this.updateColocatedPlayers(this.colocated_players);
+                                var target_players = this.colocated_players;
+                                var n_players = target_players.length;
+                                if (n_players > 2) {
+                                    this.updateColocatedPlayers(this.colocated_players);
+                                } else {
+                                    target_player_id = target_players[0].player_id;
+                                    if (target_player_id == this.player_id) {
+                                        target_player_id = target_players[1].player_id;
+                                    }
+                                }
                             }
-    
-                            this.setClientState("client_selectGiveCardPlayers", 
-                                { descriptionmyturn : "${you} select players to give the card to."});
+
+                            if (n_players > 2) {
+                                this.setClientState("client_selectGiveCardPlayer", 
+                                    { descriptionmyturn : "${you} select player to give the card to."});
+                            } else {
+                                var id = card_id.split('_')[5];
+                                this.ajaxcall( "/forbiddenisland/forbiddenisland/giveTreasure.html", { 
+                                    lock: true,
+                                    id:id,
+                                    target_player_id:target_player_id
+                                }, this, function( result ) {} );                        
+                            }
     
                         }
                         break;
