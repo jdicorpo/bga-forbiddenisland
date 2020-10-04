@@ -127,8 +127,8 @@ var jstpl_player_board = '\<div id="p_board_${id}" class="p_board">\
 
 <audio id="audiosrc_forbiddenisland_watersrise" src="{GAMETHEMEURL}img/forbiddenisland_watersrise.mp3" preload="none" autobuffer></audio>
 <audio id="audiosrc_o_forbiddenisland_watersrise" src="{GAMETHEMEURL}img/forbiddenisland_watersrise.ogg" preload="none" autobuffer></audio>
-<audio id="audiosrc_forbiddenisland_sink_tile" src="{GAMETHEMEURL}img/forbiddenisland_sink_tile.mp3" preload="none" autobuffer></audio>
-<audio id="audiosrc_o_forbiddenisland_sink_tile" src="{GAMETHEMEURL}img/forbiddenisland_sink_tile.ogg" preload="none" autobuffer></audio>
+<audio id="audiosrc_forbiddenisland_sinking" src="{GAMETHEMEURL}img/forbiddenisland_sinking.mp3" preload="none" autobuffer></audio>
+<audio id="audiosrc_o_forbiddenisland_sinking" src="{GAMETHEMEURL}img/forbiddenisland_sinking.ogg" preload="none" autobuffer></audio>
 <audio id="audiosrc_forbiddenisland_heli_lift" src="{GAMETHEMEURL}img/forbiddenisland_heli_lift.mp3" preload="none" autobuffer></audio>
 <audio id="audiosrc_o_forbiddenisland_heli_lift" src="{GAMETHEMEURL}img/forbiddenisland_heli_lift.ogg" preload="none" autobuffer></audio>
 <audio id="audiosrc_forbiddenisland_capture" src="{GAMETHEMEURL}img/forbiddenisland_capture.mp3" preload="none" autobuffer></audio>
