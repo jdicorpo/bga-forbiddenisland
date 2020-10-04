@@ -1865,6 +1865,10 @@ class forbiddenisland extends Table
             $title = clienttranslate("The Players Lost");
         }
 
+        $this->notifyAllPlayers("final", $title, array (
+            "players_win" => $this->getGameStateValue("players_win"),
+        ));
+
         $table = [];
         $table[] = array(clienttranslate("Treasures <b>Captured</b>"), $this->countTreasures());
         $table[] = array(" ", " ");

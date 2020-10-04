@@ -1922,6 +1922,7 @@ function (dojo, declare) {
             dojo.subscribe( 'reshuffleFloodDeck', this, "notif_reshuffleFloodDeck" );
             this.notifqueue.setSynchronous( 'reshuffleFloodDeck', 1000 );
             dojo.subscribe( 'updateCardCount', this, "notif_updateCardCount" );
+            dojo.subscribe( 'final', this, "notif_final" );
             dojo.subscribe('log', this, "notif_log");
             dojo.subscribe('animate', this, "notif_animate");
             this.notifqueue.setSynchronous('animate', 1000);
@@ -1936,6 +1937,7 @@ function (dojo, declare) {
             this.clearLastAction();
             if (notif.args.heli_lift) {
                 this.discardTreasure(notif.args.card_id, notif.args.player_id, type = 'heli_lift', place = false);
+                playSound('forbiddenisland_heli');
                 notif.args.players.split(',').forEach( function(x) {
                     this.movePawn( notif.args.tile_id, x );
                 }, this);
@@ -1981,6 +1983,8 @@ function (dojo, declare) {
             var flood_card = notif.args.flood_card_type;
             this.flood_discards.push(tile_id);
 
+            // playSound('forbiddenisland_sink_tile');
+
             this.floodTile(tile_id);
             this.placeFloodCard(flood_card);
             
@@ -1994,9 +1998,12 @@ function (dojo, declare) {
             var tile_id = notif.args.tile_id;
             var flood_card = notif.args.flood_card_type;
 
+            playSound('forbiddenisland_sink_tile');
+
             this.placeFloodCard(flood_card);
             setTimeout(() => { this.sinkTile(tile_id) }, 500);
             setTimeout(() => { this.removeFlood(flood_card) }, 1000);
+
             
        },
 
@@ -2004,6 +2011,8 @@ function (dojo, declare) {
        {
             console.log( 'notif_watersRise' );
             console.log( notif );
+
+            playSound('forbiddenisland_watersrise');
 
             this.discardTreasure(notif.args.card.id, notif.args.player_id, type = 'waters_rise', place = false);
 
@@ -2105,6 +2114,15 @@ function (dojo, declare) {
 
             $('cardcount_flood_deck').innerHTML = notif.args.flood_deck_count;
             $('cardcount_treasure_deck').innerHTML = notif.args.treasure_deck_count;
+       },
+
+       notif_final : function(notif) {
+
+            if (notif.args.players_win) {
+                playSound('forbiddenisland_heli');
+            } else {
+                playSound('forbiddenisland_watersrise');
+            }
        },
 
        notif_animate : function(notif) {
