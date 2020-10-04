@@ -2073,6 +2073,8 @@ function (dojo, declare) {
             var treasure = notif.args.treasure;
             var player_id = notif.args.player_id;
 
+            playSound('forbiddenisland_capture');
+            
             this.clearLastAction();
             notif.args.cards.forEach(
                 function (c, index) {

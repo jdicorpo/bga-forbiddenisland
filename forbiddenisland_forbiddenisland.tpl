@@ -131,5 +131,7 @@ var jstpl_player_board = '\<div id="p_board_${id}" class="p_board">\
 <audio id="audiosrc_o_forbiddenisland_sink_tile" src="{GAMETHEMEURL}img/forbiddenisland_sink_tile.ogg" preload="none" autobuffer></audio>
 <audio id="audiosrc_forbiddenisland_heli_lift" src="{GAMETHEMEURL}img/forbiddenisland_heli_lift.mp3" preload="none" autobuffer></audio>
 <audio id="audiosrc_o_forbiddenisland_heli_lift" src="{GAMETHEMEURL}img/forbiddenisland_heli_lift.ogg" preload="none" autobuffer></audio>
+<audio id="audiosrc_forbiddenisland_capture" src="{GAMETHEMEURL}img/forbiddenisland_capture.mp3" preload="none" autobuffer></audio>
+<audio id="audiosrc_o_forbiddenisland_capture" src="{GAMETHEMEURL}img/forbiddenisland_capture.ogg" preload="none" autobuffer></audio>
 
 {OVERALL_GAME_FOOTER}
