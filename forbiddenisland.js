@@ -902,7 +902,6 @@ function (dojo, declare) {
                     warning: warning
                 }), 'island_tile_' + board_id, 'first');
             } else {
-                debugger;
                 dojo.place(this.format_block('jstpl_tile', {
                     x : this.tilewidth * ((img_id-1) % 8),
                     y : this.tileheight * Math.trunc((img_id-1) / 8),
@@ -1938,7 +1937,7 @@ function (dojo, declare) {
             this.clearLastAction();
             if (notif.args.heli_lift) {
                 this.discardTreasure(notif.args.card_id, notif.args.player_id, type = 'heli_lift', place = false);
-                playSound('forbiddenisland_heli');
+                playSound('forbiddenisland_heli_lift');
                 notif.args.players.split(',').forEach( function(x) {
                     this.movePawn( notif.args.tile_id, x );
                 }, this);
@@ -2120,7 +2119,7 @@ function (dojo, declare) {
        notif_final : function(notif) {
 
             if (notif.args.players_win) {
-                playSound('forbiddenisland_heli');
+                playSound('forbiddenisland_heli_lift');
             } else {
                 playSound('forbiddenisland_watersrise');
             }

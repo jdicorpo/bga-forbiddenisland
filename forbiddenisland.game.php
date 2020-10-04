@@ -1866,7 +1866,7 @@ class forbiddenisland extends Table
         }
 
         $this->notifyAllPlayers("final", $title, array (
-            "players_win" => $this->getGameStateValue("players_win"),
+            'players_win' => $this->getGameStateValue("players_win"),
         ));
 
         $table = [];
