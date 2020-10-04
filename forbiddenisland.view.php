@@ -112,8 +112,6 @@ class view_forbiddenisland_forbiddenisland extends game_view
             }        
         }
 
-        $water_level_meter = $this->game->island_map[$island_map_id]['water_level_meter'];
-
         $this->page->begin_block($template, "water_level" );
         $this->page->begin_block($template, "water_level_meter" );
 
@@ -126,8 +124,6 @@ class view_forbiddenisland_forbiddenisland extends game_view
         }   
 
         $this->page->insert_block( "water_level_meter", array(
-            'LEFT' => (explode("_", $water_level_meter)[0] - 1) * $hor_scale,
-            'TOP' => (explode("_", $water_level_meter)[1] - 1) * $ver_scale,
         ) );
 
         $this->page->begin_block($template, "treasure_starting_area" );

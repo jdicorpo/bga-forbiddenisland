@@ -902,6 +902,7 @@ function (dojo, declare) {
                     warning: warning
                 }), 'island_tile_' + board_id, 'first');
             } else {
+                debugger;
                 dojo.place(this.format_block('jstpl_tile', {
                     x : this.tilewidth * ((img_id-1) % 8),
                     y : this.tileheight * Math.trunc((img_id-1) / 8),
