@@ -1898,15 +1898,15 @@ function (dojo, declare) {
             console.log( 'notifications subscriptions setup' );
 
             dojo.subscribe( 'moveAction', this, "notif_moveAction" );
-            this.notifqueue.setSynchronous( 'moveAction', 1000 );
+            this.notifqueue.setSynchronous( 'moveAction', 1500 );
             dojo.subscribe( 'shoreUpAction', this, "notif_shoreUpAction" );
-            this.notifqueue.setSynchronous( 'shoreUpAction', 1000 );
+            this.notifqueue.setSynchronous( 'shoreUpAction', 1500 );
             dojo.subscribe( 'floodTile', this, "notif_floodTile" );
-            this.notifqueue.setSynchronous( 'floodTile', 1000 );
+            this.notifqueue.setSynchronous( 'floodTile', 1500 );
             dojo.subscribe( 'sinkTile', this, "notif_sinkTile" );
-            this.notifqueue.setSynchronous( 'sinkTile', 1000 );
+            this.notifqueue.setSynchronous( 'sinkTile', 1500 );
             dojo.subscribe( 'watersRise', this, "notif_watersRise" );
-            this.notifqueue.setSynchronous( 'watersRise', 1000 );
+            this.notifqueue.setSynchronous( 'watersRise', 1500 );
             dojo.subscribe( 'drawTreasure', this, "notif_drawTreasure" );
             this.notifqueue.setSynchronous( 'drawTreasure', 2000 );
             dojo.subscribe( 'discardTreasure', this, "notif_discardTreasure" );
@@ -1914,9 +1914,9 @@ function (dojo, declare) {
             dojo.subscribe( 'giveTreasure', this, "notif_giveTreasure" );
             this.notifqueue.setSynchronous( 'giveTreasure', 1000 );
             dojo.subscribe( 'captureTreasure', this, "notif_captureTreasure" );
-            this.notifqueue.setSynchronous( 'captureTreasure', 1000 );
+            this.notifqueue.setSynchronous( 'captureTreasure', 2000 );
             dojo.subscribe( 'captureAllTreasure', this, "notif_captureAllTreasure" );
-            this.notifqueue.setSynchronous( 'captureTreasure', 1000 );
+            this.notifqueue.setSynchronous( 'captureAllTreasure', 1000 );
             dojo.subscribe( 'reshuffleTreasureDeck', this, "notif_reshuffleTreasureDeck" );
             this.notifqueue.setSynchronous( 'reshuffleTreasureDeck', 1000 );
             dojo.subscribe( 'reshuffleFloodDeck', this, "notif_reshuffleFloodDeck" );
