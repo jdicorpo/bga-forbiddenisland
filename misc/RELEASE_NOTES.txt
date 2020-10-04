@@ -1,7 +1,9 @@
-Oct 03
+Oct 04
 * stock for rotated display
 * ELO adjustments
 * steamline give card for 2-players
+* sound effects
+* more island maps
 
 Sep 28
 * flood card rotated display animation
