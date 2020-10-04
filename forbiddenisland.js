@@ -1998,9 +1998,10 @@ function (dojo, declare) {
             var tile_id = notif.args.tile_id;
             var flood_card = notif.args.flood_card_type;
 
-            playSound('forbiddenisland_sinking');
-
             this.placeFloodCard(flood_card);
+
+            playSound('forbiddenisland_flooding');
+
             setTimeout(() => { this.sinkTile(tile_id) }, 500);
             setTimeout(() => { this.removeFlood(flood_card) }, 1000);
 
