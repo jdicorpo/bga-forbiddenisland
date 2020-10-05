@@ -2121,7 +2121,7 @@ function (dojo, declare) {
 
        notif_final : function(notif) {
 
-            if (notif.args.players_win) {
+            if (notif.args.players_win == 1) {
                 playSound('forbiddenisland_heli_lift');
             } else {
                 playSound('forbiddenisland_watersrise');
