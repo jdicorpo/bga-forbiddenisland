@@ -284,8 +284,10 @@ function (dojo, declare) {
             this.setupNotifications();
 
             $('cardcount_flood_deck').innerHTML = gamedatas['flood_deck_count'];
+            $('cardcount_flood_deck_r').innerHTML = gamedatas['flood_deck_count'];
             $('cardcount_treasure_deck').innerHTML = gamedatas['treasure_deck_count'];
             this.addTooltip( 'cardcount_flood_deck', _('remaining cards in deck'), '' );
+            this.addTooltip( 'cardcount_flood_deck_r', _('remaining cards in deck'), '' );
             this.addTooltip( 'cardcount_treasure_deck', _('remaining cards in deck'), '' );
 
             this.adjustScreenLayout();
@@ -307,23 +309,13 @@ function (dojo, declare) {
             var bodycoords = dojo.marginBox(pageid);
             var contentWidth = bodycoords.w;
 
-            // if (contentWidth >= 1600) {
             if ((contentWidth >= this.board_width(true)) && (!this.large_screen)) {
-                // dojo.addClass('flood_deck_area','flood_deck_area_lg_screen');
                 dojo.style('flood_deck_area', 'display','none');
-                // dojo.place('flood_deck_area','board', 'before');
                 dojo.style('flood_deck_area_r', 'display','inline-block');
                 this.flood_card_area = this.flood_card_area_r;
                 this.flood_deck = 'flood_deck_r';
 
-                // dojo.style('board', 'margin-left','300px');
-                // dojo.style('cardcount_flood_deck', 'transform','rotate(-90deg)');
-
-                // dojo.place('flood_deck_area','board', 'after');
-                // this.interface_max_width = this.gamedatas.interface_max_width;
-                // this.interface_max_width = this.gamedatas.interface_max_width + 300;
                 this.large_screen = true;
-                // this.flood_card_area.updateDisplay();
                 console.log("large_screen = ", this.large_screen);
             // }
                 dojo.place('water_level_meter','board_wrapper', 'last');
@@ -335,17 +327,12 @@ function (dojo, declare) {
 
             } else if ((contentWidth < this.board_width(true)) && (this.large_screen)) {
                 
-                // dojo.removeClass('flood_deck_area','flood_deck_area_lg_screen');
                 dojo.style('flood_deck_area', 'display','block');
-                // dojo.place('flood_deck_area','treasure_deck_area', 'before');
                 dojo.style('flood_deck_area_r', 'display','none');
                 this.flood_card_area = this.flood_card_area_n;
                 this.flood_deck = 'flood_deck';
 
-                // dojo.style('board', 'margin','auto');
                 dojo.style('board', 'margin-left','0px');
-                // dojo.style('cardcount_flood_deck', 'transform','rotate(0deg)');
-                // this.interface_max_width = this.gamedatas.interface_max_width;
                 this.large_screen = false;
                 console.log("large_screen = ", this.large_screen);
 
@@ -1937,7 +1924,7 @@ function (dojo, declare) {
             this.clearLastAction();
             if (notif.args.heli_lift) {
                 this.discardTreasure(notif.args.card_id, notif.args.player_id, type = 'heli_lift', place = false);
-                playSound('forbiddenisland_heli_lift');
+                playSound('forbiddenisland_heli_lift_2');
                 notif.args.players.split(',').forEach( function(x) {
                     this.movePawn( notif.args.tile_id, x );
                 }, this);
@@ -2000,7 +1987,7 @@ function (dojo, declare) {
 
             this.placeFloodCard(flood_card);
 
-            playSound('forbiddenisland_flooding');
+            playSound('forbiddenisland_flooding_2');
 
             setTimeout(() => { this.sinkTile(tile_id) }, 500);
             setTimeout(() => { this.removeFlood(flood_card) }, 1000);
@@ -2116,13 +2103,14 @@ function (dojo, declare) {
             };
 
             $('cardcount_flood_deck').innerHTML = notif.args.flood_deck_count;
+            $('cardcount_flood_deck_r').innerHTML = notif.args.flood_deck_count;
             $('cardcount_treasure_deck').innerHTML = notif.args.treasure_deck_count;
        },
 
        notif_final : function(notif) {
 
             if (notif.args.players_win == 1) {
-                playSound('forbiddenisland_heli_lift');
+                playSound('forbiddenisland_heli_lift_2');
             } else {
                 playSound('forbiddenisland_watersrise');
             }

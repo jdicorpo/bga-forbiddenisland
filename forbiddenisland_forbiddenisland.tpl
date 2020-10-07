@@ -26,7 +26,7 @@
     <div id="board_wrapper" class="board_wrapper">
         <div id="flood_deck_area_r" class="flood_deck_area_r" style="display: none;" >
             <div id="flood_deck_r" class="card_r flood_card_r">
-                <span id="cardcount_flood_deck"  class="cardcount">0</span>
+                <span id="cardcount_flood_deck_r"  class="cardcount">0</span>
             </div>
             <div id="flood_card_area_r"></div>
         </div>
@@ -127,10 +127,10 @@ var jstpl_player_board = '\<div id="p_board_${id}" class="p_board">\
 
 <audio id="audiosrc_forbiddenisland_watersrise" src="{GAMETHEMEURL}img/forbiddenisland_watersrise.mp3" preload="none" autobuffer></audio>
 <audio id="audiosrc_o_forbiddenisland_watersrise" src="{GAMETHEMEURL}img/forbiddenisland_watersrise.ogg" preload="none" autobuffer></audio>
-<audio id="audiosrc_forbiddenisland_flooding" src="{GAMETHEMEURL}img/forbiddenisland_flooding.mp3" preload="none" autobuffer></audio>
-<audio id="audiosrc_o_forbiddenisland_flooding" src="{GAMETHEMEURL}img/forbiddenisland_flooding.ogg" preload="none" autobuffer></audio>
-<audio id="audiosrc_forbiddenisland_heli_lift" src="{GAMETHEMEURL}img/forbiddenisland_heli_lift.mp3" preload="none" autobuffer></audio>
-<audio id="audiosrc_o_forbiddenisland_heli_lift" src="{GAMETHEMEURL}img/forbiddenisland_heli_lift.ogg" preload="none" autobuffer></audio>
+<audio id="audiosrc_forbiddenisland_flooding_2" src="{GAMETHEMEURL}img/forbiddenisland_flooding_2.mp3" preload="none" autobuffer></audio>
+<audio id="audiosrc_o_forbiddenisland_flooding_2" src="{GAMETHEMEURL}img/forbiddenisland_flooding_2.ogg" preload="none" autobuffer></audio>
+<audio id="audiosrc_forbiddenisland_heli_lift_2" src="{GAMETHEMEURL}img/forbiddenisland_heli_lift_2.mp3" preload="none" autobuffer></audio>
+<audio id="audiosrc_o_forbiddenisland_heli_lift_2" src="{GAMETHEMEURL}img/forbiddenisland_heli_lift_2.ogg" preload="none" autobuffer></audio>
 <audio id="audiosrc_forbiddenisland_capture" src="{GAMETHEMEURL}img/forbiddenisland_capture.mp3" preload="none" autobuffer></audio>
 <audio id="audiosrc_o_forbiddenisland_capture" src="{GAMETHEMEURL}img/forbiddenisland_capture.ogg" preload="none" autobuffer></audio>
 
