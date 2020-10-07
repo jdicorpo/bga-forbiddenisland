@@ -1,5 +1,6 @@
-Oct xx
+Oct 06
 * bug with flood deck cardcount
+* update sounds
 
 Oct 04
 * stock for rotated display
