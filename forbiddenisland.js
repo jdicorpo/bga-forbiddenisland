@@ -570,7 +570,7 @@ function (dojo, declare) {
                     case 'playerActions':
                         var main = $('pagemaintitletext');
                         if (args.remaining_actions > 0) {
-                            main.innerHTML += _('you may take ') + '<span id="remaining_actions_value" style="font-weight:bold;color:#ED0023;">' 
+                            main.innerHTML += _(' may take ') + '<span id="remaining_actions_value" style="font-weight:bold;color:#ED0023;">' 
                                 + args.remaining_actions + '</span>' + _(' action(s): ') + '<span style="font-weight:bold;color:#4871b6;">' 
                                 + _('Move') + '</span>' + _(' or ');
                             if ((args.adventurer == 'pilot') && (args.pilot_action == 1)) {
@@ -1987,7 +1987,8 @@ function (dojo, declare) {
 
             this.placeFloodCard(flood_card);
 
-            playSound('forbiddenisland_flooding_2');
+            // playSound('forbiddenisland_flooding_2');
+            playSound('forbiddenisland_flooding');
 
             setTimeout(() => { this.sinkTile(tile_id) }, 500);
             setTimeout(() => { this.removeFlood(flood_card) }, 1000);

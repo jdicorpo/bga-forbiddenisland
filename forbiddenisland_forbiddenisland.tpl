@@ -129,6 +129,8 @@ var jstpl_player_board = '\<div id="p_board_${id}" class="p_board">\
 <audio id="audiosrc_o_forbiddenisland_watersrise" src="{GAMETHEMEURL}img/forbiddenisland_watersrise.ogg" preload="none" autobuffer></audio>
 <audio id="audiosrc_forbiddenisland_flooding_2" src="{GAMETHEMEURL}img/forbiddenisland_flooding_2.mp3" preload="none" autobuffer></audio>
 <audio id="audiosrc_o_forbiddenisland_flooding_2" src="{GAMETHEMEURL}img/forbiddenisland_flooding_2.ogg" preload="none" autobuffer></audio>
+<audio id="audiosrc_forbiddenisland_flooding" src="{GAMETHEMEURL}img/forbiddenisland_flooding.mp3" preload="none" autobuffer></audio>
+<audio id="audiosrc_o_forbiddenisland_flooding" src="{GAMETHEMEURL}img/forbiddenisland_flooding.ogg" preload="none" autobuffer></audio>
 <audio id="audiosrc_forbiddenisland_heli_lift_2" src="{GAMETHEMEURL}img/forbiddenisland_heli_lift_2.mp3" preload="none" autobuffer></audio>
 <audio id="audiosrc_o_forbiddenisland_heli_lift_2" src="{GAMETHEMEURL}img/forbiddenisland_heli_lift_2.ogg" preload="none" autobuffer></audio>
 <audio id="audiosrc_forbiddenisland_capture" src="{GAMETHEMEURL}img/forbiddenisland_capture.mp3" preload="none" autobuffer></audio>
